@@ -17,9 +17,7 @@ const actions = require( 'lib/posts/actions' ),
 	route = require( 'lib/route' ),
 	PostEditStore = require( 'lib/posts/post-edit-store' ),
 	EditorActionBar = require( 'post-editor/editor-action-bar' ),
-	EditorDrawer = require( 'post-editor/editor-drawer' ),
 	FeaturedImage = require( 'post-editor/editor-featured-image' ),
-	EditorGroundControl = require( 'post-editor/editor-ground-control' ),
 	EditorTitleContainer = require( 'post-editor/editor-title/container' ),
 	EditorPageSlug = require( 'post-editor/editor-page-slug' ),
 	protectForm = require( 'lib/mixins/protect-form' ),
@@ -29,7 +27,6 @@ const actions = require( 'lib/posts/actions' ),
 	SegmentedControlItem = require( 'components/segmented-control/item' ),
 	EditorMobileNavigation = require( 'post-editor/editor-mobile-navigation' ),
 	observe = require( 'lib/mixins/data-observe' ),
-	DraftList = require( 'my-sites/drafts/draft-list' ),
 	InvalidURLDialog = require( 'post-editor/invalid-url-dialog' ),
 	RestorePostDialog = require( 'post-editor/restore-post-dialog' ),
 	VerifyEmailDialog = require( 'post-editor/verify-email-dialog' ),
@@ -44,7 +41,6 @@ import { isEditorDraftsVisible, getEditorPostId, getEditorPath } from 'state/ui/
 import { toggleEditorDraftsVisible, setEditorPostId } from 'state/ui/editor/actions';
 import { receivePost, resetPostEdits } from 'state/posts/actions';
 import { getPostEdits, isEditedPostDirty } from 'state/posts/selectors';
-import EditorSidebarHeader from 'post-editor/editor-sidebar/header';
 import EditorDocumentHead from 'post-editor/editor-document-head';
 import EditorPostTypeUnsupported from 'post-editor/editor-post-type-unsupported';
 import EditorForbidden from 'post-editor/editor-forbidden';
@@ -52,8 +48,8 @@ import EditorNotice from 'post-editor/editor-notice';
 import { savePreference } from 'state/preferences/actions';
 import { getPreference } from 'state/preferences/selectors';
 import QueryPreferences from 'components/data/query-preferences';
-import SidebarFooter from 'layout/sidebar/footer';
 import { setLayoutFocus } from 'state/ui/layout-focus/actions';
+import EditorSidebar from 'post-editor/editor-sidebar';
 
 const PostEditor = React.createClass( {
 	propTypes: {
@@ -266,47 +262,28 @@ const PostEditor = React.createClass( {
 							/>
 							: null }
 					</div>
-					<div className="post-editor__sidebar">
-						<EditorSidebarHeader
-							allPostsUrl={ this.getAllPostsUrl() } />
-						{ this.props.showDrafts ?
-							<DraftList
-								sites={ this.props.sites }
-								onTitleClick={ this.toggleSidebar }
-								showAllActionsMenu={ false }
-								siteID={ site ? site.ID : null }
-								selectedId={ this.state.post && this.state.post.ID || null }
-							/>
-						: <div>
-							<EditorGroundControl
-								savedPost={ this.state.savedPost }
-								post={ this.state.post }
-								isNew={ this.state.isNew }
-								isDirty={ this.state.isDirty || this.props.dirty }
-								isSaveBlocked={ this.isSaveBlocked() }
-								hasContent={ this.state.hasContent }
-								isSaving={ this.state.isSaving }
-								isPublishing={ this.state.isPublishing }
-								onSave={ this.onSave }
-								onPreview={ this.onPreview }
-								onPublish={ this.onPublish }
-								onTrashingPost={ this.onTrashingPost }
-								onMoreInfoAboutEmailVerify={ this.onMoreInfoAboutEmailVerify }
-								site={ site }
-								user={ this.props.user }
-								userUtils={ this.props.userUtils }
-								type={ this.props.type }
-							/>
-							<EditorDrawer
-								type={ this.props.type }
-								site={ site }
-								post={ this.state.post }
-								isNew={ this.state.isNew }
-							/>
-
-						</div> }
-						<SidebarFooter />
-					</div>
+					<EditorSidebar
+						allPostsUrl={ this.getAllPostsUrl() }
+						sites={ this.props.sites }
+						onTitleClick={ this.toggleSidebar }
+						savedPost={ this.state.savedPost }
+						post={ this.state.post }
+						isNew={ this.state.isNew }
+						isDirty={ this.state.isDirty || this.props.dirty }
+						isSaveBlocked={ this.state.isSaveBlocked }
+						hasContent={ this.state.hasContent }
+						isSaving={ this.state.isSaving }
+						isPublishing={ this.state.isPublishing }
+						onSave={ this.onSave }
+						onPreview={ this.onPreview }
+						onPublish={ this.onPublish }
+						onTrashingPost={ this.onTrashingPost }
+						site={ site }
+						user={ this.props.user }
+						userUtils={ this.props.userUtils }
+						type={ this.props.type }
+						showDrafts={ this.props.showDrafts }
+						/>
 				</div>
 				{ isTrashed
 					? <RestorePostDialog
