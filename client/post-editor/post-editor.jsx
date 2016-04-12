@@ -20,6 +20,7 @@ const actions = require( 'lib/posts/actions' ),
 	FeaturedImage = require( 'post-editor/editor-featured-image' ),
 	EditorTitleContainer = require( 'post-editor/editor-title/container' ),
 	EditorPageSlug = require( 'post-editor/editor-page-slug' ),
+	EditorNotice = require( 'post-editor/editor-notice' ),
 	protectForm = require( 'lib/mixins/protect-form' ),
 	TinyMCE = require( 'components/tinymce' ),
 	EditorWordCount = require( 'post-editor/editor-word-count' ),
@@ -160,6 +161,10 @@ const PostEditor = React.createClass( {
 		}
 	},
 
+	hideNotice: function() {
+		this.setState( { notice: null } );
+	},
+
 	toggleSidebar: function() {
 		this.hideDrafts();
 		this.props.setLayoutFocus( 'content' );
@@ -201,7 +206,8 @@ const PostEditor = React.createClass( {
 						isPublishing={ this.state.isPublishing }
 						isSaveBlocked={ this.state.isSaveBlocked }
 						hasContent={ this.state.hasContent }
-						onClose={ this.onClose }/>
+						onClose={ this.onClose }
+						onTabChange={ this.hideNotice } />
 					<div className="post-editor__content">
 						<div className="editor">
 							<EditorActionBar
@@ -232,6 +238,10 @@ const PostEditor = React.createClass( {
 								site={ site }
 								post={ this.state.post }
 								maxWidth={ 1462 } />
+							<EditorNotice
+								{ ...this.state.notice }
+								onDismissClick={ this.hideNotice }
+							/>
 							<div className="editor__header">
 								<EditorTitleContainer
 									onChange={ this.debouncedAutosave }
@@ -297,6 +307,7 @@ const PostEditor = React.createClass( {
 						type={ this.props.type }
 						showDrafts={ this.props.showDrafts }
 						onMoreInfoAboutEmailVerify={ this.onMoreInfoAboutEmailVerify }
+						notice={ this.state.notice }
 						/>
 					{ this.iframePreviewEnabled() ?
 						<EditorPreview
@@ -366,7 +377,7 @@ const PostEditor = React.createClass( {
 
 	onNoticeClick: function( event ) {
 		event.preventDefault();
-		this.setState( { notice: null } );
+		this.hideNotice();
 	},
 
 	onEditedPostChange: function() {
@@ -721,7 +732,7 @@ const PostEditor = React.createClass( {
 
 			window.scrollTo( 0, 0 );
 		} else {
-			nextState.notice = null;
+			nextState.notice = {};
 		}
 
 		this.setState( nextState );
