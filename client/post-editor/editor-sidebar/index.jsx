@@ -78,6 +78,7 @@ export default React.createClass( {
 						type={ this.props.type }
 					/>
 				</div> }
+				<SidebarFooter />
 			</div>
 		);
 	}
