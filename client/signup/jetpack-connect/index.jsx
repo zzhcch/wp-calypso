@@ -227,8 +227,8 @@ const JetpackConnectMain = React.createClass( {
 		if ( status === 'notActiveJetpack' && ! this.props.jetpackConnectSite.isDismissed ) {
 			return this.renderActivateInstructions();
 		}
-//		return this.renderActivateInstructions();
-//		return this.renderInstallInstructions();
+		return this.renderActivateInstructions();
+		return this.renderInstallInstructions();
 		return this.renderSiteEntry();
 	}
 } );
