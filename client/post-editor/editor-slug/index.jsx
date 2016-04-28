@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import noop from 'lodash/noop';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import defer from 'lodash/defer';
 
 /**
  * Internal Dependencies
@@ -31,7 +32,8 @@ const PostEditorSlug = React.createClass( {
 		className: PropTypes.string,
 		isEditable: PropTypes.bool,
 		postType: PropTypes.string,
-		instanceName: PropTypes.string
+		instanceName: PropTypes.string,
+		isVisible: PropTypes.bool
 	},
 
 	getDefaultProps() {
@@ -80,6 +82,14 @@ const PostEditorSlug = React.createClass( {
 	focusSlug() {
 		if ( this.props.isEditable ) {
 			ReactDom.findDOMNode( this.refs.slugField ).focus();
+		}
+	},
+
+	componentWillReceiveProps( nextProps ) {
+		if ( nextProps.isVisible ) {
+			defer( () => {
+				this.focusSlug();
+			} );
 		}
 	},
 

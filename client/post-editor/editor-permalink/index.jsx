@@ -131,6 +131,7 @@ var EditorPermalink = React.createClass( {
 						{ ...pick( this.props, 'slug', 'path', 'isEditable' ) }
 						onEscEnter={ this.closePopover }
 						instanceName="post-popover"
+						isVisible= { this.state.popoverVisible }
 					/>
 					{ this.renderCopyButton() }
 				</Popover>
