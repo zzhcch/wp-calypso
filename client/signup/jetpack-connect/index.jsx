@@ -22,6 +22,7 @@ import JetpackExampleActivate from './exampleComponents/jetpack-activate';
 import JetpackExampleConnect from './exampleComponents/jetpack-connect';
 import JetpackInstallStep from './install-step';
 import versionCompare from 'lib/version-compare';
+import LocaleSuggestions from 'signup/locale-suggestions';
 
 /**
  * Constants
@@ -165,10 +166,20 @@ const JetpackConnectMain = React.createClass( {
 		);
 	},
 
+	renderLocaleSuggestions() {
+		if ( this.props.user ) {
+			return;
+		}
+		return (
+			<LocaleSuggestions path={ this.props.path } locale={ this.props.locale } />
+		);
+	},
+
 	renderSiteEntry() {
 		const status = this.getStatus();
 		return (
 			<Main className="jetpack-connect">
+				{ this.renderLocaleSuggestions() }
 				<div className="jetpack-connect__site-url-entry-container">
 					<ConnectHeader headerText={ this.translate( 'Connect a self-hosted WordPress' ) }
 						subHeaderText={ this.translate( 'We\'ll be installing the Jetpack plugin so WordPress.com can connect to your self-hosted WordPress site.' ) }

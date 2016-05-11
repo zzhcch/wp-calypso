@@ -26,6 +26,7 @@ import CompactCard from 'components/card/compact';
 import Gravatar from 'components/gravatar';
 import i18n from 'lib/mixins/i18n';
 import Gridicon from 'components/gridicon';
+import LocaleSuggestions from 'signup/locale-suggestions';
 
 /**
  * Constants
@@ -95,6 +96,7 @@ const LoggedOutForm = React.createClass( {
 		const { site } = this.props.jetpackConnectAuthorize.queryObject;
 		return (
 			<div>
+				<LocaleSuggestions path={ this.props.path } locale={ this.props.locale } />
 				{ renderFormHeader( site ) }
 				<SignupForm
 					getRedirectToAfterLoginUrl={ window.location.href }
@@ -114,7 +116,7 @@ const LoggedInForm = React.createClass( {
 	displayName: 'LoggedInForm',
 
 	componentWillMount() {
-		const { autoAuthorize, queryObject, authorizeSuccess } = this.props.jetpackConnectAuthorize;
+		const { autoAuthorize, queryObject } = this.props.jetpackConnectAuthorize;
 		debug( 'Checking for auto-auth on mount', autoAuthorize );
 		if ( autoAuthorize || this.props.calypsoStartedConnection ) {
 			this.props.authorize( queryObject );

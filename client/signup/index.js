@@ -31,9 +31,12 @@ module.exports = function() {
 	}
 
 	if ( config.isEnabled( 'jetpack/connect' ) ) {
-		page( '/jetpack/connect', jetpackConnectController.connect );
 		page(
-			'/jetpack/connect/authorize',
+			'/jetpack/connect/:locale?',
+			jetpackConnectController.connect
+		);
+		page(
+			'/jetpack/connect/authorize/:locale?',
 			jetpackConnectController.saveQueryObject,
 			jetpackConnectController.authorizeForm
 		);
