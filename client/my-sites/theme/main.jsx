@@ -83,16 +83,19 @@ const ThemeSheet = React.createClass( {
 			this.props.signup( this.props );
 		} else if ( this.isActive() ) {
 			this.props.customize( this.props, this.props.selectedSite );
-		// TODO: use site picker if no selected site
 		} else if ( isPremium( this.props ) ) {
 			// TODO: check theme is not already purchased
-			this.props.purchase( this.props, this.props.selectedSite, 'showcase-sheet' );
+			this.selectSiteAndDispatch( 'purchase' );
 		} else {
-			if ( ! this.props.selectedSite ) {
-				this.setState( { selectedAction: 'activate' } );
-			} else {
-				this.props.activate( this.props, this.props.selectedSite, 'showcase-sheet' );
-			}
+			this.selectSiteAndDispatch( 'activate' );
+		}
+	},
+
+	selectSiteAndDispatch( action ) {
+		if ( this.props.selectedSite ) {
+			this.props[ action ]( this.props, this.props.selectedSite, 'showcase-sheet' );
+		} else {
+			this.setState( { selectedAction: action } );
 		}
 	},
 
@@ -267,7 +270,7 @@ const ThemeSheet = React.createClass( {
 					header={ actionLabels[ this.state.selectedAction ].header }
 					selectedTheme={ this.props }
 					onHide={ this.hideSiteSelectorModal }
-					action={ this.props.activate }
+					action={ this.props[ this.state.selectedAction ] }
 					sourcePath={ `/theme/${ this.props.id }/${ section }` }
 				/> }
 				<div className="themes__sheet-columns">
