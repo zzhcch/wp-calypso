@@ -268,6 +268,7 @@ const ThemeSheet = React.createClass( {
 					selectedTheme={ this.props }
 					onHide={ this.hideSiteSelectorModal }
 					action={ this.props.activate }
+					sourcePath={ `/theme/${ this.props.id }/${ section }` }
 				/> }
 				<div className="themes__sheet-columns">
 					<div className="themes__sheet-column-left">
