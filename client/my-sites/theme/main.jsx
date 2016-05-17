@@ -251,7 +251,7 @@ const ThemeSheet = React.createClass( {
 		}
 
 		const section = this.validateSection( this.props.section );
-		const priceElement = <span className="themes__sheet-action-bar-cost" dangerouslySetInnerHTML={ { __html: this.props.price } } />;
+		const priceElement = <span className="themes__sheet-action-bar-cost">{ this.props.price }</span>;
 		const siteID = this.props.selectedSite && this.props.selectedSite.ID;
 
 		return (
