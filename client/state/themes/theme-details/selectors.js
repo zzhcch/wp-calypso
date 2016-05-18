@@ -15,7 +15,7 @@ function formatPrice( theme ) {
 			currency: price.currency,
 			minimumFractionDigits: 0,
 		} );
-	} else if ( price && price.display ) {
+	} else if ( price ) {
 		theme.price = price.display;
 	}
 	return theme;
