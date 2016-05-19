@@ -1,0 +1,83 @@
+.blank-slate {
+	z-index: 2; //change this to use the z-index function
+	position: fixed;
+		top: 47px;
+		right: 0;
+		bottom: 0;
+		left: 273px;
+	background: rgba( $gray-light, 0.95 );
+	padding: 64px;
+	animation: fadein linear 1s;
+	transition: opacity 0.25s ease-out;
+
+	&.dismissed {
+		opacity: 0;
+		pointer-events: none;
+	}
+}
+
+@keyframes fadein {
+	0%, 40% {
+		background: rgba( $gray-light, 0 );
+	}
+	100% {
+		background: rgba( $gray-light, 0.95 );
+	}
+}
+
+.blank-slate__illustration {
+	animation: illenter ease-out 1.5s;
+
+	svg {
+		display: block;
+		height: 150px;
+		width: 150px;
+		margin: 0 auto;
+	}
+}
+
+@keyframes illenter {
+	0%, 70% {
+		opacity: 0;
+		transform: scale( 1.2 ) translateY( 30px );
+	}
+	90%, 100% {
+		opacity: 1;
+		transform: scale( 1) translateY( 0 );
+	}
+}
+
+.blank-slate__content {
+	position: relative;
+	z-index: 1;
+	//background: rgba( $white, 0.98 );
+	//border: 1px solid lighten( $gray, 20 );
+	//box-shadow: 0 2px 12px 8px rgba( $gray-dark, 0.15 );
+	//border-radius: 4px;
+	max-width: 600px;
+	margin: 0 auto;
+	padding: 16px 24px 24px 24px;
+	text-align: center;
+	animation: contententer linear 1.5s;
+
+	h1 {
+		font-size: 24px;
+		margin: 0 0 8px 0;
+		color: $gray-dark;
+	}
+
+	p {
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
+@keyframes contententer {
+	0%, 70% {
+		opacity: 0;
+	}
+	80%, 100% {
+		opacity: 1;
+	}
+}
