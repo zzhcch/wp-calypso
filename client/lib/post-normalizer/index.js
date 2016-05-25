@@ -150,25 +150,6 @@ function imageForURL( imageUrl ) {
 	return img;
 }
 
-function imageSizeFromAttachments( post, imageUrl ) {
-	var attachments = post.attachments, found;
-
-	if ( ! attachments ) {
-		return;
-	}
-
-	found = find( attachments, function( attachment ) {
-		return attachment.URL === imageUrl;
-	} );
-
-	if ( found ) {
-		return {
-			width: found.width,
-			height: found.height
-		};
-	}
-}
-
 function candidateForCanonicalImage( image ) {
 	if ( ! image ) {
 		return false;
@@ -237,80 +218,21 @@ normalizePost.decodeEntities = wrapSync( decodeEntities );
 import stripHtml from './rule-strip-html';
 normalizePost.stripHTML = wrapSync( stripHtml );
 
-normalizePost.preventWidows = function preventWidows( post, callback ) {
-	forEach( [ 'title', 'excerpt' ], function( prop ) {
-		if ( post[ prop ] ) {
-			post[ prop ] = formatting.preventWidows( post[ prop ], 2 );
-		}
-	} );
-	callback();
-};
+import preventWidows from './rule-prevent-widows';
+normalizePost.preventWidows = wrapSync( preventWidows );
 
-normalizePost.firstPassCanonicalImage = function firstPassCanonicalImage( post, callback ) {
-	if ( post.featured_image ) {
-		post.canonical_image = assign( {
-			uri: post.featured_image,
-			type: 'image'
-		}, imageSizeFromAttachments( post.featured_image ) );
-	} else {
-		let candidate = head( filter( post.attachments, function( attachment ) {
-			return startsWith( attachment.mime_type, 'image/' );
-		} ) );
+import firstPassCanonicalImage from './rule-first-pass-canonical-image';
+normalizePost.firstPassCanonicalImage = wrapSync( firstPassCanonicalImage );
 
-		if ( candidate ) {
-			post.canonical_image = {
-				uri: candidate.URL,
-				width: candidate.width,
-				height: candidate.height,
-				type: 'image'
-			};
-		}
-	}
+import makeSiteIDSafeForAPI from './rule-make-site-id-safe-for-api';
+normalizePost.makeSiteIDSafeForAPI = wrapSync( makeSiteIDSafeForAPI );
 
-	callback();
-};
+import pickPrimaryTag from './rule-pick-primary-tag';
+normalizePost.pickPrimaryTag = wrapSync( pickPrimaryTag );
 
-normalizePost.makeSiteIDSafeForAPI = function makeSiteIDSafeForAPI( post, callback ) {
-	if ( post.site_id ) {
-		post.normalized_site_id = ( '' + post.site_id ).replace( /::/g, '/' );
-	}
-
-	callback();
-};
-
-normalizePost.pickPrimaryTag = function assignPrimaryTag( post, callback ) {
-	// if we hand max an invalid or empty array, it returns -Infinity
-	post.primary_tag = maxBy( values( post.tags ), function( tag ) {
-		return tag.post_count;
-	} );
-
-	if ( post.primary_tag === undefined ) {
-		delete post.primary_tag;
-	}
-
-	callback();
-};
-
+import safeImageProperties from './rule-safe-image-properties';
 normalizePost.safeImageProperties = function( maxWidth ) {
-	return function safeImageProperties( post, callback ) {
-		makeImageURLSafe( post.author, 'avatar_URL', maxWidth );
-		makeImageURLSafe( post, 'featured_image', maxWidth, post.URL );
-		if ( post.featured_media && post.featured_media.type === 'image' ) {
-			makeImageURLSafe( post.featured_media, 'uri', maxWidth, post.URL );
-		}
-		if ( post.canonical_image && post.canonical_image.type === 'image' ) {
-			makeImageURLSafe( post.canonical_image, 'uri', maxWidth, post.URL );
-		}
-		if ( post.attachments ) {
-			forOwn( post.attachments, function( attachment ) {
-				if ( startsWith( attachment.mime_type, 'image/' ) ) {
-					makeImageURLSafe( attachment, 'URL', maxWidth, post.URL );
-				}
-			} );
-		}
-
-		callback();
-	};
+	return wrapSync( safeImageProperties( maxWidth ) );
 };
 
 function keepImagesThatLoad( image, acceptCallback ) {
