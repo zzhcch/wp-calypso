@@ -224,49 +224,18 @@ function imageShouldBeRemovedFromContent( imageUrl ) {
 	} );
 }
 
-normalizePost.decodeEntities = function decodeEntities( post, callback ) {
-	forEach( [ 'excerpt', 'title', 'site_name' ], function( prop ) {
-		if ( post[ prop ] ) {
-			post[ prop ] = formatting.decodeEntities( post[ prop ] );
-		}
-	} );
+function wrapSync( fn ) {
+	return function wrapped( post, callback ) {
+		fn( post );
+		callback();
+	};
+}
 
-	if ( post.parent && post.parent.title ) {
-		post.parent.title = formatting.decodeEntities( post.parent.title );
-	}
+import decodeEntities from './rule-decode-entities';
+normalizePost.decodeEntities = wrapSync( decodeEntities );
 
-	if ( post.author ) {
-		if ( post.author.name ) {
-			post.author.name = formatting.decodeEntities( post.author.name );
-		}
-		if ( post.author.avatar_URL ) {
-			post.author.avatar_URL = safeImageURL( post.author.avatar_URL );
-		}
-	}
-
-	if ( post.tags ) {
-		// tags is an object
-		forOwn( post.tags, function( tag ) {
-			tag.name = formatting.decodeEntities( tag.name );
-		} );
-	}
-
-	callback();
-};
-
-normalizePost.stripHTML = function stripHTML( post, callback ) {
-	forEach( [ 'excerpt', 'title', 'site_name' ], function( prop ) {
-		if ( post[ prop ] ) {
-			post[ prop ] = formatting.stripHTML( post[ prop ] );
-		}
-	} );
-
-	if ( post.author && post.author.name ) {
-		post.author.name = formatting.stripHTML( post.author.name );
-	}
-
-	callback();
-};
+import stripHtml from './rule-strip-html';
+normalizePost.stripHTML = wrapSync( stripHtml );
 
 normalizePost.preventWidows = function preventWidows( post, callback ) {
 	forEach( [ 'title', 'excerpt' ], function( prop ) {
@@ -706,7 +675,7 @@ normalizePost.content = {
 		// hosts that we trust that don't work in a sandboxed iframe
 		const iframeNoSandbox = [
 			'spotify.com'
-		]
+		];
 
 		embeds = filter( embeds, function( iframe ) {
 			const iframeSrc = iframe.src && url.parse( iframe.src ).hostname.toLowerCase();
@@ -777,7 +746,7 @@ normalizePost.content = {
 				post.content_embeds.push( {
 					type: 'special-' + type,
 					content: node.outerHTML
-				} )
+				} );
 			} );
 		} );
 
