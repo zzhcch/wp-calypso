@@ -128,17 +128,30 @@ const PlansSetup = React.createClass( {
 		return (
 			<JetpackManageErrorPage
 				site={ this.props.selectedSite }
-				title={ this.translate( 'Oh no! You need to select a jetpack site to be able to setup your plan' ) }
+				title={ this.translate( 'Oh no! You need to select a jetpack site to be able to set up your plan' ) }
 				illustration={ '/calypso/images/jetpack/jetpack-manage.svg' } />
 		);
 	},
 
 	renderCantInstallPlugins() {
+		const site = this.props.selectedSite;
+
 		return (
-			<JetpackManageErrorPage
-				site={ this.props.selectedSite }
-				title={ this.translate( 'Oh no! We can\'t install plugins on this site.' ) }
-				illustration={ '/calypso/images/jetpack/jetpack-manage.svg' } />
+			<div className="jetpack-plugins-setup">
+				<h1 className="jetpack-plugins-setup__header">{ this.translate( 'Setting up your %(plan)s Plan', { args: { plan: site.plan.product_name_short } } ) }</h1>
+				<Card className="jetpack-plugins-setup__need-manage">
+					<p>{
+						this.translate( 'Oh no! {{strong}}We can\'t auto-configure your %(plan)s plan.{{/strong}} You\'ll need to manually install the following plugins.', {
+							args: {
+								plan: site.plan.product_name_short
+							},
+							components: { strong: <strong /> }
+						} )
+					}</p>
+					<Button href="https://en.support.wordpress.com/setting-up-premium-services/" primary>Installation Instructions</Button>
+				</Card>
+				<FeatureExample>{ this.renderPlugins( true ) }</FeatureExample>
+			</div>
 		);
 	},
 
