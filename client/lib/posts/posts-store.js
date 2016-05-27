@@ -37,9 +37,7 @@ function normalizePost( responseSource, attributes ) {
 		return;
 	}
 
-	utils.normalizeSync( attributes, function( error, post ) {
-		setPost( post );
-	} );
+	setPost( utils.normalizeSync( attributes ) );
 }
 
 function setAll( posts, responseSource ) {

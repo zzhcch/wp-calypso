@@ -1,15 +1,26 @@
 /**
  * External dependecies
  */
-var url = require( 'url' ),
-	i18n = require( 'lib/mixins/i18n' ),
-	moment = require( 'moment-timezone' );
+import url from 'url';
+import i18n from 'lib/mixins/i18n';
+import moment from 'moment-timezone';
+import flow from 'lodash/flow';
+import cloneDeep from 'lodash/cloneDeep';
 
 /**
  * Internal dependencies
  */
-var postNormalizer = require( 'lib/post-normalizer' ),
-	sites = require( 'lib/sites-list' )();
+import decodeEntities from 'lib/post-normalizer/rule-decode-entities';
+import stripHTML from 'lib/post-normalizer/rule-strip-html';
+import safeImageProperties from 'lib/post-normalizer/rule-safe-image-properties';
+import firstPassCanonicalImage from 'lib/post-normalizer/rule-first-pass-canonical-image';
+import withContentDOM from 'lib/post-normalizer/rule-with-content-dom';
+import removeStyles from 'lib/post-normalizer/rule-content-remove-styles';
+import safeContentImages from 'lib/post-normalizer/rule-content-safe-images';
+import keepValidImages from 'lib/post-normalizer/rule-keep-valid-images';
+import sitesList from 'lib/sites-list';
+
+const sites = sitesList();
 
 var utils = {
 
@@ -119,22 +130,20 @@ var utils = {
 		return post && 'page' === post.type;
 	},
 
-	normalizeSync: function( post, callback ) {
+	normalizeSync: function( post ) {
 		var imageWidth = 653;
-		postNormalizer(
-			post,
-			[
-				postNormalizer.decodeEntities,
-				postNormalizer.stripHTML,
-				postNormalizer.safeImageProperties( imageWidth ),
-				postNormalizer.firstPassCanonicalImage,
-				postNormalizer.withContentDOM( [
-					postNormalizer.content.removeStyles,
-					postNormalizer.content.safeContentImages( imageWidth )
-				] )
-			],
-			callback
-		);
+		post = cloneDeep( post );
+		const rules = flow( [
+			decodeEntities,
+			stripHTML,
+			safeImageProperties( imageWidth ),
+			firstPassCanonicalImage,
+			withContentDOM( [
+				removeStyles,
+				safeContentImages( imageWidth )
+			] )
+		] );
+		return rules( post );
 	},
 
 	getVisibility: function( post ) {
@@ -153,14 +162,10 @@ var utils = {
 		return 'public';
 	},
 
-	normalizeAsync: function( post, callback ) {
-		postNormalizer(
-			post,
-			[
-				postNormalizer.keepValidImages( 72, 72 )
-			],
-			callback
-		);
+	normalizeAsync: function( post ) {
+		post = cloneDeep( post );
+		// maybe this should use waitForImages??
+		return keepValidImages( 72, 72 )( post );
 	},
 
 	getPermalinkBasePath: function( post ) {
