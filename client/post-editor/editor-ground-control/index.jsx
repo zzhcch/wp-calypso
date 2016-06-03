@@ -16,11 +16,13 @@ const Card = require( 'components/card' ),
 	StatusLabel = require( 'post-editor/editor-status-label' ),
 	postUtils = require( 'lib/posts/utils' ),
 	siteUtils = require( 'lib/site/utils' ),
+	userUtils = require( 'lib/user/utils' ),
 	PostSchedule = require( 'components/post-schedule' ),
 	postActions = require( 'lib/posts/actions' ),
 	Tooltip = require( 'components/tooltip' ),
 	PostListFetcher = require( 'components/post-list-fetcher' ),
-	stats = require( 'lib/posts/stats' );
+	stats = require( 'lib/posts/stats' ),
+	user = require( 'lib/user' )();
 
 export default React.createClass( {
 	displayName: 'EditorGroundControl',
@@ -35,6 +37,7 @@ export default React.createClass( {
 		onPreview: React.PropTypes.func,
 		onPublish: React.PropTypes.func,
 		onSaveDraft: React.PropTypes.func,
+		onMoreInfoAboutEmailVerify: React.PropTypes.func,
 		post: React.PropTypes.object,
 		savedPost: React.PropTypes.object,
 		site: React.PropTypes.object,
@@ -59,13 +62,30 @@ export default React.createClass( {
 		};
 	},
 
+	componentDidMount: function() {
+		user.on( 'change', this.updateNeedsVerification );
+		user.on( 'verify', this.updateNeedsVerification );
+	},
+
+	componentWillUnmount: function() {
+		user.off( 'change', this.updateNeedsVerification );
+		user.off( 'verify', this.updateNeedsVerification );
+	},
+
+	updateNeedsVerification: function() {
+		this.setState( {
+			needsVerification: userUtils.needsVerificationForSite( this.props.site ),
+		} );
+	},
+
 	getInitialState: function() {
 		return {
 			showSchedulePopover: false,
 			showAdvanceStatus: false,
 			showDateTooltip: false,
 			firstDayOfTheMonth: this.getFirstDayOfTheMonth(),
-			lastDayOfTheMonth: this.getLastDayOfTheMonth()
+			lastDayOfTheMonth: this.getLastDayOfTheMonth(),
+			needsVerification: userUtils.needsVerificationForSite( this.props.site ),
 		};
 	},
 
@@ -144,6 +164,17 @@ export default React.createClass( {
 			schedule: this.translate( 'Schedule' ),
 			publish: this.translate( 'Publish' ),
 			requestReview: this.translate( 'Submit for Review' ),
+		};
+		return buttonLabels[ primaryButtonState ];
+	},
+
+	getVerificationNoticeLabel: function() {
+		const primaryButtonState = this.getPrimaryButtonState();
+		const buttonLabels = {
+			update: this.translate( 'To update, please confirm your email address.' ),
+			schedule: this.translate( 'To schedule, please confirm your email address.' ),
+			publish: this.translate( 'To publish, please confirm your email address.' ),
+			requestReview: this.translate( 'To submit for review, please confirm your email address.' ),
 		};
 		return buttonLabels[ primaryButtonState ];
 	},
@@ -249,7 +280,8 @@ export default React.createClass( {
 	isPrimaryButtonEnabled: function() {
 		return ! this.props.isPublishing &&
 			! this.props.isSaveBlocked &&
-			this.props.hasContent;
+			this.props.hasContent &&
+			! this.state.needsVerification;
 	},
 
 	toggleAdvancedStatus: function() {
@@ -399,6 +431,17 @@ export default React.createClass( {
 						this.schedulePostPopover()
 					}
 				</div>
+				{
+					this.state.needsVerification &&
+					<div className="editor-ground-control__email-verification-notice" tabIndex={ 7 } onClick={ this.props.onMoreInfoAboutEmailVerify }>
+						<Gridicon
+							icon="info"
+							className="editor-ground-control__email-verification-notice-icon" />
+						{ this.getVerificationNoticeLabel() }
+						{ ' ' }
+						<u>{ this.translate( 'Learn More' ) }</u>
+					</div>
+				}
 			</Card>
 		);
 	}
