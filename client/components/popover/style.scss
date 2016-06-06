@@ -42,6 +42,9 @@
 	}
 
 	@mixin tip-arrow( $side ) {
+		$opposite-side: "bottom";
+		$cross-side: "left";
+		$cross-opposite-side: "right";
 		@if $side == "top" {
 			$opposite-side: "bottom";
 			$cross-side: "left";
