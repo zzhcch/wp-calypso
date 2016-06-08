@@ -80,7 +80,7 @@ const flows = {
 	},
 
 	'with-theme': {
-		steps: [ 'domains-only', 'plans', 'user' ],
+		steps: [ 'survey', 'domains-only', 'plans', 'survey-user' ],
 		destination: getSiteDestination,
 		description: 'Preselect a theme to activate/buy from an external source',
 		lastModified: '2016-01-27'
