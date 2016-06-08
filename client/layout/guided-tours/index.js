@@ -11,6 +11,7 @@ import { localize } from 'i18n-calypso';
  */
 import scrollTo from 'lib/scroll-to';
 import { getSelectedSite } from 'state/ui/selectors';
+import guidedToursConfig from './config';
 import { getGuidedTourState } from 'state/ui/guided-tours/selectors';
 import { nextGuidedTourStep, quitGuidedTour } from 'state/ui/guided-tours/actions';
 import { errorNotice } from 'state/notices/actions';
@@ -65,8 +66,16 @@ class GuidedTours extends Component {
 	}
 
 	next() {
-		const nextStepName = this.props.tourState.stepConfig.next;
-		const nextStepConfig = this.props.tourState.nextStepConfig;
+		const getNextStep = ( currentStepConfig ) => {
+			const next = guidedToursConfig.get( this.props.tourState.tour )[ currentStepConfig.next ] || false;
+			const skip = !! ( next.showInContext && ! next.showInContext( this.props.selectedSite ) );
+			console.log( 'skipping', skip, next );
+			return skip ? getNextStep( next ) : next;
+		};
+
+		const nextStepConfig = getNextStep( this.props.tourState.stepConfig );
+
+		console.log( nextStepConfig );
 
 		const nextTargetFound = () => {
 			if ( nextStepConfig && nextStepConfig.target ) {
@@ -76,7 +85,7 @@ class GuidedTours extends Component {
 			return true;
 		};
 		const proceedToNextStep = () => {
-			this.props.nextGuidedTourStep( { stepName: nextStepName } );
+			this.props.nextGuidedTourStep( { stepName: nextStepConfig.next } );
 		};
 		const abortTour = () => {
 			const ERROR_WAITED_TOO_LONG = 'waited too long for next target';
