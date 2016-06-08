@@ -50,6 +50,12 @@ const tracksEvent = ( dispatch, eventName, props ) => {
 	}, 1 );
 };
 
+const asyncRedirect = ( url ) => {
+	setTimeout( function() {
+		window.location = url;
+	}, 25 );
+};
+
 export default {
 	dismissUrl( url ) {
 		return ( dispatch ) => {
@@ -155,7 +161,7 @@ export default {
 				url: url,
 				type: 'remote_auth'
 			} );
-			window.location = addQueryArgs( { jetpack_connect_url: url + remoteAuthPath }, apiBaseUrl );
+			asyncRedirect( addQueryArgs( { jetpack_connect_url: url + remoteAuthPath }, apiBaseUrl ) );
 		};
 	},
 	goToPluginInstall( url ) {
@@ -168,7 +174,7 @@ export default {
 				url: url,
 				type: 'plugin_install'
 			} );
-			window.location = addQueryArgs( { jetpack_connect_url: url + remoteInstallPath }, apiBaseUrl );
+			asyncRedirect( addQueryArgs( { jetpack_connect_url: url + remoteInstallPath }, apiBaseUrl ) );
 		};
 	},
 	goToPluginActivation( url ) {
@@ -181,7 +187,7 @@ export default {
 				url: url,
 				type: 'plugin_activation'
 			} );
-			window.location = addQueryArgs( { jetpack_connect_url: url + remoteActivatePath }, apiBaseUrl );
+			asyncRedirect( addQueryArgs( { jetpack_connect_url: url + remoteActivatePath }, apiBaseUrl ) );
 		};
 	},
 	goBackToWpAdmin( url ) {
@@ -189,7 +195,7 @@ export default {
 			dispatch( {
 				type: JETPACK_CONNECT_REDIRECT_WP_ADMIN
 			} );
-			window.location = url;
+			asyncRedirect( url );
 		};
 	},
 	createAccount( userData ) {
