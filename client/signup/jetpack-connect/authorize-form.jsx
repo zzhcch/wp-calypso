@@ -68,11 +68,23 @@ const SiteCard = React.createClass( {
 	}
 } );
 
+const getNewSynteticAccountData = () => {
+	return {
+		username: 'test' + Math.floor( Math.random() * 1000000 ),
+		password: 'test2351363461626',
+		email: 'test' + Math.floor( Math.random() * 1000000 ) + '@test.com'
+	};
+};
+
 const LoggedOutForm = React.createClass( {
 	displayName: 'LoggedOutForm',
 
 	componentDidMount() {
 		this.props.recordTracksEvent( 'calypso_jpc_signup_view' );
+
+		if ( true ) {
+			this.props.createAccount( getNewSynteticAccountData() );
+		}
 	},
 
 	renderFormHeader() {
