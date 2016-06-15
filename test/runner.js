@@ -104,8 +104,11 @@ const runMocha = () => {
 	console.log( chalk.green( 'Running tests at: ' ),
 		chalk.yellow( new Date() ) );
 
-	runner = getMocha().run( () => {
+	runner = getMocha().run( ( failures ) => {
 		runner = null;
+		process.on( 'exit', () => {
+			process.exit( failures ); //eslint-disable-line no-process-exit
+		} );
 	} );
 };
 
