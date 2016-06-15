@@ -35,6 +35,7 @@ import Spinner from 'components/spinner';
 import Site from 'my-sites/site';
 import { decodeEntities } from 'lib/formatting';
 import versionCompare from 'lib/version-compare';
+import accountPasswordData from 'lib/account-password-data';
 
 /**
  * Constants
@@ -68,23 +69,24 @@ const SiteCard = React.createClass( {
 	}
 } );
 
-const getNewSynteticAccountData = () => {
-	return {
-		username: 'test' + Math.floor( Math.random() * 1000000 ),
-		password: 'test2351363461626',
-		email: 'test' + Math.floor( Math.random() * 1000000 ) + '@test.com'
-	};
-};
-
 const LoggedOutForm = React.createClass( {
 	displayName: 'LoggedOutForm',
 
 	componentDidMount() {
+		const { queryObject } = this.props.jetpackConnectAuthorize;
 		this.props.recordTracksEvent( 'calypso_jpc_signup_view' );
-
-		if ( true ) {
-			this.props.createAccount( getNewSynteticAccountData() );
+		if ( queryObject.should_generate_wpcom_account ) {
+			this.props.createAccount( this.getNewSynteticAccountData() );
 		}
+	},
+
+	getNewSynteticAccountData() {
+		const { queryObject } = this.props.jetpackConnectAuthorize;
+		return {
+			username: queryObject.user_login,
+			password: accountPasswordData.generate(),
+			email: queryObject.user_email
+		};
 	},
 
 	renderFormHeader() {
