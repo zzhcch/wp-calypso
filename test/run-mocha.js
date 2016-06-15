@@ -7,4 +7,3 @@ require( 'babel-register' );
 const boot = require( './boot-test' );
 before( boot.before );
 after( boot.after );
-require( './load-suite.js' );

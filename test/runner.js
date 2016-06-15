@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 'use strict'; // eslint-disable-line strict
-var testFiles;
 
 require( 'babel-register' );
 
@@ -10,9 +9,10 @@ require( 'babel-register' );
 const debug = require( 'debug' )( 'test-runner' ),
 	glob = require( 'glob' ),
 	Mocha = require( 'mocha' ),
-	path = require( 'path' ),
 	program = require( 'commander' ),
 	watchFile = require( 'fs' ).watchFile,
+	fs = require( 'fs' ),
+	isEmpty = require( 'lodash/isEmpty' ),
 	chalk = require( 'chalk' );
 
 program
@@ -27,6 +27,49 @@ program.name = 'runner';
 
 program.parse( process.argv );
 
+let getTestFiles = () => {
+	let testFiles = program.args;
+	if ( isEmpty( program.args ) ) {
+		testFiles = [ process.env.TEST_ROOT ];
+	}
+
+	testFiles = testFiles.reduce( ( memo, filePath ) => {
+		// If you pass in a test file outside of the test root throw a warning
+		if ( ! filePath.startsWith( process.env.TEST_ROOT ) ) {
+			console.warn(
+				chalk.red.bold( 'WARNING:' ),
+				chalk.yellow( 'Invalid argument passed to test runner. Paths must match test root `' + process.env.TEST_ROOT + '`.' )
+			);
+			console.warn( ' - ' + filePath + '\n' );
+			return memo;
+		}
+
+		if ( fs.lstatSync( filePath ).isDirectory() ) {
+			const globOptions = { matchBase: true, cwd: filePath, realpath: true };
+
+			// recursively take all test subdirs if they exist
+			let matches = glob.sync( '**/test/*.@(js|jsx)', globOptions );
+
+			// if already given a test dir then take all js files
+			if ( /test\/?$/.test( filePath ) ) {
+				matches = matches.concat( glob.sync( '*.@(js|jsx)', globOptions ) );
+			}
+
+			return memo.concat( memo, matches );
+		}
+
+		return memo.concat( memo, filePath );
+	}, [] );
+
+	if ( program.nodeTotal > 1 ) {
+		testFiles = testFiles.filter( ( file, index ) => {
+			return index % program.nodeTotal === program.nodeIndex;
+		} );
+	}
+
+	return testFiles;
+};
+
 const getMocha = function() {
 	/* These internal dependencies are not at the top of the file
 	 * because we need to re-require them every time we invalidate the cache.
@@ -38,7 +81,6 @@ const getMocha = function() {
 		delete require.cache[ key ];
 	} );
 	const boot = require( './boot-test' );
-	const setup = require( './setup' );
 
 	const mocha = new Mocha( {
 		ui: 'bdd',
@@ -59,45 +101,9 @@ const getMocha = function() {
 		mocha.suite.timeout( 10000 );
 	}
 
-	testFiles.forEach( setup.addFile );
-	mocha.addFile( path.join( __dirname, 'load-suite.js' ) );
+	mocha.files = getTestFiles();
 	return mocha;
 };
-
-testFiles = program.args.length ? program.args : [ process.env.TEST_ROOT ];
-testFiles = testFiles.reduce( ( memo, filePath ) => {
-	// Validate test root matches specified file paths
-	if ( ! filePath.startsWith( process.env.TEST_ROOT ) ) {
-		console.warn(
-			chalk.red.bold( 'WARNING:' ),
-			chalk.yellow( 'Invalid argument passed to test runner. Paths must match test root `' + process.env.TEST_ROOT + '`.' )
-		);
-		console.warn( ' - ' + filePath + '\n' );
-
-		return memo;
-	}
-
-	// Append individual file argument
-	if ( /\.jsx?$/i.test( filePath ) ) {
-		return memo.concat( filePath );
-	}
-
-	// Determine whether argument already includes intended test directory,
-	// or if we should recursively search for test directories.
-	let globPattern = '*.@(js|jsx)';
-	if ( ! /\/test\/?$/.test( filePath ) ) {
-		globPattern = path.join( '**/test', globPattern );
-	}
-
-	// Append discovered files from glob result
-	return memo.concat( glob.sync( path.join( filePath, globPattern ) ) );
-}, [] );
-
-if ( program.nodeTotal > 1 ) {
-	testFiles = testFiles.filter( ( file, index ) => {
-		return index % program.nodeTotal === program.nodeIndex;
-	} );
-}
 
 let runner = null;
 const runMocha = () => {
@@ -106,6 +112,8 @@ const runMocha = () => {
 
 	runner = getMocha().run( ( failures ) => {
 		runner = null;
+
+		// Inform CI of failures
 		process.on( 'exit', () => {
 			process.exit( failures ); //eslint-disable-line no-process-exit
 		} );
