@@ -84,7 +84,7 @@ const getMocha = function() {
 
 	const mocha = new Mocha( {
 		ui: 'bdd',
-		reporer: program.reporter
+		reporter: program.reporter
 	} );
 
 	mocha.suite.beforeAll( boot.before );
