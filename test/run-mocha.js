@@ -1,9 +1,4 @@
 /**
  * Used for running mocha directly – allows integration with tooling such as Webstorm
- * $ NODE_ENV=test NODE_PATH=client:test node_modules/.bin/mocha test/run-mocha.js
+ * $ NODE_ENV=test NODE_PATH=client:test TEST_ROOT=client test/runner.js
  */
-
-require( 'babel-register' );
-const boot = require( './boot-test' );
-before( boot.before );
-after( boot.after );
