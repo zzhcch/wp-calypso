@@ -399,8 +399,8 @@ a.sidebar__button {
 	}
 }
 
-.sidebar.is-collapsed,
-.wp-secondary .site-selector {
+.layout.has-collapsed-sidebar .sidebar,
+.layout.has-collapsed-sidebar .wp-secondary .site-selector {
 	width: 66px;
 
 	.sidebar__menu {

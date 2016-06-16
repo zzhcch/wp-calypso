@@ -187,6 +187,7 @@ Layout = React.createClass( {
 				`focus-${this.props.currentLayoutFocus}`,
 				{ 'is-support-user': this.props.isSupportUser },
 				{ 'has-no-sidebar': ! this.props.hasSidebar },
+				{ 'has-collapsed-sidebar': this.props.isSidebarCollapsed }
 				{ 'wp-singletree-layout': !! this.props.primary },
 				{ 'has-chat': this.props.chatIsOpen }
 			),
@@ -239,6 +240,7 @@ export default connect(
 			hasSidebar: hasSidebar( state ),
 			isOffline: isOffline( state ),
 			currentLayoutFocus: getCurrentLayoutFocus( state ),
+			isSidebarCollapsed: getPreference( state, 'sidebar-collapsed' )
 			chatIsOpen: isHappychatOpen( state )
 		};
 	}
