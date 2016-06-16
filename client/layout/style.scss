@@ -20,6 +20,10 @@
 		padding-left: 32px;
 	}
 
+	.has-collapsed-sidebar & {
+		padding-left: 98px;
+	}
+
 	.is-section-theme & {
 		padding: 0;
 		margin: 0;

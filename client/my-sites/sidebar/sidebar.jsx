@@ -163,6 +163,7 @@ export const MySitesSidebar = React.createClass( {
 				className={ this.itemLinkClass( '/ads', 'rads' ) }
 				link={ adsLink }
 				onNavigate={ this.onNavigate }
+				tooltip={ true }
 				icon="speaker" />
 		);
 	},
@@ -197,6 +198,7 @@ export const MySitesSidebar = React.createClass( {
 				onNavigate={ this.onNavigate }
 				icon="themes"
 				preloadSectionName="themes"
+				tooltip={ true }
 			>
 				<SidebarButton href={ getCustomizeUrl( null, site ) } preloadSectionName="customize">
 					{ this.translate( 'Customize' ) }
@@ -238,7 +240,8 @@ export const MySitesSidebar = React.createClass( {
 				link={ menusLink }
 				onNavigate={ this.onNavigate }
 				icon="menus"
-				preloadSectionName="menus" />
+				preloadSectionName="menus"
+				tooltip={ true } />
 		);
 	},
 
@@ -273,6 +276,7 @@ export const MySitesSidebar = React.createClass( {
 				onNavigate={ this.onNavigate }
 				icon="plugins"
 				preloadSectionName="plugins"
+				tooltip={ true }
 			>
 				<SidebarButton href={ addPluginsLink }>
 					{ this.translate( 'Add' ) }
@@ -314,6 +318,7 @@ export const MySitesSidebar = React.createClass( {
 				onNavigate={ this.onNavigate }
 				icon="globe"
 				preloadSectionName="upgrades"
+				tooltip={ true }
 			>
 				<SidebarButton href={ addDomainLink }>
 					{ this.translate( 'Add' ) }
@@ -418,7 +423,8 @@ export const MySitesSidebar = React.createClass( {
 				link={ sharingLink }
 				onNavigate={ this.onNavigate }
 				icon="share"
-				preloadSectionName="sharing" />
+				preloadSectionName="sharing"
+				tooltip={ true } />
 		);
 	},
 
@@ -457,6 +463,7 @@ export const MySitesSidebar = React.createClass( {
 				onNavigate={ this.onNavigate }
 				icon="user"
 				preloadSectionName="people"
+				tooltip={ true }
 			>
 				<SidebarButton href={ addPeopleLink }>
 					{ this.translate( 'Add' ) }
@@ -488,7 +495,8 @@ export const MySitesSidebar = React.createClass( {
 				link={ siteSettingsLink }
 				onNavigate={ this.onNavigate }
 				icon="cog"
-				preloadSectionName="settings" />
+				preloadSectionName="settings"
+				tooltip={ true } />
 		);
 	},
 
