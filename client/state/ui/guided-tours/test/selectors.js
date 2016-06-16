@@ -16,12 +16,11 @@ describe( 'selectors', () => {
 		it( 'should return an empty object if no state is present', () => {
 			const tourState = getGuidedTourState( {
 				ui: {
-					shouldShow: false,
 					guidedTour: false,
 				}
 			} );
 
-			expect( tourState ).to.deep.equal( { shouldShow: false, stepConfig: false, nextStepConfig: false } );
+			expect( tourState ).to.deep.equal( { stepConfig: false, nextStepConfig: false } );
 		} );
 
 		it( 'should include the config of the current tour step', () => {
@@ -29,7 +28,6 @@ describe( 'selectors', () => {
 				ui: {
 					guidedTour: {
 						stepName: 'sidebar',
-						shouldShow: true,
 						tour: 'main',
 					}
 				}

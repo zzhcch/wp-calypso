@@ -14,16 +14,14 @@ import {
 import guidedToursConfig from 'layout/guided-tours/config';
 
 /**
- * Returns an action object which will be used to hide or show a specific tour.
+ * Returns an action object which will be used to show a specific tour.
  *
  * @param {Object} options Options object, see fn signature.
  * @return {Object} Action object
  */
-export function showGuidedTour( { shouldShow, shouldDelay = false, tour = 'main' } ) {
+export function showGuidedTour( { tour = 'main' } ) {
 	const showAction = {
 		type: GUIDED_TOUR_SHOW,
-		shouldShow,
-		shouldDelay,
 		tour,
 	};
 
@@ -32,15 +30,12 @@ export function showGuidedTour( { shouldShow, shouldDelay = false, tour = 'main'
 		tour,
 	} );
 
-	return shouldDelay ? showAction : withAnalytics( trackEvent, showAction );
+	return withAnalytics( trackEvent, showAction );
 }
 
 export function quitGuidedTour( { tour = 'main', stepName, finished, error } ) {
 	const quitAction = {
 		type: GUIDED_TOUR_UPDATE,
-		shouldShow: false,
-		shouldReallyShow: false,
-		shouldDelay: false,
 		tour,
 		stepName,
 	};

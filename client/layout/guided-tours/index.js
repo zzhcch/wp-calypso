@@ -107,6 +107,8 @@ class GuidedTours extends Component {
 
 	render() {
 		const { stepConfig } = this.props.tourState;
+		console.log( 'this.props.tourState', this.props.tourState );
+		console.log( 'stepConfig', stepConfig );
 
 		if ( ! stepConfig ) {
 			return null;

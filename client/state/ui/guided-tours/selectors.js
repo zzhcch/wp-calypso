@@ -38,10 +38,21 @@ const tourCandidates = [
 
 const findEligibleTour = createSelector(
 		state => {
-			let tourName;
-			tourCandidates.some( ( { name, test } ) => {
-				if ( getTourTriggers( state ).some( test ) ) {
-					tourName = name;
+			let allTours = guidedToursConfig.getAll();
+			allTours = Object.keys( allTours ).map( ( key ) => {
+				const tour = allTours[ key ];
+				return {
+					name: key,
+					...tour,
+				};
+			} );
+			console.log( allTours );
+			let tourName = false;
+
+			allTours.some( ( tour ) => {
+				console.log( 'testing tour: ', tour );
+				if ( tour.showInContext( state ) ) {
+					tourName = tour.name;
 					return true;
 				}
 			} );
@@ -55,8 +66,9 @@ const findEligibleTour = createSelector(
 export const getGuidedTourState = createSelector(
 	state => {
 		const tourState = getRawGuidedTourState( state );
-		const { stepName = '' } = tourState;
-		let { shouldReallyShow, tour } = tourState;
+		console.log( '******** previous tourState', tourState );
+		const { stepName = 'init' } = tourState;
+		let { tour } = tourState;
 
 		if ( ! tour ) {
 			console.log( 'no tour, finding one' );
@@ -64,19 +76,24 @@ export const getGuidedTourState = createSelector(
 			console.log( 'found', tour );
 		}
 
+		if ( ! tour ) {
+			console.log( 'no tour -- returning early' );
+			return tourState;
+		}
+
+		console.log( 'getting data for tour', tour );
 		const tourConfig = getToursConfig( tour );
+		console.log( 'tourConfig', tourConfig );
 		const stepConfig = tourConfig[ stepName ] || false;
+		console.log( 'stepConfig', stepConfig );
 		const nextStepConfig = getToursConfig( tour )[ stepConfig.next ] || false;
 
-		const shouldShow = !! (
-			! isSectionLoading( state ) &&
-			shouldReallyShow
-		);
+		console.log( 'tour', tour );
 
 		return Object.assign( {}, tourState, {
 			stepConfig,
 			nextStepConfig,
-			shouldShow,
+			tour,
 		} );
 	},
 	state => [

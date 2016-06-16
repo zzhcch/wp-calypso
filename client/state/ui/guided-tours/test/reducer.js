@@ -22,11 +22,9 @@ describe( 'reducer', () => {
 		it( 'should set a tour to be shown', () => {
 			const state = guidedTour( undefined, {
 				type: GUIDED_TOUR_SHOW,
-				shouldShow: true,
 				tour: 'foo',
 			} );
 
-			expect( state.shouldShow ).to.be.true;
 			expect( state.tour ).to.equal( 'foo' );
 		} );
 	} );

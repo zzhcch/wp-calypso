@@ -21,9 +21,6 @@ export function guidedTour( state = {}, action ) {
 			const { stepName = 'init' } = action;
 			return {
 				stepName,
-				shouldShow: action.shouldShow,
-				shouldDelay: action.shouldDelay,
-				shouldReallyShow: ( action.shouldShow || state.shouldShow ) && ! action.shouldDelay,
 				tour: action.tour,
 			};
 		case GUIDED_TOUR_UPDATE:
