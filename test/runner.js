@@ -32,9 +32,9 @@ program.name = 'runner';
 
 program.parse( process.argv );
 
-let getTestFiles = () => {
-	let testFiles = program.args;
-	if ( isEmpty( program.args ) ) {
+let getTestFiles = ( args ) => {
+	let testFiles = args || program.args;
+	if ( isEmpty( testFiles ) ) {
 		testFiles = [ process.env.TEST_ROOT ];
 	}
 
@@ -109,6 +109,21 @@ const runMocha = () => {
 		process.exitCode = failures;
 	} );
 };
+
+/*
+ * If runner.js is being used as an entry-point for the Mocha executable rather than as its own test-runner
+ * Then load all of the test-files without running them.  This is required for IDE/tooling integration
+*/
+if ( require.main !== module ) {
+	before( boot.before );
+	after( boot.after );
+
+	let testFiles = getTestFiles( program.args.slice( 1 ) );
+	testFiles.forEach( ( filePath ) => {
+		require( filePath );
+	} );
+	return;
+}
 
 if ( program.watch ) {
 	console.log( chalk.green( 'Watch mode enabled' ) );
