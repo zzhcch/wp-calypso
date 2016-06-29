@@ -31,6 +31,7 @@ import {
 	JETPACK_CONNECT_SSO_VALIDATION_REQUEST,
 	JETPACK_CONNECT_SSO_VALIDATION_SUCCESS,
 	JETPACK_CONNECT_SSO_VALIDATION_ERROR,
+	JETPACK_CONNECT_VISITED,
 	SERIALIZE,
 	DESERIALIZE
 } from 'state/action-types';
@@ -187,10 +188,22 @@ export function jetpackSSOSessions( state = {}, action ) {
 	return state;
 }
 
+export function flags( state = {}, action ) {
+	switch ( action.type ) {
+		case JETPACK_CONNECT_VISITED:
+			return Object.assign( {}, state, { visited: true } );
+		case SERIALIZE:
+		case DESERIALIZE:
+			return state;
+	}
+	return state;
+}
+
 export default combineReducers( {
 	jetpackConnectSite,
 	jetpackConnectAuthorize,
 	jetpackConnectSessions,
 	jetpackSSOSessions,
 	jetpackSSO,
+	flags,
 } );

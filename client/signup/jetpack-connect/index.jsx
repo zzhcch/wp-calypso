@@ -16,7 +16,7 @@ import LoggedOutFormLinkItem from 'components/logged-out-form/link-item';
 import Main from 'components/main';
 import JetpackConnectNotices from './jetpack-connect-notices';
 import SiteURLInput from './site-url-input';
-import { confirmJetpackInstallStatus, dismissUrl, goToRemoteAuth, goToPluginInstall, goToPluginActivation, checkUrl } from 'state/jetpack-connect/actions';
+import { visitJetpackConnect, confirmJetpackInstallStatus, dismissUrl, goToRemoteAuth, goToPluginInstall, goToPluginActivation, checkUrl } from 'state/jetpack-connect/actions';
 import { getSiteByUrl } from 'state/sites/selectors';
 import { requestSites } from 'state/sites/actions';
 import JetpackExampleInstall from './exampleComponents/jetpack-install';
@@ -44,6 +44,7 @@ const JetpackConnectMain = React.createClass( {
 		this.props.recordTracksEvent( 'calypso_jpc_url_view', {
 			jpc_from: from
 		} );
+		this.props.visitJetpackConnect();
 		this.props.requestSites();
 	},
 
@@ -395,5 +396,5 @@ export default connect(
 			getJetpackSiteByUrl
 		};
 	},
-	dispatch => bindActionCreators( { recordTracksEvent, confirmJetpackInstallStatus, checkUrl, dismissUrl, requestSites, goToRemoteAuth, goToPluginInstall, goToPluginActivation }, dispatch )
+	dispatch => bindActionCreators( { visitJetpackConnect, recordTracksEvent, confirmJetpackInstallStatus, checkUrl, dismissUrl, requestSites, goToRemoteAuth, goToPluginInstall, goToPluginActivation }, dispatch )
 )( JetpackConnectMain );

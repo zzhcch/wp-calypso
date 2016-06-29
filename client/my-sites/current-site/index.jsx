@@ -111,6 +111,9 @@ module.exports = React.createClass( {
 
 	render: function() {
 		let site;
+		let hasJetpackSites = this.props.sites.get().some( function( site ) {
+			return site.jetpack;
+		} );
 
 		if ( ! this.props.sites.initialized ) {
 			return (
@@ -135,7 +138,6 @@ module.exports = React.createClass( {
 		} else {
 			site = this.props.sites.getPrimary();
 		}
-
 		return (
 			<Card className="current-site">
 				{ this.props.siteCount > 1 &&
@@ -159,7 +161,7 @@ module.exports = React.createClass( {
 					: <AllSites sites={ this.props.sites.get() } />
 				}
 				{ this.getSiteNotices( site ) }
-				<SiteNotice site={ site } />
+				<SiteNotice site={ site } hasJetpackSites={ hasJetpackSites }/>
 			</Card>
 		);
 	}

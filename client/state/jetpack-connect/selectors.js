@@ -10,4 +10,11 @@ const isCalypsoStartedConnection = function( state, siteSlug ) {
 	return false;
 };
 
-export default { isCalypsoStartedConnection };
+const hasVisitedJetpackConnect = function( state ) {
+	if ( state.jetpackConnect.flags ) {
+		return state.jetpackConnect.flags.visited;
+	}
+	return false;
+};
+
+export default { isCalypsoStartedConnection, hasVisitedJetpackConnect };

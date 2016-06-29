@@ -29,7 +29,8 @@ import {
 	JETPACK_CONNECT_SSO_AUTHORIZE_ERROR,
 	JETPACK_CONNECT_SSO_VALIDATION_REQUEST,
 	JETPACK_CONNECT_SSO_VALIDATION_SUCCESS,
-	JETPACK_CONNECT_SSO_VALIDATION_ERROR
+	JETPACK_CONNECT_SSO_VALIDATION_ERROR,
+	JETPACK_CONNECT_VISITED
 } from 'state/action-types';
 import userFactory from 'lib/user';
 import config from 'config';
@@ -57,6 +58,14 @@ export default {
 			dispatch( {
 				type: JETPACK_CONNECT_CONFIRM_JETPACK_STATUS,
 				status: status
+			} );
+		};
+	},
+
+	visitJetpackConnect() {
+		return ( dispatch ) => {
+			dispatch( {
+				type: JETPACK_CONNECT_VISITED
 			} );
 		};
 	},

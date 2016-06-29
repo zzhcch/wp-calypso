@@ -16,6 +16,7 @@ import { canCurrentUser } from 'state/current-user/selectors';
 import { recordTracksEvent } from 'state/analytics/actions';
 import QuerySitePlans from 'components/data/query-site-plans';
 import { isFinished as isJetpackPluginsFinished } from 'state/plugins/premium/selectors';
+import { hasVisitedJetpackConnect } from 'state/jetpack-connect/selectors';
 import { abtest } from 'lib/abtest';
 import TrackComponentView from 'lib/analytics/track-component-view';
 
@@ -102,10 +103,32 @@ const SiteNotice = React.createClass( {
 		);
 	},
 
+	jetpackConnectCallToAction() {
+		if ( ! this.props.hasJetpackSites || this.props.hasVisitedJetpackConnect ) {
+			return null;
+		}
+
+		return (
+			<Notice isCompact status="is-info" icon="plugins">
+				{ this.translate(
+					'You can connect jetpack sites more easily now'
+				) }
+				<NoticeAction
+					href={ '/jetpack/connect' }
+					onClick={ this.props.clickJetpackConnect }
+				>
+					{ this.translate( 'Try it' ) }
+				</NoticeAction>
+			</Notice>
+		);
+	},
+
 	render() {
 		const { site } = this.props;
 		if ( ! site ) {
-			return <div className="site__notices" />;
+			return (
+				<div className="site__notices" />
+			);
 		}
 		return (
 			<div className="site__notices">
@@ -113,6 +136,7 @@ const SiteNotice = React.createClass( {
 				<QuerySitePlans siteId={ site.ID } />
 				{ this.domainCreditNotice() }
 				{ this.jetpackPluginsSetupNotice() }
+				{ this.jetpackConnectCallToAction() }
 			</div>
 		);
 	}
@@ -123,14 +147,20 @@ export default connect( ( state, ownProps ) => {
 	return {
 		hasDomainCredit: hasDomainCredit( state, siteId ),
 		canManageOptions: canCurrentUser( state, siteId, 'manage_options' ),
-		pausedJetpackPluginsSetup: ! isJetpackPluginsFinished( state, siteId )
+		pausedJetpackPluginsSetup: ! isJetpackPluginsFinished( state, siteId ),
+		hasVisitedJetpackConnect: hasVisitedJetpackConnect( state )
 	};
 }, ( dispatch ) => {
 	return {
-		clickClaimDomainNotice: () => dispatch( recordTracksEvent(
-			'calypso_domain_credit_reminder_click', {
-				cta_name: 'current_site_domain_notice'
-			}
-		) )
+		clickClaimDomainNotice: () => {
+			dispatch( recordTracksEvent(
+				'calypso_domain_credit_reminder_click', {
+					cta_name: 'current_site_domain_notice'
+				}
+			) );
+		},
+		clickJetpackConnect: () => {
+			dispatch( recordTracksEvent( 'calypso_jpc_sites_list_click' ) );
+		}
 	};
 } )( SiteNotice );
