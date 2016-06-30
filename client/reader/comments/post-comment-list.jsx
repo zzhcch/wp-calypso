@@ -126,7 +126,9 @@ class PostCommentList extends React.Component {
 
 	getCommentsCount( commentIds ) {
 		// we always count prevSum, children sum, and +1 for the current processed comment
-		return commentIds.reduce( ( prevSum, commentId ) => prevSum + this.getCommentsCount( this.props.commentsTree.getIn( [ commentId, 'children' ] ) ) + 1, 0 );
+		return commentIds.reduce( ( prevSum, commentId ) => {
+			return prevSum + this.getCommentsCount( this.props.commentsTree.getIn( [ commentId, 'children' ] ) ) + 1;
+		}, 0 );
 	}
 
 	/***
