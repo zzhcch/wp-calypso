@@ -10,6 +10,9 @@ import { isJetpackMonthlyPlan } from 'lib/products-values';
  * Internal dependencies
  */
 import WpcomPlanPrice from 'my-sites/plans/wpcom-plan-price';
+import SegmentedControl from 'components/segmented-control';
+import ControlItem from 'components/segmented-control/item';
+import { plansLink } from 'lib/plans';
 
 const PlanPrice = React.createClass( {
 	getFormattedPrice( plan ) {
@@ -53,6 +56,39 @@ const PlanPrice = React.createClass( {
 		return ( <span>{ standardPrice }</span> );
 	},
 
+	changePeriod( ev ) {
+		ev.stopPropagation();
+
+		ev.preventDefault();
+	},
+
+	renderPeriodSelector() {
+		if ( ! this.props.site ) {
+			return;
+		}
+		const { plan } = this.props;
+		const isMonthly = isJetpackMonthlyPlan( plan );
+		return (
+			<SegmentedControl
+					selectedText={ null }
+					primary={ true }
+					compact={ true }>
+				<ControlItem
+					selected={ isMonthly }
+					onClick={ this.changePeriod }>
+					Monthly
+				</ControlItem>
+
+				<ControlItem
+					selected={ ! isMonthly }
+					path={ plansLink( '/plans', this.props.site, 'yearly' ) }
+					onClick={ this.changePeriod }>
+					Yearly
+				</ControlItem>
+			</SegmentedControl>
+		);
+	},
+
 	render() {
 		let periodLabel;
 		const { plan, sitePlan: details } = this.props,
@@ -75,10 +111,13 @@ const PlanPrice = React.createClass( {
 		}
 
 		return (
-			<WpcomPlanPrice
-				getPrice={ this.getPrice }
-				hasDiscount={ hasDiscount }
-				periodLabel={ periodLabel } />
+			<div>
+				<WpcomPlanPrice
+					getPrice={ this.getPrice }
+					hasDiscount={ hasDiscount }
+					periodLabel={ periodLabel } />
+				{ this.renderPeriodSelector() }
+			</div>
 		);
 	}
 } );

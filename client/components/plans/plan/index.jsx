@@ -180,9 +180,9 @@ const Plan = React.createClass( {
 		if ( isAllMySites ) {
 			return;
 		}
-
 		return (
 			<PlanPrice
+				site={ this.props.site }
 				plan={ this.props.plan }
 				isPlaceholder={ this.isPlaceholder() }
 				isInSignup={ this.props.isInSignup }
