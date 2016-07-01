@@ -78,11 +78,11 @@ module.exports = React.createClass( {
 	},
 
 	getSelectedSite: function() {
-		if ( this.props.sites.get().length === 1 ) {
-			return this.props.sites.getPrimary();
+		if ( this.props.sites.length === 1 ) {
+			return this.props.sites[0]; //FIXME
 		}
 
-		return this.props.sites.getSelectedSite();
+		return this.props.selectedSite;
 	},
 
 	getDomainExpirationNotices: function() {
@@ -112,7 +112,7 @@ module.exports = React.createClass( {
 	render: function() {
 		let site;
 
-		if ( ! this.props.sites.initialized ) {
+		if ( this.props.isRequestingSites ) {
 			return (
 				<Card className="current-site is-loading">
 					{ this.props.siteCount > 1 &&
@@ -130,12 +130,13 @@ module.exports = React.createClass( {
 			);
 		}
 
-		if ( this.props.sites.selected ) {
-			site = this.props.sites.getSelectedSite();
+		if ( this.props.selectedSite ) {
+			site = this.props.selectedSite;
 		} else {
-			site = this.props.sites.getPrimary();
+			site = this.props.sites[0]; //FIXME primary
 		}
 
+		console.log( this.props.selectedSite );
 		return (
 			<Card className="current-site">
 				{ this.props.siteCount > 1 &&
@@ -146,9 +147,10 @@ module.exports = React.createClass( {
 						</Button>
 					</span>
 				}
-				{ this.props.sites.selected
+				{ this.props.selectedSite
 					? <Site
-						site={ site }
+						site={ this.props.selectedSite }
+						sites={ this.props.sites }
 						homeLink={ true }
 						enableActions={ true }
 						externalLink={ true }
@@ -156,7 +158,7 @@ module.exports = React.createClass( {
 						onSelect={ this.previewSite }
 						tipTarget="site-card-preview"
 						ref="site" />
-					: <AllSites sites={ this.props.sites.get() } />
+					: <AllSites sites={ this.props.sites } />
 				}
 				{ this.getSiteNotices( site ) }
 				<SiteNotice site={ site } />

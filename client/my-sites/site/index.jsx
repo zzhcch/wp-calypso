@@ -18,7 +18,7 @@ import Tooltip from 'components/tooltip';
 import ExternalLink from 'components/external-link';
 import analytics from 'lib/analytics';
 
-const sites = sitesList();
+const sites = { isStarred: () => false };
 
 export default React.createClass( {
 	displayName: 'Site',
@@ -80,7 +80,7 @@ export default React.createClass( {
 
 	starSite() {
 		const site = this.props.site;
-		sites.toggleStarred( site.ID );
+		//sites.toggleStarred( site.ID ); //FIXME
 	},
 
 	enableStarTooltip() {
@@ -106,7 +106,7 @@ export default React.createClass( {
 			return null;
 		}
 
-		const isStarred = sites.isStarred( site );
+		const isStarred = false; //sites.isStarred( site ); FIXME
 
 		return (
 			<button
@@ -233,7 +233,7 @@ export default React.createClass( {
 			'is-toggled': this.state.showMoreActions,
 			'has-edit-capabilities': userCan( 'manage_options', site )
 		} );
-
+		//console.log( site.title );
 		return (
 			<div className={ siteClass }>
 				{ ! this.state.showMoreActions

@@ -27,6 +27,16 @@ export function getSite( state, siteId ) {
 }
 
 /**
+ * Returns an array of sites
+ *
+ * @param  {Object}  state  Global state tree
+ * @return {?Array}        Sites array
+ */
+export function getSites( state ) {
+	return map( state.sites.items, s => s ) || null;
+}
+
+/**
  * Returns a filtered array of WordPress.com site IDs where a Jetpack site
  * exists in the set of sites with the same URL.
  *

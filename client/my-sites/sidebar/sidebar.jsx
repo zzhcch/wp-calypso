@@ -8,7 +8,8 @@ var analytics = require( 'lib/analytics' ),
 	includes = require( 'lodash/includes' ),
 	React = require( 'react' );
 
-import page from 'page';
+import { connect } from 'react-redux';
+import { localize } from 'i18n-calypso';
 
 /**
  * Internal dependencies
@@ -30,8 +31,10 @@ import Button from 'components/button';
 import SidebarButton from 'layout/sidebar/button';
 import SidebarFooter from 'layout/sidebar/footer';
 import { isPersonal, isPremium, isBusiness } from 'lib/products-values';
+import { getSites, isRequestingSites } from 'state/sites/selectors';
+import { getSelectedSite } from 'state/ui/selectors';
 
-module.exports = React.createClass( {
+const MySitesSideabr = React.createClass( {
 	displayName: 'MySitesSidebar',
 
 	componentDidMount: function() {
@@ -75,32 +78,33 @@ module.exports = React.createClass( {
 		}
 
 		return paths.some( function( path ) {
-			return path === this.props.path || 0 === this.props.path.indexOf( path + '/' );
+			return path === this.props.path || 0 === this.props.path.indexOf( path + '/' ); // FIXME
 		}, this );
 	},
 
 	isSingle: function() {
-		return !! ( this.props.sites.getSelectedSite() || this.props.sites.get().length === 1 );
+		return !! ( this.props.selectedSite || this.props.sites.length === 1 );
 	},
 
 	getSingleSiteDomain: function() {
-		if ( this.props.sites.selected ) {
+		console.log( this.props.sites );
+		if ( this.props.sites.selected ) { //FIXME
 			return this.getSelectedSite().slug;
 		}
 
-		return this.props.sites.getPrimary().slug;
+		return this.props.sites[ 0 ].slug; //FIXME
 	},
 
 	getSelectedSite: function() {
-		if ( this.props.sites.get().length === 1 ) {
-			return this.props.sites.getPrimary();
+		if ( this.props.sites.length === 1 ) {
+			return this.props.sites[ 0 ]; //FIXME
 		}
 
-		return this.props.sites.getSelectedSite();
+		return this.props.selectedSite;
 	},
 
 	hasJetpackSites: function() {
-		return this.props.sites.get().some( function( site ) {
+		return this.props.sites.some( function( site ) {
 			return site.jetpack;
 		} );
 	},
@@ -135,7 +139,7 @@ module.exports = React.createClass( {
 			<li className={ this.itemLinkClass( '/stats', 'stats' ) }>
 				<SiteStatsStickyLink onClick={ this.onNavigate }>
 					<Gridicon icon="stats-alt" size={ 24 } />
-					<span className="menu-link-text">{ this.translate( 'Stats' ) }</span>
+					<span className="menu-link-text">{ this.props.translate( 'Stats' ) }</span>
 				</SiteStatsStickyLink>
 			</li>
 		);
@@ -164,7 +168,7 @@ module.exports = React.createClass( {
 			jetpackEnabled = config.isEnabled( 'manage/themes-jetpack' ),
 			themesLink;
 
-		if ( site && ! site.isCustomizable() ) {
+		if ( site && ! site.is_customizable ) {
 			return null;
 		}
 
@@ -182,7 +186,7 @@ module.exports = React.createClass( {
 
 		return (
 			<SidebarItem
-				label={ this.translate( 'Themes' ) }
+				label={ this.props.translate( 'Themes' ) }
 				tipTarget="themes"
 				className={ this.itemLinkClass( '/design', 'themes' ) }
 				link={ themesLink }
@@ -191,7 +195,7 @@ module.exports = React.createClass( {
 				preloadSectionName="themes"
 			>
 				<SidebarButton href={ getCustomizeUrl( null, site ) } preloadSectionName="customize">
-					{ this.translate( 'Customize' ) }
+					{ this.props.translate( 'Customize' ) }
 				</SidebarButton>
 			</SidebarItem>
 		);
@@ -225,7 +229,7 @@ module.exports = React.createClass( {
 		return (
 			<SidebarItem
 				tipTarget="menus"
-				label={ this.translate( 'Menus' ) }
+				label={ this.props.translate( 'Menus' ) }
 				className={ this.itemLinkClass( '/menus', 'menus' ) }
 				link={ menusLink }
 				onNavigate={ this.onNavigate }
@@ -249,9 +253,9 @@ module.exports = React.createClass( {
 			}
 		}
 
-		if ( ! this.props.sites.canManageSelectedOrAll() ) {
-			return null;
-		}
+		//if ( ! this.props.sites.canManageSelectedOrAll() ) { FIXME
+		//		return null;
+		//	}
 
 		if ( ( this.isSingle() && site.jetpack ) || ( ! this.isSingle() && this.hasJetpackSites() ) ) {
 			addPluginsLink = '/plugins/browse' + this.siteSuffix();
@@ -259,7 +263,7 @@ module.exports = React.createClass( {
 
 		return (
 			<SidebarItem
-				label={ this.translate( 'Plugins' ) }
+				label={ this.props.translate( 'Plugins' ) }
 				className={ this.itemLinkClass( '/plugins', 'plugins' ) }
 				link={ pluginsLink }
 				onNavigate={ this.onNavigate }
@@ -267,7 +271,7 @@ module.exports = React.createClass( {
 				preloadSectionName="plugins"
 			>
 				<SidebarButton href={ addPluginsLink }>
-					{ this.translate( 'Add' ) }
+					{ this.props.translate( 'Add' ) }
 				</SidebarButton>
 			</SidebarItem>
 		);
@@ -300,7 +304,7 @@ module.exports = React.createClass( {
 
 		return (
 			<SidebarItem
-				label={ this.translate( 'Domains' ) }
+				label={ this.props.translate( 'Domains' ) }
 				className={ this.itemLinkClass( [ '/domains' ], 'domains' ) }
 				link={ domainsLink }
 				onNavigate={ this.onNavigate }
@@ -308,7 +312,7 @@ module.exports = React.createClass( {
 				preloadSectionName="upgrades"
 			>
 				<SidebarButton href={ addDomainLink }>
-					{ this.translate( 'Add' ) }
+					{ this.props.translate( 'Add' ) }
 				</SidebarButton>
 			</SidebarItem>
 		);
@@ -356,7 +360,7 @@ module.exports = React.createClass( {
 		let planName = site.plan.product_name_short;
 
 		if ( productsValues.isFreeTrial( site.plan ) ) {
-			planName = this.translate( 'Trial', {
+			planName = this.props.translate( 'Trial', {
 				context: 'Label in the sidebar indicating that the user is on the free trial for a plan.'
 			} );
 		}
@@ -365,7 +369,7 @@ module.exports = React.createClass( {
 			<li className={ this.itemLinkClass( [ '/plans' ], linkClass ) }>
 				<a onClick={ this.trackUpgradeClick } href={ planLink }>
 					<Gridicon icon="clipboard" size={ 24 } />
-					<span className="menu-link-text">{ this.translate( 'Plan', { context: 'noun' } ) }</span>
+					<span className="menu-link-text">{ this.props.translate( 'Plan', { context: 'noun' } ) }</span>
 				</a>
 				<a href={ planLink } className="plan-name" onClick={ this.trackUpgradeClick }>{ planName }</a>
 			</li>
@@ -405,7 +409,7 @@ module.exports = React.createClass( {
 
 		return (
 			<SidebarItem
-				label={ this.translate( 'Sharing' ) }
+				label={ this.props.translate( 'Sharing' ) }
 				className={ this.itemLinkClass( '/sharing', 'sharing' ) }
 				link={ sharingLink }
 				onNavigate={ this.onNavigate }
@@ -443,7 +447,7 @@ module.exports = React.createClass( {
 
 		return (
 			<SidebarItem
-				label={ this.translate( 'People' ) }
+				label={ this.props.translate( 'People' ) }
 				className={ this.itemLinkClass( '/people', 'users' ) }
 				link={ usersLink }
 				onNavigate={ this.onNavigate }
@@ -451,7 +455,7 @@ module.exports = React.createClass( {
 				preloadSectionName="people"
 			>
 				<SidebarButton href={ addPeopleLink }>
-					{ this.translate( 'Add' ) }
+					{ this.props.translate( 'Add' ) }
 				</SidebarButton>
 			</SidebarItem>
 		);
@@ -475,7 +479,7 @@ module.exports = React.createClass( {
 
 		return (
 			<SidebarItem
-				label={ this.translate( 'Settings' ) }
+				label={ this.props.translate( 'Settings' ) }
 				className={ this.itemLinkClass( '/settings', 'settings' ) }
 				link={ siteSettingsLink }
 				onNavigate={ this.onNavigate }
@@ -508,7 +512,7 @@ module.exports = React.createClass( {
 			<li className="wp-admin">
 				<a onClick={ this.trackWpadminClick } href={ site.options.admin_url } target="_blank">
 					<Gridicon icon="my-sites" size={ 24 } />
-					<span className="menu-link-text">{ this.translate( 'WP Admin' ) }</span>
+					<span className="menu-link-text">{ this.props.translate( 'WP Admin' ) }</span>
 					<span className="noticon noticon-external" />
 				</a>
 			</li>
@@ -536,7 +540,7 @@ module.exports = React.createClass( {
 		return (
 			<li className={ this.itemLinkClass( '/vip/updates', 'sidebar__vip' ) } >
 				<a href={ viplink } >
-					<span className="menu-link-text">{ this.translate( 'Updates' ) }</span>
+					<span className="menu-link-text">{ this.props.translate( 'Updates' ) }</span>
 				</a>
 			</li>
 		);
@@ -559,7 +563,7 @@ module.exports = React.createClass( {
 		return (
 			<li className={ this.itemLinkClass( '/vip/deploys', 'sidebar__vip-deploys' ) } >
 				<a href={ viplink } >
-					<span className="menu-link-text">{ this.translate( 'Deploys' ) }</span>
+					<span className="menu-link-text">{ this.props.translate( 'Deploys' ) }</span>
 				</a>
 			</li>
 		);
@@ -582,7 +586,7 @@ module.exports = React.createClass( {
 		return (
 			<li className={ this.itemLinkClass( '/vip/billing', 'sidebar__vip-billing' ) }>
 				<a href={ viplink } >
-					<span className="menu-link-text">{ this.translate( 'Billing' ) }</span>
+					<span className="menu-link-text">{ this.props.translate( 'Billing' ) }</span>
 				</a>
 			</li>
 		);
@@ -600,7 +604,7 @@ module.exports = React.createClass( {
 		return (
 			<li className={ this.itemLinkClass( '/vip/support', 'sidebar__vip-support' ) }>
 				<a href={ viplink } >
-					<span className="menu-link-text">{ this.translate( 'Support' ) }</span>
+					<span className="menu-link-text">{ this.props.translate( 'Support' ) }</span>
 				</a>
 			</li>
 		);
@@ -623,7 +627,7 @@ module.exports = React.createClass( {
 		return (
 			<li className={ this.itemLinkClass( '/vip/backups', 'sidebar__vip-backups' ) }>
 				<a href={ viplink } >
-					<span className="menu-link-text">{ this.translate( 'Backups' ) }</span>
+					<span className="menu-link-text">{ this.props.translate( 'Backups' ) }</span>
 				</a>
 			</li>
 		);
@@ -646,7 +650,7 @@ module.exports = React.createClass( {
 		return (
 			<li className={ this.itemLinkClass( '/vip/logs', 'sidebar__vip-logs' ) }>
 				<a href={ viplink } >
-					<span className="menu-link-text">{ this.translate( 'Logs' ) }</span>
+					<span className="menu-link-text">{ this.props.translate( 'Logs' ) }</span>
 				</a>
 			</li>
 		);
@@ -667,7 +671,7 @@ module.exports = React.createClass( {
 				href={ config( 'signup_url' ) + '?ref=calypso-selector' }
 				onClick={ this.focusContent }
 			>
-				<Gridicon icon="add-outline" /> { this.translate( 'Add New Site' ) }
+				<Gridicon icon="add-outline" /> { this.props.translate( 'Add New Site' ) }
 			</Button>
 		);
 	},
@@ -682,7 +686,7 @@ module.exports = React.createClass( {
 			<Sidebar>
 				<SidebarRegion>
 				<CurrentSite
-					sites={ this.props.sites }
+					{ ...this.props }
 					siteCount={ this.props.user.get().visible_site_count }
 					onClick={ this.onPreviewSite }
 				/>
@@ -710,7 +714,7 @@ module.exports = React.createClass( {
 
 				{ publish
 					? <SidebarMenu>
-						<SidebarHeading>{ this.translate( 'Publish' ) }</SidebarHeading>
+						<SidebarHeading>{ this.props.translate( 'Publish' ) }</SidebarHeading>
 						{ this.publish() }
 					</SidebarMenu>
 					: null
@@ -718,7 +722,7 @@ module.exports = React.createClass( {
 
 				{ appearance
 					? <SidebarMenu>
-						<SidebarHeading>{ this.translate( 'Personalize' ) }</SidebarHeading>
+						<SidebarHeading>{ this.props.translate( 'Personalize' ) }</SidebarHeading>
 						<ul>
 							{ this.themes() }
 							{ this.menus() }
@@ -729,7 +733,7 @@ module.exports = React.createClass( {
 
 				{ configuration
 					? <SidebarMenu>
-						<SidebarHeading>{ this.translate( 'Configure' ) }</SidebarHeading>
+						<SidebarHeading>{ this.props.translate( 'Configure' ) }</SidebarHeading>
 						<ul>
 							{ this.ads() }
 							{ this.sharing() }
@@ -750,3 +754,11 @@ module.exports = React.createClass( {
 		);
 	}
 } );
+
+export default connect( ( state ) => ( {
+	selectedSite: getSelectedSite( state ),
+	sites: getSites( state ),
+	isRequestingSites: isRequestingSites( state ),
+} ), {
+	//errorNotice,
+} )( localize( MySitesSideabr ) );

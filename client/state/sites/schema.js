@@ -37,8 +37,8 @@ export const sitesSchema = {
 				meta: { type: 'object' },
 				user_can_manager: { type: 'boolean' },
 				is_vip: { type: 'boolean' },
-				is_previewable: { type: 'boolean' },
-				is_customizable: { type: 'boolean' },
+				is_previewable: { type: 'boolean' }, //FIXME: selectorise
+				is_customizable: { type: 'boolean' }, //FIXME: selectorise
 				is_multisite: { type: 'boolean' },
 				capabilities: {
 					type: 'object',
@@ -57,7 +57,9 @@ export const sitesSchema = {
 						expired: { type: 'boolean' }
 					}
 				},
-				single_user_site: { type: 'boolean' }
+				single_user_site: { type: 'boolean' },
+				title: { type: 'string' }, //FIXME: selectorise
+				domain: { type: 'string' }, //FIXME: selectorise
 			}
 		}
 	},
