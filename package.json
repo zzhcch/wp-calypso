@@ -143,7 +143,7 @@
     "test-client:watch": "nodemon -e js,jsx --exec npm run test-client",
     "test-server:watch": "nodemon -e js,jsx --exec npm run test-server",
     "test-test:watch": "nodemon -e js,jsx --exec npm run test-test",
-    "lint": "bin/run-lint",
+    "lint": "bin/run-lint .",
     "css-lint": "stylelint 'client/**/*.scss' --syntax scss"
   },
   "devDependencies": {
@@ -160,6 +160,7 @@
     "esformatter-semicolons": "1.1.1",
     "esformatter-special-bangs": "1.0.1",
     "eslint": "3.6.1",
+    "eslines": "0.0.8",
     "eslint-config-wpcalypso": "0.5.0",
     "eslint-plugin-react": "6.2.0",
     "eslint-plugin-wpcalypso": "2.0.0",

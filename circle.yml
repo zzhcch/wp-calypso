@@ -8,7 +8,7 @@ test:
     - case $CIRCLE_NODE_INDEX in 0) NODE_ENV=test make build-server ;; esac:
         parallel: true
   override:
-    - bin/run-lint :
+    - ./bin/run-lint :
         parallel: true
         files:
           - client/**/*.js
