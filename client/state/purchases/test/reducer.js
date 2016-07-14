@@ -13,6 +13,7 @@ import {
 	PRIVACY_PROTECTION_CANCEL_COMPLETED,
 	PRIVACY_PROTECTION_CANCEL_FAILED
 } from 'state/action-types';
+import { getByPurchaseId } from '../selectors';
 import reducer from '../reducer';
 
 describe( 'reducer', () => {
@@ -44,19 +45,19 @@ describe( 'reducer', () => {
 	it( 'should return an object with the list of purchases when fetching completed', () => {
 		let state = reducer( undefined, {
 			type: PURCHASES_USER_FETCH_COMPLETED,
-			purchases: [ { ID: 1, blog_id: siteId, user_id: userId }, { ID: 2, blog_id: siteId, user_id: userId } ]
+			purchases: [ { id: 1, siteId, userId }, { id: 2, siteId, userId } ]
 		} );
 
 		state = reducer( state, {
 			type: PURCHASES_SITE_FETCH_COMPLETED,
-			purchases: [ { ID: 2, blog_id: siteId, user_id: userId }, { ID: 3, blog_id: siteId, user_id: userId } ]
+			purchases: [ { id: 2, siteId, userId }, { id: 3, siteId, userId } ]
 		} );
 
 		expect( state ).to.be.eql( {
 			data: [
-				{ ID: 2, blog_id: siteId, user_id: userId },
-				{ ID: 3, blog_id: siteId, user_id: userId },
-				{ ID: 1, blog_id: siteId, user_id: userId } ],
+				{ id: 2, siteId, userId },
+				{ id: 3, siteId, userId },
+				{ id: 1, siteId, userId } ],
 			error: null,
 			isFetchingSitePurchases: false,
 			isFetchingUserPurchases: false,
@@ -65,12 +66,12 @@ describe( 'reducer', () => {
 		} );
 	} );
 
-	it( 'should only remove purchases missing from the new purchases array with the same `user_id` or `blog_id`', () => {
+	it( 'should only remove purchases missing from the new purchases array with the same `userId` or `siteId`', () => {
 		let state = {
 			data: [
-				{ ID: 2, blog_id: siteId, user_id: userId },
-				{ ID: 3, blog_id: siteId, user_id: userId },
-				{ ID: 1, blog_id: siteId, user_id: userId } ],
+				{ id: 2, siteId, userId },
+				{ id: 3, siteId, userId },
+				{ id: 1, siteId, userId } ],
 			error: null,
 			isFetchingSitePurchases: false,
 			isFetchingUserPurchases: false,
@@ -78,13 +79,13 @@ describe( 'reducer', () => {
 			hasLoadedUserPurchasesFromServer: true
 		};
 
-		const newPurchase = { ID: 4, blog_id: 2702, user_id: userId };
+		const newPurchase = { id: 4, siteId: 2702, userId };
 
 		state = reducer( state, {
 			type: PURCHASES_USER_FETCH_COMPLETED,
 			purchases: [
-				{ ID: 1, blog_id: siteId, user_id: userId },
-				{ ID: 2, blog_id: siteId, user_id: userId },
+				{ id: 1, siteId, userId },
+				{ id: 2, siteId, userId },
 				newPurchase // include purchase with new `siteId`
 			],
 			userId
@@ -92,8 +93,8 @@ describe( 'reducer', () => {
 
 		expect( state ).to.be.eql( {
 			data: [
-				{ ID: 1, blog_id: siteId, user_id: userId },
-				{ ID: 2, blog_id: siteId, user_id: userId },
+				{ id: 1, siteId, userId },
+				{ id: 2, siteId, userId },
 				newPurchase // purchase with ID 3 was removed, `newPurchase` was added
 			],
 			error: null,
@@ -105,14 +106,14 @@ describe( 'reducer', () => {
 
 		state = reducer( state, {
 			type: PURCHASES_SITE_FETCH_COMPLETED,
-			purchases: [ { ID: 2, blog_id: siteId, user_id: userId } ],
+			purchases: [ { id: 2, siteId, userId } ],
 			siteId
 		} );
 
 		expect( state ).to.be.eql( {
 			data: [
-				{ ID: 2, blog_id: siteId, user_id: userId },
-				{ ID: 4, blog_id: 2702, user_id: userId } // the new purchase was not removed because it has a different `blog_id`
+				{ id: 2, siteId, userId },
+				{ id: 4, siteId: 2702, userId } // the new purchase was not removed because it has a different `siteId`
 			],
 			error: null,
 			isFetchingSitePurchases: false,
@@ -125,8 +126,8 @@ describe( 'reducer', () => {
 	it( 'should return an object with original purchase and error message when cancelation of private registration failed', () => {
 		let state = {
 			data: [
-				{ ID: 2, blog_id: siteId, user_id: userId },
-				{ ID: 4, blog_id: 2702, user_id: userId }
+				{ id: 2, siteId, userId },
+				{ id: 4, siteId: 2702, userId } // the new purchase was not removed because it has a different `siteId`
 			],
 			error: null,
 			isFetchingSitePurchases: false,
@@ -141,33 +142,19 @@ describe( 'reducer', () => {
 			purchaseId: 2
 		} );
 
-		expect( state ).to.be.eql( {
-			data: [
-				{
-					ID: 2,
-					blog_id: siteId,
-					user_id: userId,
-					error: 'Unable to fetch stored cards'
-				},
-				{
-					ID: 4,
-					blog_id: 2702,
-					user_id: userId
-				}
-			],
-			error: null,
-			isFetchingSitePurchases: false,
-			isFetchingUserPurchases: false,
-			hasLoadedSitePurchasesFromServer: true,
-			hasLoadedUserPurchasesFromServer: true
+		expect( getByPurchaseId( { purchases: state }, 2 ) ).to.be.eql( {
+			id: 2,
+			error: 'Unable to fetch stored cards',
+			siteId,
+			userId
 		} );
 	} );
 
 	it( 'should return an object with updated purchase when cancelation of private registration completed', () => {
 		let state = {
 			data: [
-				{ ID: 2, blog_id: siteId, user_id: userId },
-				{ ID: 4, blog_id: 2702, user_id: userId }
+				{ id: 2, siteId, userId },
+				{ id: 4, siteId: 2702, userId }
 			],
 			error: null,
 			isFetchingSitePurchases: false,
@@ -179,36 +166,22 @@ describe( 'reducer', () => {
 		state = reducer( state, {
 			type: PRIVACY_PROTECTION_CANCEL_COMPLETED,
 			purchase: {
-				ID: 2,
-				blog_id: siteId,
-				user_id: userId,
 				amount: 2200,
 				error: null,
-				has_private_registration: false,
+				hasPrivateRegistration: false,
+				id: 2,
+				siteId,
+				userId
 			}
 		} );
 
-		expect( state ).to.be.eql( {
-			data: [
-				{
-					ID: 2,
-					blog_id: siteId,
-					user_id: userId,
-					amount: 2200,
-					error: null,
-					has_private_registration: false
-				},
-				{
-					ID: 4,
-					blog_id: 2702,
-					user_id: userId
-				}
-			],
+		expect( getByPurchaseId( { purchases: state }, 2 ) ).to.be.eql( {
+			amount: 2200,
 			error: null,
-			isFetchingSitePurchases: false,
-			isFetchingUserPurchases: false,
-			hasLoadedSitePurchasesFromServer: true,
-			hasLoadedUserPurchasesFromServer: true
+			hasPrivateRegistration: false,
+			id: 2,
+			siteId,
+			userId
 		} );
 	} );
 } );
