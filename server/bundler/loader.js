@@ -1,5 +1,4 @@
-var config = require( 'config' ),
-	utils = require( './utils' );
+var config = require( 'config' );
 
 function getSectionsModule( sections ) {
 	var dependencies,
@@ -77,11 +76,8 @@ function getRequires( sections ) {
 }
 
 function splitTemplate( path, section ) {
-	var pathRegex = getPathRegex( path ),
-		result;
-
-	result = [
-		'page( ' + pathRegex + ', function( context, next ) {',
+	var result = [
+		'page( ' + JSON.stringify( path ) + ', function( context, next ) {',
 		'	if ( _loadedSections[ ' + JSON.stringify( section.module ) + ' ] ) {',
 		'		controller.setSection( ' + JSON.stringify( section ) + ' )( context );',
 		'		layoutFocus.next();',
@@ -113,27 +109,10 @@ function splitTemplate( path, section ) {
 	return result.join( '\n' );
 }
 
-function getPathRegex( pathString ) {
-	var regex;
-
-	if ( pathString === '/' ) {
-		return JSON.stringify( pathString );
-	}
-
-	regex = utils.pathToRegExp( pathString );
-
-	return '/' + regex.toString().slice( 1, -1 ) + '/';
-}
-
 function requireTemplate( section ) {
-	var pathRegex,
-		result;
-
-	result = section.paths.reduce( function( acc, path ) {
-		pathRegex = getPathRegex( path );
-
+	var result = section.paths.reduce( function( acc, path ) {
 		return acc.concat( [
-			'page( ' + pathRegex + ', function( context, next ) {',
+			'page( ' + JSON.stringify( path ) + ', function( context, next ) {',
 			'	controller.setSection( ' + JSON.stringify( section ) + ' )( context );',
 			'	next();',
 			'} );\n'

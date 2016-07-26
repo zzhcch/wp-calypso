@@ -8,7 +8,6 @@ var express = require( 'express' ),
 
 var config = require( 'config' ),
 	sanitize = require( 'sanitize' ),
-	utils = require( 'bundler/utils' ),
 	sectionsModule = require( '../../client/sections' ),
 	serverRouter = require( 'isomorphic-routing' ).serverRouter,
 	serverRender = require( 'render' ).serverRender;
@@ -322,9 +321,7 @@ module.exports = function() {
 	sections
 		.forEach( section => {
 			section.paths.forEach( path => {
-				const pathRegex = utils.pathToRegExp( path );
-
-				app.get( pathRegex, function( req, res, next ) {
+				app.get( path, function( req, res, next ) {
 					if ( config.isEnabled( 'code-splitting' ) ) {
 						req.context = Object.assign( {}, req.context, { chunk: section.name } );
 					}
@@ -332,7 +329,7 @@ module.exports = function() {
 				} );
 
 				if ( ! section.isomorphic ) {
-					app.get( pathRegex, section.enableLoggedOut ? setUpRoute : setUpLoggedInRoute, serverRender );
+					app.get( path, section.enableLoggedOut ? setUpRoute : setUpLoggedInRoute, serverRender );
 				}
 			} );
 

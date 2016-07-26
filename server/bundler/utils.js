@@ -1,5 +1,3 @@
-var path = require( 'path' );
-
 function getAssets( stats ) {
 	var chunks = stats.chunks;
 
@@ -14,11 +12,6 @@ function getAssets( stats ) {
 	} );
 }
 
-function pathToRegExp( path ) {
-	return new RegExp( '^' + path + '(/.*)?$' );
-}
-
 module.exports = {
-	getAssets: getAssets,
-	pathToRegExp: pathToRegExp
+	getAssets: getAssets
 };
