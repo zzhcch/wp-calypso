@@ -8,8 +8,7 @@ import find from 'lodash/find';
  */
 import config from 'config';
 
-const localeRegex = /^[A-Z]{2,3}$/i;
-const localeWithRegionRegex = /^[A-Z]{2,3}-[A-Z]{2,3}$/i;
+const localeRegex = /^[A-Z]{2,3}(-[A-Z]{2,3})?(_[A-Z]*)?$/i;
 
 function getPathParts( path ) {
 	// Remove trailing slash then split. If there is a trailing slash,
@@ -20,7 +19,8 @@ function getPathParts( path ) {
 const i18nUtils = {
 	getLanguage: function( langSlug ) {
 		let language;
-		if ( localeRegex.test( langSlug ) || localeWithRegionRegex.test( langSlug ) ) {
+
+		if ( localeRegex.test( langSlug ) ) {
 			language = find( config( 'languages' ), { langSlug: langSlug } ) ||
 				find( config( 'languages' ), { langSlug: langSlug.substring( 0, 2 ) } );
 		}
