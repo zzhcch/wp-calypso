@@ -78,25 +78,28 @@ const Account = React.createClass( {
 		this.debouncedUsernameValidate = debounce( this.validateUsername, 600 );
 	},
 
+	componentDidUpdate( ) {
+		if ( ! this.state.langSlug ) {
+			this.setState( { langSlug: this.props.userSettings.getOriginalSetting( 'locale_variant' ) || this.props.userSettings.getOriginalSetting( 'language' ) } );
+		}
+	},
+
 	componentWillUnmount() {
 		debug( this.constructor.displayName + ' component is unmounting.' );
 	},
 
-	updateLanguage() {
-		let valueLink = this.valueLink( 'language' );
+	updateLanguage( event ) {
+		const originalLanguage = this.props.userSettings.getOriginalSetting( 'locale_variant' ) || this.props.userSettings.getOriginalSetting( 'language' );
+		const value = event.target.value;
 
-		valueLink.requestChange = ( value ) => {
-			const originalLanguage = this.props.userSettings.getOriginalSetting( 'language' );
+		this.props.userSettings.updateSetting( 'language', value );
+		this.setState( { langSlug: value } );
 
-			this.props.userSettings.updateSetting( 'language', value );
-			if ( value !== originalLanguage ) {
-				this.setState( { redirect: '/me/account' } );
-			} else {
-				this.setState( { redirect: false } );
-			}
-		};
-
-		return valueLink;
+		if ( value !== originalLanguage ) {
+			this.setState( { redirect: '/me/account' } );
+		} else {
+			this.setState( { redirect: false } );
+		}
 	},
 
 	validateUsername() {
@@ -479,7 +482,8 @@ const Account = React.createClass( {
 						name="lang_id"
 						onFocus={ this.recordFocusEvent( 'Interface Language Field' ) }
 						valueKey="langSlug"
-						valueLink={ this.updateLanguage() } />
+						value={ this.state.langSlug }
+						onChange={ this.updateLanguage } />
 					{ this.thankTranslationContributors() }
 				</FormFieldset>
 
