@@ -78,9 +78,11 @@ const Account = React.createClass( {
 		this.debouncedUsernameValidate = debounce( this.validateUsername, 600 );
 	},
 
-	componentDidUpdate( ) {
-		if ( ! this.state.langSlug ) {
-			this.setState( { langSlug: this.props.userSettings.getOriginalSetting( 'locale_variant' ) || this.props.userSettings.getOriginalSetting( 'language' ) } );
+	componentDidUpdate() {
+		const originalLangSlug = this.props.userSettings.getOriginalSetting( 'locale_variant' ) || this.props.userSettings.getOriginalSetting( 'language' )
+
+		if (  originalLangSlug !== null && ! this.state.langSlug ) {
+			this.setState( { langSlug: originalLangSlug } );
 		}
 	},
 
@@ -483,6 +485,7 @@ const Account = React.createClass( {
 						onFocus={ this.recordFocusEvent( 'Interface Language Field' ) }
 						valueKey="langSlug"
 						value={ this.state.langSlug }
+						defaultValue={ this.props.userSettings.getOriginalSetting( 'locale_variant' ) || this.props.userSettings.getOriginalSetting( 'language' ) }
 						onChange={ this.updateLanguage } />
 					{ this.thankTranslationContributors() }
 				</FormFieldset>
