@@ -8,7 +8,7 @@ import find from 'lodash/find';
  */
 import config from 'config';
 
-const localeRegex = /^[A-Z]{2,3}(-[A-Z]{2,3})?(_[A-Z]*)?$/i;
+const localeRegex = /^[A-Z]{2,3}(-[A-Z]{2,3})?(_[A-Z]{2,12})?$/i;
 
 function getPathParts( path ) {
 	// Remove trailing slash then split. If there is a trailing slash,
@@ -54,6 +54,12 @@ const i18nUtils = {
 		}
 
 		return parts.join( '/' );
+	},
+
+	languageFileUrl: function( localeSlug ) {
+		const protocol = typeof window === 'undefined' ? 'https://' : '//'; // use a protocol-relative path in the browser
+		return `${ protocol }widgets.wp.com/languages/calypso/${ localeSlug }.json`;
 	}
+
 };
 export default i18nUtils;
