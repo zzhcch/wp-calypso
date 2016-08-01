@@ -1,70 +1,43 @@
 /**
  * External dependencies
  */
-var React = require( 'react' ),
-	classNames = require( 'classnames' );
+import React, { PropTypes } from 'react';
+import classNames from 'classnames';
+import { omit } from 'lodash';
 
-var idNum = 0;
+export default function FormToggle( props ) {
+	const { checked, onChange, disabled, compact, className } = props;
+	const classes = classNames( 'form-toggle', className, {
+		'is-checked': checked,
+		'is-compact': compact
+	} );
 
-module.exports = React.createClass( {
+	return (
+		<button
+			{ ...omit( props, 'checked', 'onChange', 'compact' ) }
+			type="button"
+			role="checkbox"
+			onClick={ onChange }
+			aria-checked={ checked }
+			className={ classes }>
+			<input
+				type="checkbox"
+				checked={ checked }
+				disabled={ disabled }
+				readOnly
+				className="form-toggle__input" />
+		</button>
+	);
+}
 
-	displayName: 'FormToggle',
+FormToggle.propTypes = {
+	checked: PropTypes.bool,
+	onChange: PropTypes.func,
+	disabled: PropTypes.bool,
+	compact: PropTypes.bool,
+	className: PropTypes.string
+};
 
-	propTypes: {
-		onChange: React.PropTypes.func,
-		checked: React.PropTypes.bool,
-		disabled: React.PropTypes.bool,
-		id: React.PropTypes.string
-	},
-
-	getDefaultProps: function() {
-		return {
-			checked: false,
-			disabled: false
-		};
-	},
-	_onKeyDown: function( event ) {
-		if ( ! this.props.disabled ) {
-			if ( event.key === 'Enter' || event.key === ' ' ) {
-				event.preventDefault();
-				this.props.onChange();
-			}
-		}
-		if ( this.props.onKeyDown ) {
-			this.props.onKeyDown( event );
-		}
-	},
-
-	render: function() {
-		var id = this.props.id || 'toggle-' + idNum++,
-			toggleClasses = classNames( {
-				'form-toggle': true,
-				'is-toggling': this.props.toggling
-			} );
-
-		return (
-			<span>
-				<input
-					className={ classNames( this.props.className, toggleClasses ) }
-					type="checkbox"
-					checked={ this.props.checked }
-					readOnly={ true }
-					disabled={ this.props.disabled }
-					/>
-				<label className="form-toggle__label" htmlFor={ id } >
-					<span className="form-toggle__switch"
-						disabled={ this.props.disabled }
-						id={ id }
-						onClick={ this.props.onChange }
-						onKeyDown={ this._onKeyDown }
-						role="checkbox"
-						aria-checked={ this.props.checked }
-						aria-label={ this.props[ 'aria-label' ] }
-						tabIndex={ this.props.disabled ? -1 : 0 }
-						></span>
-					{ this.props.children }
-				</label>
-			</span>
-		);
-	}
-} );
+FormToggle.defaultProps = {
+	checked: false
+};
