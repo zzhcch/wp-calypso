@@ -77,7 +77,6 @@ function getLocation() {
 }
 
 export function recordTrack( eventName, eventProperties ) {
-	debug( 'reader track', ...arguments );
 	const subCount = SubscriptionStore.getTotalSubscriptions();
 
 	// Add location as ui_algo prop
@@ -93,6 +92,8 @@ export function recordTrack( eventName, eventProperties ) {
 			console.warn( 'consider using recordTrackForPost...', eventName, eventProperties ); //eslint-disable-line no-console
 		}
 	}
+
+	debug( 'reader track', eventName, eventProperties );
 
 	tracks.recordEvent( eventName, eventProperties );
 }
