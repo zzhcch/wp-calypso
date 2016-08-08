@@ -4,6 +4,8 @@
 var React = require( 'react' ),
 	debug = require( 'debug' )( 'calypso:my-sites:current-site' );
 
+import { connect } from 'react-redux';
+
 /**
  * Internal dependencies
  */
@@ -19,10 +21,10 @@ var AllSites = require( 'my-sites/all-sites' ),
 	DomainWarnings = require( 'my-sites/upgrades/components/domain-warnings' );
 
 import SiteNotice from './notice';
+import { getSelectedSite, getSelectedSiteId } from 'state/ui/selectors';
+import { getSites } from 'state/sites/selectors';
 
-module.exports = React.createClass( {
-	displayName: 'CurrentSite',
-
+export const CurrentSite = React.createClass( {
 	componentDidMount: function() {
 		debug( 'The current site React component is mounted.' );
 	},
@@ -32,7 +34,7 @@ module.exports = React.createClass( {
 		siteCount: React.PropTypes.number.isRequired
 	},
 
-	componentWillMount() {
+	componentWillMount: function() {
 		const selectedSite = this.getSelectedSite();
 
 		if ( selectedSite ) {
@@ -78,11 +80,11 @@ module.exports = React.createClass( {
 	},
 
 	getSelectedSite: function() {
-		if ( this.props.sites.get().length === 1 ) {
-			return this.props.sites.getPrimary();
+		if ( this.props.sites.length === 1 ) {
+			return this.props.sites[ 0 ];
 		}
 
-		return this.props.sites.getSelectedSite();
+		return this.props.selectedSite || false;
 	},
 
 	getDomainExpirationNotices: function() {
@@ -110,9 +112,9 @@ module.exports = React.createClass( {
 	},
 
 	render: function() {
-		let site;
+		const site = this.getSelectedSite();
 
-		if ( ! this.props.sites.initialized ) {
+		if ( ! this.props.sites.length ) {
 			return (
 				<Card className="current-site is-loading">
 					{ this.props.siteCount > 1 &&
@@ -130,12 +132,6 @@ module.exports = React.createClass( {
 			);
 		}
 
-		if ( this.props.sites.selected ) {
-			site = this.props.sites.getSelectedSite();
-		} else {
-			site = this.props.sites.getPrimary();
-		}
-
 		return (
 			<Card className="current-site">
 				{ this.props.siteCount > 1 &&
@@ -146,7 +142,7 @@ module.exports = React.createClass( {
 						</Button>
 					</span>
 				}
-				{ this.props.sites.selected
+				{ this.props.selectedSite
 					? <Site
 						site={ site }
 						homeLink={ true }
@@ -156,7 +152,7 @@ module.exports = React.createClass( {
 						onSelect={ this.previewSite }
 						tipTarget="site-card-preview"
 						ref="site" />
-					: <AllSites sites={ this.props.sites.get() } />
+					: <AllSites sites={ this.props.sites } />
 				}
 				{ this.getSiteNotices( site ) }
 				<SiteNotice site={ site } />
@@ -164,3 +160,9 @@ module.exports = React.createClass( {
 		);
 	}
 } );
+
+export default connect( ( state ) => ( {
+	selectedSite: getSelectedSite( state ),
+	selectedSiteId: getSelectedSiteId( state ),
+	sites: getSites( state ),
+} ), { } )( CurrentSite );

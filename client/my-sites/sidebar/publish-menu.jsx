@@ -16,6 +16,7 @@ import SidebarItem from 'layout/sidebar/item';
 import SidebarButton from 'layout/sidebar/button';
 import config from 'config';
 import { getSelectedSite } from 'state/ui/selectors';
+import { getSites, hasAllSingleUserSites } from 'state/sites/selectors';
 import { getEditorPath } from 'state/ui/editor/selectors';
 import { getPostTypes } from 'state/post-types/selectors';
 import QueryPostTypes from 'components/data/query-post-types';
@@ -28,7 +29,6 @@ const PublishMenu = React.createClass( {
 			React.PropTypes.object,
 			React.PropTypes.bool
 		] ),
-		sites: React.PropTypes.object.isRequired,
 		postTypes: React.PropTypes.object,
 		siteSuffix: React.PropTypes.string,
 		isSingle: React.PropTypes.bool,
@@ -39,7 +39,7 @@ const PublishMenu = React.createClass( {
 	// We default to `/my` posts when appropriate
 	getMyParameter() {
 		const { sites, site } = this.props;
-		if ( ! sites.initialized ) {
+		if ( ! sites.length ) {
 			return '';
 		}
 
@@ -47,7 +47,7 @@ const PublishMenu = React.createClass( {
 			return ( site.single_user_site || site.jetpack ) ? '' : '/my';
 		}
 
-		return ( sites.allSingleSites ) ? '' : '/my';
+		return this.props.hasAllSingleUserSites ? '' : '/my';
 	},
 
 	getDefaultMenuItems() {
@@ -202,9 +202,13 @@ const PublishMenu = React.createClass( {
 export default connect( ( state ) => {
 	const siteId = get( getSelectedSite( state ), 'ID' );
 	const postTypes = getPostTypes( state, siteId );
+	const site = getSelectedSite( state ) || false;
 
 	return {
+		site,
 		postTypes,
+		sites: getSites( state ),
+		hasAllSingleUserSites: hasAllSingleUserSites( state ),
 		postTypeLinks: mapValues( postTypes, ( postType, postTypeSlug ) => {
 			return getEditorPath( state, siteId, null, postTypeSlug );
 		} )

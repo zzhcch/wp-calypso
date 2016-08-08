@@ -4,6 +4,7 @@
  * External dependencies
  */
 import {
+	every,
 	filter,
 	find,
 	flowRight as compose,
@@ -62,8 +63,16 @@ export const getSite = createSelector(
 			hasConflict: isSiteConflicting( state, siteId ),
 			slug: getSiteSlug( state, siteId ),
 			domain: getSiteDomain( state, siteId ),
-			is_previewable: isSitePreviewable( state, siteId )
+			is_previewable: isSitePreviewable( state, siteId ),
+			jetpack: isJetpackSite( state, siteId ),
 		};
+	},
+	( state ) => state.sites.items
+);
+
+export const getSites = createSelector(
+	( state ) => {
+		return map( state.sites.items, ( v, siteId ) => getSite( state, siteId ) );
 	},
 	( state ) => state.sites.items
 );
@@ -405,4 +414,9 @@ export function isCurrentSitePlan( state, siteId, planProductId ) {
 	}
 
 	return sitePlan.product_id === planProductId;
+}
+
+export function hasAllSingleUserSites( state ) {
+	const sites = state.sites.items || [];
+	return every( sites, site => site.single_user_site );
 }

@@ -1,37 +1,38 @@
 /**
  * External dependencies
  */
-var analytics = require( 'lib/analytics' ),
-	classNames = require( 'classnames' ),
-	debug = require( 'debug' )( 'calypso:my-sites:sidebar' ),
-	has = require( 'lodash/has' ),
-	includes = require( 'lodash/includes' ),
-	React = require( 'react' );
+import classNames from 'classnames';
+import debugFactory from 'debug';
+import { has, includes } from 'lodash';
+import React from 'react';
+import { connect } from 'react-redux';
+const debug = debugFactory( 'calypso:my-sites:sidebar' );
 
 /**
  * Internal dependencies
  */
-var config = require( 'config' ),
-	CurrentSite = require( 'my-sites/current-site' ),
-	getCustomizeUrl = require( '../themes/helpers' ).getCustomizeUrl,
-	Gridicon = require( 'components/gridicon' ),
-	productsValues = require( 'lib/products-values' ),
-	PublishMenu = require( './publish-menu' ),
-	Sidebar = require( 'layout/sidebar' ),
-	SidebarHeading = require( 'layout/sidebar/heading' ),
-	SidebarItem = require( 'layout/sidebar/item' ),
-	SidebarMenu = require( 'layout/sidebar/menu' ),
-	SidebarRegion = require( 'layout/sidebar/region' ),
-	SiteStatsStickyLink = require( 'components/site-stats-sticky-link' );
-
+import analytics from 'lib/analytics';
+import config from 'config';
+import CurrentSite from 'my-sites/current-site';
+import { getCustomizeUrl } from '../themes/helpers';
+import productsValues from 'lib/products-values';
+import PublishMenu from './publish-menu';
+import Sidebar from 'layout/sidebar';
+import SidebarHeading from 'layout/sidebar/heading';
+import SidebarItem from 'layout/sidebar/item';
+import SidebarMenu from 'layout/sidebar/menu';
+import SidebarRegion from 'layout/sidebar/region';
+import SiteStatsStickyLink from 'components/site-stats-sticky-link';
 import Button from 'components/button';
+import Gridicon from 'components/gridicon';
 import SidebarButton from 'layout/sidebar/button';
 import SidebarFooter from 'layout/sidebar/footer';
 import { isPersonal, isPremium, isBusiness } from 'lib/products-values';
+import { getSelectedSite, getSelectedSiteId } from 'state/ui/selectors';
+import { getSites, isSitePreviewable, isJetpackModuleActive, isJetpackMinimumVersion } from 'state/sites/selectors';
+import { localize } from 'i18n-calypso';
 
-module.exports = React.createClass( {
-	displayName: 'MySitesSidebar',
-
+export const MySitesSidebar = React.createClass( {
 	componentDidMount: function() {
 		debug( 'The sidebar React component is mounted.' );
 	},
@@ -42,8 +43,8 @@ module.exports = React.createClass( {
 	},
 
 	onPreviewSite( event ) {
-		const site = this.getSelectedSite();
-		if ( site.is_previewable && ! event.metaKey && ! event.ctrlKey ) {
+		const { selectedSite } = this.props;
+		if ( selectedSite.is_previewable && ! event.metaKey && ! event.ctrlKey ) {
 			event.preventDefault();
 			this.props.layoutFocus.set( 'preview' );
 		}
@@ -78,27 +79,26 @@ module.exports = React.createClass( {
 	},
 
 	isSingle: function() {
-		return !! ( this.props.sites.getSelectedSite() || this.props.sites.get().length === 1 );
+		return !! ( this.props.selectedSite || this.props.sites.length === 1 );
 	},
 
 	getSingleSiteDomain: function() {
-		if ( this.props.sites.selected ) {
-			return this.getSelectedSite().slug;
+		if ( this.props.selectedSite ) {
+			return this.props.selectedSite.slug;
 		}
 
-		return this.props.sites.getPrimary().slug;
+		return this.props.sites[ 0 ].slug;
 	},
 
 	getSelectedSite: function() {
-		if ( this.props.sites.get().length === 1 ) {
-			return this.props.sites.getPrimary();
+		if ( this.props.sites.length === 1 ) {
+			return this.props.sites[ 0 ];
 		}
-
-		return this.props.sites.getSelectedSite();
+		return this.props.selectedSite || false;
 	},
 
 	hasJetpackSites: function() {
-		return this.props.sites.get().some( function( site ) {
+		return this.props.sites.some( function( site ) {
 			return site.jetpack;
 		} );
 	},
@@ -110,7 +110,6 @@ module.exports = React.createClass( {
 	publish: function() {
 		return (
 			<PublishMenu site={ this.getSelectedSite() }
-				sites={ this.props.sites }
 				siteSuffix={ this.siteSuffix() }
 				isSingle={ this.isSingle() }
 				itemLinkClass={ this.itemLinkClass }
@@ -162,7 +161,7 @@ module.exports = React.createClass( {
 			jetpackEnabled = config.isEnabled( 'manage/themes-jetpack' ),
 			themesLink;
 
-		if ( site && ! site.isCustomizable() ) {
+		if ( site && ! site.is_customizable ) {
 			return null;
 		}
 
@@ -247,9 +246,9 @@ module.exports = React.createClass( {
 			}
 		}
 
-		if ( ! this.props.sites.canManageSelectedOrAll() ) {
-			return null;
-		}
+		//if ( ! this.props.sites.canManageSelectedOrAll() ) {
+		//		return null;
+		//	}
 
 		if ( ( this.isSingle() && site.jetpack ) || ( ! this.isSingle() && this.hasJetpackSites() ) ) {
 			addPluginsLink = '/plugins/browse' + this.siteSuffix();
@@ -382,9 +381,10 @@ module.exports = React.createClass( {
 		}
 
 		if (
-			site.jetpack &&
-			! site.isModuleActive( 'publicize' ) &&
-			( ! site.isModuleActive( 'sharedaddy' ) || site.versionCompare( '3.4-dev', '<' ) )
+				site.jetpack &&
+				! this.props.siteHasJetpackModuleActive( 'publicize' ) &&
+				( ! this.props.siteHasJetpackModuleActive( 'sharedaddy' ) ||
+				this.props.isJetpackMinimumVersion( '3.4-dev' ) )
 		) {
 			return null;
 		}
@@ -680,7 +680,6 @@ module.exports = React.createClass( {
 			<Sidebar>
 				<SidebarRegion>
 				<CurrentSite
-					sites={ this.props.sites }
 					siteCount={ this.props.user.get().visible_site_count }
 					onClick={ this.onPreviewSite }
 				/>
@@ -748,3 +747,12 @@ module.exports = React.createClass( {
 		);
 	}
 } );
+
+export default connect( ( state ) => ( {
+	selectedSite: getSelectedSite( state ),
+	selectedSiteId: getSelectedSiteId( state ),
+	siteHasJetpackModuleActive: ( module ) => isJetpackModuleActive( state, getSelectedSiteId( state ), module ),
+	isJetpackMinimumVersion: ( version ) => isJetpackMinimumVersion( state, getSelectedSiteId( state ), version ),
+	isSitePreviewable: isSitePreviewable( state, getSelectedSiteId( state ) ),
+	sites: getSites( state ),
+} ), { } )( localize( MySitesSidebar ) );
