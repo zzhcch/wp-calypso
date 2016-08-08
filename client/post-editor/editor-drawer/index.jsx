@@ -246,6 +246,18 @@ const EditorDrawer = React.createClass( {
 		);
 	},
 
+	renderCopyPost: function() {
+		const { type, post, site } = this.props;
+
+		return (
+			<CopyPostAccordion
+				type={ type }
+				post={ post }
+				site={ site }
+			/>
+		);
+	},
+
 	renderMoreOptions: function() {
 		if (
 			! this.currentPostTypeSupports( 'excerpt' ) &&
@@ -292,6 +304,7 @@ const EditorDrawer = React.createClass( {
 				{ this.renderSharing() }
 				{ this.renderPostFormats() }
 				{ this.renderSeo() }
+				{ this.renderCopyPost() }
 				{ this.renderMoreOptions() }
 			</div>
 		);
