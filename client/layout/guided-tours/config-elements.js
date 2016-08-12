@@ -26,6 +26,7 @@ import Button from 'components/button';
 import ExternalLink from 'components/external-link';
 import { tourBranching } from './config-parsing';
 import {
+	query,
 	posToCss,
 	getStepPosition,
 	getValidatedArrowPosition,
@@ -110,12 +111,15 @@ export class Step extends Component {
 
 	constructor( props, context ) {
 		super( props, context );
+		this.scrollContainer = query( props.scrollContainer )[ 0 ] || global.window;
 	}
-
 	componentWillMount() {
 		this.skipIfInvalidContext( this.props, this.context );
-		this.scrollContainer = query( this.props.scrollContainer )[ 0 ] || global.window;
 		this.setStepPosition( this.props );
+	}
+	componentDidMount() {
+		global.window.addEventListener( 'resize', this.onScrollOrResize );
+		this.scrollContainer.addEventListener( 'scroll', this.onScrollOrResize );
 	}
 
 	componentDidMount() {
@@ -124,16 +128,24 @@ export class Step extends Component {
 
 	componentWillReceiveProps( nextProps, nextContext ) {
 		this.skipIfInvalidContext( nextProps, nextContext );
-		this.scrollContainer.removeEventListener( 'scroll', this.onScrollOrResize );
+		this.setStepPosition( nextProps );
 		this.scrollContainer = query( nextProps.scrollContainer )[ 0 ] || global.window;
-		this.scrollContainer.addEventListener( 'scroll', this.onScrollOrResize );
-		const shouldScrollTo = nextProps.shouldScrollTo && ( this.props.name !== nextProps.name );
-		this.setStepPosition( nextProps, shouldScrollTo );
+	}
+
+	shouldComponentUpdate( nextProps, nextState ) {
+		return this.props !== nextProps || this.state !== nextState;
 	}
 
 	componentWillUnmount() {
 		global.window.removeEventListener( 'resize', this.onScrollOrResize );
 		this.scrollContainer.removeEventListener( 'scroll', this.onScrollOrResize );
+
+	}
+
+	onScrollOrResize = debounce( () => {
+		this.setStepPosition( this.props );
+	}, 100 )
+
 	}
 
 	skipIfInvalidContext( props, context ) {
@@ -143,13 +155,9 @@ export class Step extends Component {
 		}
 	}
 
-	onScrollOrResize = debounce( () => {
-		this.setStepPosition( this.props );
-	}, 50 )
-
-	setStepPosition( props, shouldScrollTo ) {
+	setStepPosition( props ) {
 		const { placement, target } = props;
-		const stepPos = getStepPosition( { placement, targetSlug: target, shouldScrollTo } );
+		const stepPos = getStepPosition( { placement, targetSlug: target } );
 		const stepCoords = posToCss( stepPos );
 		this.setState( { stepPos, stepCoords } );
 	}
@@ -284,6 +292,7 @@ export class Continue extends Component {
 
 		if ( click && ! when && targetNode && targetNode.addEventListener ) {
 			targetNode.addEventListener( 'click', this.onContinue );
+			targetNode.addEventListener( 'touchstart', this.onContinue );
 		}
 	}
 
@@ -293,6 +302,7 @@ export class Continue extends Component {
 
 		if ( click && ! when && targetNode && targetNode.removeEventListener ) {
 			targetNode.removeEventListener( 'click', this.onContinue );
+			targetNode.removeEventListener( 'touchstart', this.onContinue );
 		}
 	}
 
