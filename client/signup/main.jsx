@@ -245,18 +245,15 @@ const Signup = React.createClass( {
 		// Update the Flows object to know that the signup flow is being resumed.
 		flows.resumingFlow = true;
 
-		const signupProgress = SignupProgressStore.get(),
-			lastUpdatedStep = sortBy( signupProgress, 'lastUpdated' ).reverse()[ 0 ],
-			lastUpdatedStepName = lastUpdatedStep.stepName,
-			stepSectionName = lastUpdatedStep.stepSectionName,
-			resumingStep = lastUpdatedStepName || this.firstUnsubmittedStepName();
+		const firstUnsubmittedStep = this.firstUnsubmittedStepName(),
+			stepSectionName = firstUnsubmittedStep.stepSectionName;
 
 		// set `resumingStep` so we don't render/animate anything until we have mounted this step
-		this.setState( { resumingStep } );
+		this.setState( { firstUnsubmittedStep } );
 
 		return page.redirect( utils.getStepUrl(
 			this.props.flowName,
-			resumingStep,
+			firstUnsubmittedStep,
 			stepSectionName,
 			this.props.locale
 		) );
