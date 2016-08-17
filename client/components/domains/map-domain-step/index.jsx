@@ -2,7 +2,6 @@
  * External dependencies
  */
 var React = require( 'react' ),
-	endsWith = require( 'lodash/endsWith' ),
 	page = require( 'page' ),
 	connect = require( 'react-redux' ).connect;
 
@@ -159,10 +158,6 @@ var MapDomainStep = React.createClass( {
 		event.preventDefault();
 		this.recordEvent( 'formSubmit', this.state.searchQuery );
 		this.setState( { suggestion: null, notice: null } );
-
-		if ( endsWith( domain, '.blog' ) ) {
-			return this.handleValidationErrorMessage( domain, { code: 'dotblog_domain' } );
-		}
 
 		canMap( domain, error => {
 			if ( error ) {
