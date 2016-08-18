@@ -7,16 +7,13 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import { translate } from 'i18n-calypso';
 import {
-	chunk,
 	debounce,
 	defer,
 	find,
 	flatMap,
-	fromPairs,
 	mapValues,
 	omit,
 	property,
-	zipObject,
 } from 'lodash';
 
 /**
@@ -352,7 +349,7 @@ export class Continue extends Component {
 		this.removeTargetListener();
 	}
 
-	componentDidUpdate( prevProps, prevState ) {
+	componentDidUpdate() {
 		this.quitIfInvalidRoute( this.props, this.context );
 		this.addTargetListener();
 	}
@@ -438,21 +435,6 @@ const branching = element => {
 	return flatMap(
 		React.Children.toArray( element.props.children ),
 		c => branching( c ) || []
-	);
-};
-
-const tourBranching = tourTree => {
-	const steps = React.Children
-		.toArray( tourTree.props.children );
-
-	const stepsBranching = steps
-		.map( branching )
-		.map( xs => chunk( xs, 2 ) )
-		.map( fromPairs );
-
-	return zipObject(
-		steps.map( property( 'props.name' ) ),
-		stepsBranching
 	);
 };
 
