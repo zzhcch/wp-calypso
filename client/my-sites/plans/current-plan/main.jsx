@@ -32,6 +32,7 @@ import TrackComponentView from 'lib/analytics/track-component-view';
 import PlansNavigation from 'my-sites/upgrades/navigation';
 import { isPlanFeaturesEnabled } from 'lib/plans';
 import PlanIcon from 'components/plans/plan-icon';
+import Column from 'layout/column';
 
 const PlanDetailsComponent = React.createClass( {
 	PropTypes: {
@@ -123,51 +124,53 @@ const PlanDetailsComponent = React.createClass( {
 					path={ this.props.context.path }
 					selectedSite={ selectedSite }
 				/>
-				<Card>
-					<div className="current-plan__header">
-						<div className="current-plan__header-content">
-							<div className="current-plan__header-icon">
-								{
-									currentPlan &&
-										<PlanIcon plan={ currentPlan } />
-								}
-							</div>
+				<Column width={ 720 }>
+					<Card>
+						<div className="current-plan__header">
+							<div className="current-plan__header-content">
+								<div className="current-plan__header-icon">
+									{
+										currentPlan &&
+											<PlanIcon plan={ currentPlan } />
+									}
+								</div>
 
-							<div className="current-plan__header-copy">
-								<h1 className={ classNames( {
-									'current-plan__header-heading': true,
-									'is-placeholder': ! hasLoadedFromServer
-								} ) }>
-									{ title }
-								</h1>
+								<div className="current-plan__header-copy">
+									<h1 className={ classNames( {
+										'current-plan__header-heading': true,
+										'is-placeholder': ! hasLoadedFromServer
+									} ) }>
+										{ title }
+									</h1>
 
-								<h2 className={ classNames( {
-									'current-plan__header-text': true,
-									'is-placeholder': ! hasLoadedFromServer
-								} ) }>
-									{ tagLine }
-								</h2>
+									<h2 className={ classNames( {
+										'current-plan__header-text': true,
+										'is-placeholder': ! hasLoadedFromServer
+									} ) }>
+										{ tagLine }
+									</h2>
+								</div>
 							</div>
 						</div>
-					</div>
-					{ featuresList }
-				</Card>
-				<Card>
-					<HappinessSupport
-						isJetpack={ !! this.props.selectedSite.jetpack }
-						isPlaceholder={ false } />
-				</Card>
-				{ selectedSite &&
-					<Card
-						href={
-							isPlanFeaturesEnabled()
-								? `/plans/${ selectedSite.slug }`
-								: `/plans/compare/${ selectedSite.slug }`
-						}
-					>
-						{ this.translate( 'Missing some features? Compare our different plans' ) }
+						{ featuresList }
 					</Card>
-				}
+					<Card>
+						<HappinessSupport
+							isJetpack={ !! this.props.selectedSite.jetpack }
+							isPlaceholder={ false } />
+					</Card>
+					{ selectedSite &&
+						<Card
+							href={
+								isPlanFeaturesEnabled()
+									? `/plans/${ selectedSite.slug }`
+									: `/plans/compare/${ selectedSite.slug }`
+							}
+						>
+							{ this.translate( 'Missing some features? Compare our different plans' ) }
+						</Card>
+					}
+				</Column>
 				<TrackComponentView eventName={ 'calypso_plans_my-plan_view' } />
 			</Main>
 		);
