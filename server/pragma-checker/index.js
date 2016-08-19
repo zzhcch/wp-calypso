@@ -15,6 +15,10 @@ var IGNORED_MODULES = [
 	'lib/wp', // Different modules on client & server
 	'lib/formatting', // Different modules on client & server
 	'i18n-calypso', // ignore this until we make it work properly on the server
+	'my-sites/themes/thanks-modal', // stubbed on the server until we develop an isomorphic version
+	'my-sites/themes/themes-site-selector-modal', // stubbed on the server until we develop an isomorphic version
+	'state/ui/editor/selectors', // stubbed on the server until all the dependencies are @ssr-ready
+	'state/posts/selectors', // stubbed on the server until all the dependencies are @ssr-ready
 ];
 
 function PragmaCheckPlugin( options ) {
