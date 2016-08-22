@@ -168,7 +168,7 @@ const SiteSettingsFormWriting = React.createClass( {
 						</FormSelect>
 					</FormFieldset>
 
-					{ config.isEnabled( 'manage/custom-post-types' ) && this.props.jetpackVersionSupportsCustomTypes && (
+					{ config.isEnabled( 'manage/custom-post-types' ) && (
 						<CustomPostTypeFieldset
 							requestingSettings={ this.state.fetchingSettings }
 							value={ pick( this.state, 'jetpack_testimonial', 'jetpack_portfolio' ) }
