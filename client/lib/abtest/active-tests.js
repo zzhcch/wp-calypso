@@ -61,6 +61,14 @@ module.exports = {
 		defaultVariation: 'pressable',
 		allowExistingUsers: false,
 	},
+	signupSurveyStep: {
+		datestamp: '20160825',
+		variations: {
+			surveyStepV1: 80,
+			surveyStepV2: 20,
+		},
+		defaultVariation: 'surveyStepV1'
+	},
 	signupThemePreview: {
 		datestamp: '20160727',
 		variations: {
@@ -68,14 +76,6 @@ module.exports = {
 			hideThemePreview: 80,
 		},
 		defaultVariation: 'hideThemePreview',
-	},
-	signupVerticals: {
-		datestamp: '20160825',
-		variations: {
-			verticalsV1: 80,
-			verticalsV2: 20,
-		},
-		defaultVariation: 'verticalsV1'
 	},
 	readerSearchSuggestions: {
 		datestamp: '20160804',
