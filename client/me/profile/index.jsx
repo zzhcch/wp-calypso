@@ -35,8 +35,6 @@ import QueryPreferences from 'components/data/query-preferences';
 
 const debug = debugFactory( 'calypso:me:profile' );
 
-export default React.createClass( {
-
 const Profile = React.createClass( {
 
 	mixins: [ formBase, LinkedStateMixin, protectForm.mixin, observe( 'userSettings' ), eventRecorder ],
@@ -143,6 +141,7 @@ const Profile = React.createClass( {
 				<ProfileLinks userProfileLinks={ userProfileLinks } />
 				<SectionHeader label={ this.translate( 'User Interface' ) } />
 				<Card>
+					<QueryPreferences />
 					<FormLabel>Collapse Sidebar</FormLabel>
 					<FormToggle
 						checked={ this.props.sidebarCollapsed }

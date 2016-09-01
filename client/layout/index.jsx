@@ -42,6 +42,7 @@ import { hasSidebar } from 'state/ui/selectors';
 import { isHappychatOpen } from 'state/ui/happychat/selectors';
 import SitePreview from 'blocks/site-preview';
 import { getCurrentLayoutFocus } from 'state/ui/layout-focus/selectors';
+import { getPreference } from 'state/preferences/selectors';
 import DocumentHead from 'components/data/document-head';
 
 if ( config.isEnabled( 'keyboard-shortcuts' ) ) {
@@ -187,7 +188,7 @@ Layout = React.createClass( {
 				`focus-${this.props.currentLayoutFocus}`,
 				{ 'is-support-user': this.props.isSupportUser },
 				{ 'has-no-sidebar': ! this.props.hasSidebar },
-				{ 'has-collapsed-sidebar': this.props.isSidebarCollapsed }
+				{ 'has-collapsed-sidebar': this.props.isSidebarCollapsed },
 				{ 'wp-singletree-layout': !! this.props.primary },
 				{ 'has-chat': this.props.chatIsOpen }
 			),
@@ -240,7 +241,7 @@ export default connect(
 			hasSidebar: hasSidebar( state ),
 			isOffline: isOffline( state ),
 			currentLayoutFocus: getCurrentLayoutFocus( state ),
-			isSidebarCollapsed: getPreference( state, 'sidebar-collapsed' )
+			isSidebarCollapsed: getPreference( state, 'sidebar-collapsed' ),
 			chatIsOpen: isHappychatOpen( state )
 		};
 	}
