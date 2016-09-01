@@ -15,3 +15,18 @@
 .sidebar .profile-gravatar {
 	flex-shrink: 0;
 }
+
+.layout.has-collapsed-sidebar {
+	.profile-gravatar__edit {
+		width: 50px;
+		height: 50px;
+	}
+	.profile-gravatar__user-display-name,
+	.profile-gravatar__user-secondary-info {
+		display: none;
+	}
+
+	.me-sidebar__signout-button {
+		margin: 16px 8px 0;
+	}
+}

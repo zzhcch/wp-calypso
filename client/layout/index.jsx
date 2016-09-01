@@ -223,7 +223,8 @@ Layout = React.createClass( {
 				</div>
 				<TranslatorLauncher
 					isEnabled={ translator.isEnabled() }
-					isActive={ translator.isActivated() }/>
+					isActive={ translator.isActivated() }
+				/>
 				{ this.renderPreview() }
 				{ config.isEnabled( 'happychat' ) && this.props.chatIsOpen && <Happychat /> }
 			</div>
