@@ -11,7 +11,9 @@ import SignupActions from 'lib/signup/actions';
 import analytics from 'lib/analytics';
 import verticals from './verticals';
 import Button from 'components/button';
+import Card from 'components/card';
 import Gridicon from 'components/gridicon';
+import FormTextInput from 'components/forms/form-text-input';
 
 export default React.createClass( {
 	displayName: 'SurveyStepV2',
@@ -29,7 +31,9 @@ export default React.createClass( {
 	getInitialState() {
 		return {
 			shouldShowOther: false,
-			verticalList: verticals.get()
+			otherQuery: '',
+			verticalList: verticals.get(),
+			otherVerticalList: verticals.getOther(),
 		};
 	},
 
@@ -42,8 +46,34 @@ export default React.createClass( {
 		);
 	},
 
+	renderOtherListItem( item ) {
+		return <Card href="#" compact className="survey__vertical-other-card" >{ item.label }</Card>;
+	},
+
+	renderOtherList() {
+		if ( this.state.otherQuery === '' ) {
+			return;
+		}
+		let query = this.state.otherQuery.toLowerCase();
+		return this.state.otherVerticalList
+			.filter( ( item ) => {
+				return item.label.toLowerCase().indexOf( query ) !== -1 ||
+					( item.synonyms && item.synonyms.toLowerCase().indexOf( query ) !== -1 );
+			} )
+			.slice( 0, 6 )
+			.map( this.renderOtherListItem );
+	},
+
 	renderOther() {
-		return 'Other';
+		return <div className="survey__vertical-other">
+			<FormTextInput
+				className="survey__vertical-other-text-field"
+				ref={ this.handleOtherTextFieldRef }
+				placeholder={ this.translate( 'Please describe your site' ) }
+				onChange={ this.handleOtherTextFieldChange }
+			/>
+			{ this.renderOtherList() }
+		</div>
 	},
 
 	renderOptionList() {
@@ -92,5 +122,17 @@ export default React.createClass( {
 			{ surveySiteType: this.props.surveySiteType, surveyQuestion: vertical.value }
 		);
 		this.props.goToNextStep();
+	},
+
+	handleOtherTextFieldRef( input ) {
+		if ( input && input.refs && input.refs.textField ) {
+			input.refs.textField.focus();
+		}
+	},
+
+	handleOtherTextFieldChange( e ) {
+		this.setState( {
+			otherQuery: e.target.value
+		} );
 	}
 } );
