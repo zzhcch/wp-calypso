@@ -25,10 +25,9 @@ import Button from 'components/button';
 import ExternalLink from 'components/external-link';
 import { tourBranching } from './config-parsing';
 import {
-	query,
-	posToCss,
 	getStepPosition,
 	getValidatedArrowPosition,
+	posToCss,
 	query,
 	targetForSlug
 } from './positioning';
