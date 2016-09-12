@@ -1,12 +1,12 @@
 /**
  * External dependencies
  */
-var config = require( 'config' );
+const config = require( 'config' );
 
 /**
  * Module variables
  */
-var sections,
+let sections,
 	editorPaths;
 
 sections = [
@@ -390,5 +390,13 @@ if ( config.isEnabled( 'happychat' ) ) {
 		secondary: true
 	} );
 }
+
+sections.push( {
+	name: 'profile',
+	paths: [ '/profile' ],
+	module: 'profile',
+	group: 'profile',
+	secondary: true
+} );
 
 module.exports = sections;
