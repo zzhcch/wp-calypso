@@ -339,6 +339,7 @@ if ( config.isEnabled( 'help' ) ) {
 		paths: [ '/help' ],
 		module: 'me/help',
 		secondary: true,
+		enableLoggedOut: true,
 		group: 'me'
 	} );
 }

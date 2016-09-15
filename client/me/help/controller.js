@@ -17,8 +17,23 @@ import { renderWithReduxStore } from 'lib/react-helpers';
 import HelpComponent from './main';
 import CoursesComponent from './help-courses';
 import ContactComponent from './help-contact';
+import userUtils from 'lib/user/utils';
+import support from 'lib/url/support';
 
 export default {
+	loggedOut( context, next ) {
+		if ( userUtils.isLoggedIn() ) {
+			return next();
+		}
+
+		if ( context.path === '/help' ) {
+			window.location.href = support.SUPPORT_ROOT;
+			return;
+		}
+
+		window.location.href = userUtils.getLoginUrl( window.location.href );
+	},
+
 	help( context ) {
 		const basePath = route.sectionify( context.path );
 

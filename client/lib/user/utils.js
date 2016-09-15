@@ -10,6 +10,16 @@ var debug = require( 'debug' )( 'calypso:user:utilities' ),
 var user = require( 'lib/user' )();
 
 var userUtils = {
+	getLoginUrl: function( redirect ) {
+		let url = config( 'login_url' );
+
+		if ( redirect ) {
+			url += '?redirect_to=' + encodeURIComponent( redirect );
+		}
+
+		return url;
+	},
+
 	getLogoutUrl: function( redirect ) {
 		var url = '/logout',
 			userData = user.get(),
