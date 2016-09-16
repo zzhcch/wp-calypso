@@ -11,6 +11,7 @@ import isEqual from 'lodash/isEqual';
  * Internal dependencies
  */
 import CompactCard from 'components/card/compact';
+import Card from 'components/card';
 import PluginIcon from 'my-sites/plugins/plugin-icon/plugin-icon';
 import PluginsActions from 'lib/plugins/actions';
 import PluginActivateToggle from 'my-sites/plugins/plugin-activate-toggle';
@@ -68,12 +69,6 @@ module.exports = React.createClass( {
 
 	ago( date ) {
 		return i18n.moment.utc( date, 'YYYY-MM-DD hh:mma' ).fromNow();
-	},
-
-	hasUpdate() {
-		return this.props.sites.some( function( site ) {
-			return site.plugin && site.plugin.update && site.canUpdateFiles;
-		} );
 	},
 
 	doing() {
@@ -164,7 +159,7 @@ module.exports = React.createClass( {
 				);
 			}
 		}
-		if ( this.hasUpdate() ) {
+		if ( this.props.hasUpdate( pluginData ) ) {
 			return this.renderUpdateFlag();
 		}
 
@@ -268,7 +263,7 @@ module.exports = React.createClass( {
 			numberOfWarningIcons++;
 		}
 
-		if ( this.hasUpdate() ) {
+		if ( this.props.hasUpdate( plugin ) ) {
 			numberOfWarningIcons++;
 		}
 
@@ -299,9 +294,11 @@ module.exports = React.createClass( {
 				</div>
 			);
 		}
+
+		const CardType = this.props.isCompact ? CompactCard : Card;
 		return (
 			<div>
-				<CompactCard className="plugin-item">
+				<CardType className="plugin-item">
 					{ ! this.props.isSelectable
 						? null
 						: <input className="plugin-item__checkbox"
@@ -317,7 +314,7 @@ module.exports = React.createClass( {
 						{ this.pluginMeta( plugin ) }
 					</a>
 					{ this.props.selectedSite ? this.renderActions() : this.renderSiteCount() }
-				</CompactCard>
+				</CardType>
 				{ errorNotices }
 			</div>
 		);
