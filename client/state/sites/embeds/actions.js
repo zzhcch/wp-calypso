@@ -23,7 +23,7 @@ export function fetchSiteEmbeds( siteId ) {
 			.site( siteId )
 			.embeds( {} )
 			.then( fetchComplete )
-			.catch( fetchFailed );		
+			.catch( fetchFailed );
 	};
 }
 

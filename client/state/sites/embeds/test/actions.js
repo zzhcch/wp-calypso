@@ -16,12 +16,12 @@ import { fetchSiteEmbeds } from '../actions';
 import { useSandbox } from 'test/helpers/use-sinon';
 
 const embeds = [
-	"#^https?://on.aol.(ca|com|co.uk)/video/([a-zA-z0-9-_]+)-([\d]+)#",
-	"#https?://(www\.)?bandsintown.com/(\S+)#",
-	"#http://money.cnn.com(/video([a-zA-Z0-9\.\/_\-]+).cnnmoney).*#",
-	"#https?://(www\.)?dropbox\.com/s/([^/]+)/(.*)\.(jpg|jpeg|png|gif)#i",
-	"#^https?://(www.)?facebook\.com/([^/]+)/(posts|photos)/([^/]+)?#",
-	"#^https?://(www.)?facebook\.com/permalink.php\?([^\s]+)#"
+	'#^https?://on.aol.(ca|com|co.uk)/video/([a-zA-z0-9-_]+)-([\d]+)#',
+	'#https?://(www\.)?bandsintown.com/(\S+)#',
+	'#http://money.cnn.com(/video([a-zA-Z0-9\.\/_\-]+).cnnmoney).*#',
+	'#https?://(www\.)?dropbox\.com/s/([^/]+)/(.*)\.(jpg|jpeg|png|gif)#i',
+	'#^https?://(www.)?facebook\.com/([^/]+)/(posts|photos)/([^/]+)?#',
+	'#^https?://(www.)?facebook\.com/permalink.php\?([^\s]+)#'
 ];
 
 describe( 'actions', () => {
