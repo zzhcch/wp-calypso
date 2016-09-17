@@ -13,31 +13,31 @@ export class Greeting extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
-			nameLength: props.name.length
+			nameLength: props.name && props.name.length
 		};
 	}
 
 	componentWillMount() {
-		console.log( 'willmount', this );
+		//console.log( 'willmount', this );
 	}
 
 	componentDidMount() {
-		console.log( 'didmount', this );
+		//console.log( 'didmount', this );
 	}
 
 	componentWillReceiveProps( nextProps ) {
-		console.log( 'receiveProps', this, nextProps );
+		//console.log( 'receiveProps', this, nextProps );
 		this.setState( {
 			nameLength: nextProps.name.length
 		} );
 	}
 
 	componentDidUpdate( nextProps, nextState ) {
-		console.log( 'didupdate', nextProps, nextState );
+		//console.log( 'didupdate', nextProps, nextState );
 	}
 
 	componentWillUnmount() {
-		console.log( 'unmount', this );
+		//console.log( 'unmount', this );
 	}
 
 	render() {
