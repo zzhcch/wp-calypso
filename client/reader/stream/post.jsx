@@ -402,16 +402,22 @@ const Post = React.createClass( {
 				);
 			} );
 		}
+		
+		var myArray = ['http://nerdist.com/wp-content/uploads/2016/03/powerpuff-girls-wallpaper-new.jpg', 'http://i.huffpost.com/gen/1549246/images/o-POWERPUFF-GIRLS-facebook.jpg', 'http://www.dailygame.net/wp-content/uploads/2016/05/Powerpuff-girls-pictures-9-1.jpg'];  
+			
+		var randomUrl = myArray[Math.floor(Math.random() * myArray.length)];
 
 		return (
 			<Card tagName="article" onClick={ this.handleCardClick } className={ articleClasses }>
 
 				<PostErrors post={ post } />
-
+						
+				<img src={ randomUrl } />
+			
 				{ this.props.showPostHeader ? <PostHeader site={ site } siteUrl={ post.site_URL } showFollow={ this.props.showFollowInHeader } onSiteSelect={ this.pickSite } onSiteClick={ this.handleSiteClick } /> : null }
 
 				{ featuredImage }
-
+				
 				{ post.title ? <h1 className="reader__post-title"><a className="reader__post-title-link" href={ post.URL } target="_blank" rel="noopener noreferrer">{ post.title }</a></h1> : null }
 
 				<PostByline post={ post } site={ this.props.site } isDiscoverPost={ isDiscoverPost } />
