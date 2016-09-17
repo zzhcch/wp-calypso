@@ -1,4 +1,5 @@
 /** @ssr-ready **/
+import { find } from 'lodash';
 
 /**
  * Returns a user object by user ID.
@@ -9,4 +10,8 @@
  */
 export function getUser( state, userId ) {
 	return state.users.items[ userId ];
+}
+
+export function getUserByLogin( state, login ) {
+	return find( state.users.items, { username: login } );
 }

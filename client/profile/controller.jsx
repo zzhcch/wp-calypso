@@ -2,17 +2,18 @@
  * External Dependencies
  */
 import React from 'react';
-import ReactDom from 'react-dom';
 
 /**
  * Internal Dependencies
  */
 import ProfileMain from './main';
+import { renderWithReduxStore } from 'lib/react-helpers';
 
 export function userProfile( context ) {
 	const userId = context.params.user;
-	ReactDom.render(
+	renderWithReduxStore(
 		<ProfileMain userId={ userId } />,
-		document.getElementById( 'primary' )
+		document.getElementById( 'primary' ),
+		context.store
 	);
 }

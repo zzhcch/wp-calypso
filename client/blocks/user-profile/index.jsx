@@ -2,28 +2,21 @@
  * External Dependencies
  */
 import React from 'react';
+import { connect } from 'react-redux';
 
 /**
  * Internal Dependencies
  */
 import Gravatar from 'components/gravatar';
+import { getUserByLogin } from 'state/users/selectors';
 
-function getUserFromId( userId ) {
-	return {
-		ID: userId,
-		name: 'Len Bowery',
-		username: userId,
-		avatar_URL: null
-	};
-}
-
-export default function( { userId } ) {
-	const fakeUser = getUserFromId( userId );
+export function UserProfile( { user } ) {
 	return (
+		user ?
 		<div className="user-profile">
-			<Gravatar user={ fakeUser } size={ 96 } />
-			<h1 className="user-profile__name">{ fakeUser.name }</h1>
-			<h2 className="user-profile__username">{ fakeUser.username }</h2>
+			<Gravatar user={ user } size={ 96 } />
+			<h1 className="user-profile__name">{ user.name }</h1>
+			<h2 className="user-profile__username">{ user.username }</h2>
 			<section>
 				<h2>Posts</h2>
 				<ol>
@@ -32,5 +25,14 @@ export default function( { userId } ) {
 				</ol>
 			</section>
 		</div>
+		: <span>No user found</span>
 	);
 }
+
+export default connect(
+	( state, ownProps ) => {
+		return {
+			user: getUserByLogin( state, ownProps.userId )
+		};
+	}
+)( UserProfile );
