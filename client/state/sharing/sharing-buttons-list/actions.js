@@ -15,7 +15,7 @@ import {
  * @param  {Number}   siteId Site ID
  * @return {Function}        Action thunk
  */
-export function fetchButtons( siteId ) {
+export function fetchSharingButtons( siteId ) {
 	return ( dispatch ) => {
 		dispatch( {
 			type: SHARING_BUTTONS_LIST_FETCH,
@@ -25,9 +25,9 @@ export function fetchButtons( siteId ) {
 		return new Promise( ( resolve ) => {
 			wpcom.undocumented().sharingButtons( siteId, ( error, data ) => {
 				if ( error ) {
-					dispatch( failButtonsRequest( siteId, error ) );
+					dispatch( failSharingButtonsRequest( siteId, error ) );
 				} else {
-					dispatch( receiveButtons( siteId, data ) );
+					dispatch( receiveSharingButtons( siteId, data ) );
 				}
 
 				resolve();
@@ -44,7 +44,7 @@ export function fetchButtons( siteId ) {
  * @param  {Object} data   API response
  * @return {Object}        Action object
  */
-export function receiveButtons( siteId, data ) {
+export function receiveSharingButtons( siteId, data ) {
 	return {
 		type: SHARING_BUTTONS_LIST_FETCH_SUCCESS,
 		siteId,
@@ -60,7 +60,7 @@ export function receiveButtons( siteId, data ) {
  * @param  {Object} error  API response error
  * @return {Object}        Action object
  */
-export function failButtonsRequest( siteId, error ) {
+export function failSharingButtonsRequest( siteId, error ) {
 	return {
 		type: SHARING_BUTTONS_LIST_FETCH_FAILURE,
 		siteId,
