@@ -11,10 +11,9 @@ import { connect } from 'react-redux';
 import Gravatar from 'components/gravatar';
 import { getUserByLogin } from 'state/users/selectors';
 import { fetchUser } from 'state/users/actions';
-import Button from 'components/button';
 
 export function UserProfile( { user, userId, fetchUser } ) {
-	function fetch() {
+	if ( ! user ) {
 		fetchUser( userId );
 	}
 
@@ -22,19 +21,16 @@ export function UserProfile( { user, userId, fetchUser } ) {
 		user ?
 		<div className="user-profile">
 			<Gravatar user={ user } size={ 96 } />
-			<h1 className="user-profile__name">{ user.name }</h1>
-			<h2 className="user-profile__username">{ user.username }</h2>
-			<section>
-				<h2>Posts</h2>
-				<ol>
-					<li>post</li>
-					<li>post</li>
-				</ol>
-			</section>
+			<dl>
+				<dt>Name</dt>
+				<dd>{ user.name }</dd>
+				<dt>Username</dt>
+				<dd>{ user.username }</dd>
+				<dt>About</dt>
+				<dd>{ user.aboutMe }</dd>
+			</dl>
 		</div>
-		: <span>
-			No user data ...
-			<Button onClick={ fetch }>Fetch</Button></span>
+		: <span>Loading...</span>
 	);
 }
 
