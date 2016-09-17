@@ -1,0 +1,20 @@
+.hello-dolly {
+
+}
+
+
+.hello-dolly .greeting__name {
+	color: red;
+}
+
+.hello-dolly .greeting__name-length {
+	color: grey;
+}
+
+.hello-dolly .greeting .gravatar {
+	border: none;
+
+	@include breakpoint( '<660px' ) {
+		border: 6px solid yellow;
+	}
+}

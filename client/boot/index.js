@@ -7,7 +7,7 @@ if ( process.env.NODE_ENV === 'development' ) {
 /**
  * External dependencies
  */
-var React = require( 'react' ),
+let React = require( 'react' ),
 	ReactDom = require( 'react-dom' ),
 	store = require( 'store' ),
 	ReactInjection = require( 'react/lib/ReactInjection' ),
@@ -25,7 +25,7 @@ var React = require( 'react' ),
  * Internal dependencies
  */
 // lib/local-storage must be run before lib/user
-var config = require( 'config' ),
+let config = require( 'config' ),
 	abtestModule = require( 'lib/abtest' ),
 	getSavedVariations = abtestModule.getSavedVariations,
 	switchLocale = require( 'lib/i18n-utils/switch-locale' ),
@@ -57,7 +57,7 @@ import { getSelectedSiteId, getSectionName, isSectionIsomorphic } from 'state/ui
 import { setNextLayoutFocus, activateNextLayoutFocus } from 'state/ui/layout-focus/actions';
 
 function init() {
-	var i18nLocaleStringsObject = null;
+	let i18nLocaleStringsObject = null;
 
 	debug( 'Starting Calypso. Let\'s do this.' );
 
@@ -89,7 +89,7 @@ function init() {
 
 function setUpContext( reduxStore ) {
 	page( '*', function( context, next ) {
-		var parsed = url.parse( location.href, true );
+		const parsed = url.parse( location.href, true );
 
 		context.store = reduxStore;
 
@@ -141,7 +141,7 @@ function loadDevModulesAndBoot() {
 }
 
 function boot() {
-	var localeSlug;
+	let localeSlug;
 
 	init();
 
@@ -268,7 +268,7 @@ function reduxStoreReady( reduxStore ) {
 	page.exit( '*', require( 'lib/mixins/protect-form' ).checkFormHandler );
 
 	page( '*', function( context, next ) {
-		var path = context.pathname;
+		const path = context.pathname;
 
 		// Bypass this global handler for legacy routes
 		// to avoid bumping stats and changing focus to the content
