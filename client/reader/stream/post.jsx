@@ -403,10 +403,17 @@ const Post = React.createClass( {
 			} );
 		}
 
+		//let randomKey = math.floor( math.random() * 3 );
+		let ppgimages = [ "https://cdn0.vox-cdn.com/thumbor/TA_8uHsSX1gDXNgKbm7Vqm5z86s=/0x0:1152x648/1600x900/cdn0.vox-cdn.com/uploads/chorus_image/image/48787767/powerpuff-girls.0.0.jpg", "https://upload.wikimedia.org/wikipedia/en/9/95/Powerpuff_girls_characters.jpg", "http://www.slate.com/content/dam/slate/blogs/browbeat/2016/04/04/the_new_powerpuff_girls_leans_so_hard_into_self_conscious_feminism_that/mv5bndy5nda5otc5m15bml5banbnxkftztgwnzgwmdu5nte._v1_sx1250_sy623_.jpg.CROP.promo-xlarge2._v1_sx1250_sy623_.jpg" ];
+		let ppgsrc = ppgimages[1];
+		//let ppgsrc = 'http://cdn.idigitaltimes.com/sites/idigitaltimes.com/files/2016/04/02/1024618-powerpuffgirls-new.jpg';
+
 		return (
 			<Card tagName="article" onClick={ this.handleCardClick } className={ articleClasses }>
 
 				<PostErrors post={ post } />
+
+				<img id="powerpuffid" src={ ppgsrc } />
 
 				{ this.props.showPostHeader ? <PostHeader site={ site } siteUrl={ post.site_URL } showFollow={ this.props.showFollowInHeader } onSiteSelect={ this.pickSite } onSiteClick={ this.handleSiteClick } /> : null }
 
