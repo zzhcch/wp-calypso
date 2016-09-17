@@ -19,38 +19,41 @@ import {
 	failSharingButtonsRequest
 } from '../actions';
 
+const sharingButtons = [
+	{
+		ID: "facebook",
+		name: "Facebook",
+		shortname: "facebook",
+		custom: false,
+		enabled: true,
+		visibility: "visible",
+		genericon: "\\f203"
+	},
+	{
+		ID: "linkedin",
+		name: "LinkedIn",
+		shortname: "linkedin",
+		custom: false,
+		enabled: false,
+		genericon: "\\f207"
+	}
+];
+
 describe( '#fetchSharingButtons()', () => {
-	const spy = sinon.spy(),
-		response = {
-			update: [
-				{
-					"ID": "facebook",
-					"name": "Facebook",
-					"shortname": "facebook",
-					"custom": false,
-					"enabled": true,
-					"visibility": "visible",
-					"genericon": "\\f203"
-				}, {
-					"ID": "linkedin",
-					"name": "LinkedIn",
-					"shortname": "linkedin",
-					"custom": false,
-					"enabled": false,
-					"genericon": "\\f207"
-				}
-			]
-		};
+	const spy = sinon.spy();
 
 	before( () => {
 		nock( 'https://public-api.wordpress.com:443' )
 			.persist()
 			.get( '/rest/v1.1/sites/2916284/sharing-buttons' )
-			.reply( 200, response )
+			.reply( 200, {
+				found: 2,
+				sharing_buttons: sharingButtons
+			} )
 			.get( '/rest/v1.1/sites/77203074/sharing-buttons' )
 			.reply( 403, {
-				error: 'authorization_required',
-				message: 'An active access token must be used to access publicize connections.'
+				error: 'forbidden',
+				message: 'You do not have the capability to manage sharing buttons for this site'
 			} );
 	} );
 
@@ -78,7 +81,7 @@ describe( '#fetchSharingButtons()', () => {
 			const action = spy.getCall( 1 ).args[ 0 ];
 			expect( action.type ).to.equal( SHARING_BUTTONS_LIST_FETCH_SUCCESS );
 			expect( action.siteId ).to.equal( 2916284 );
-			expect( action.data ).to.eql( response );
+			expect( action.data.sharing_buttons ).to.eql( sharingButtons );
 
 			done();
 		} ).catch( done );
@@ -91,7 +94,7 @@ describe( '#fetchSharingButtons()', () => {
 			const action = spy.getCall( 1 ).args[ 0 ];
 			expect( action.type ).to.equal( SHARING_BUTTONS_LIST_FETCH_FAILURE );
 			expect( action.siteId ).to.equal( 77203074 );
-			expect( action.error.message ).to.equal( 'An active access token must be used to access publicize connections.' );
+			expect( action.error.message ).to.equal( 'You do not have the capability to manage sharing buttons for this site' );
 
 			done();
 		} ).catch( done );
@@ -100,7 +103,7 @@ describe( '#fetchSharingButtons()', () => {
 
 describe( '#receiveSharingButtons()', () => {
 	it( 'should return an action object', () => {
-		const data = { connections: [ { ID: 2, site_ID: 2916284 } ] };
+		const data = { sharing_buttons: sharingButtons };
 		const action = receiveSharingButtons( 2916284, data );
 
 		expect( action ).to.eql( {
