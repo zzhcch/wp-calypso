@@ -1,3 +1,5 @@
+import fetchJsonp from 'fetch-jsonp';
+
 /**
  * Internal dependencies
  */
@@ -29,11 +31,25 @@ export function receiveUser( user ) {
 
 export function fetchUser( userId ) {
 	return function( dispatch ) {
-		const fetch = mockApiFetch( userId );
+		const fetch = fetchJsonp( `https://gravatar.com/${ userId }.json` );
 		return fetch.then( response => {
+			return response.json();
+		} ).then( response => {
+			const user = response.entry[ 0 ];
+			user.ID = 'gravatar-' + user.id;
+			user.username = user.requestHash;
+			user.name = user.displayName;
+			user.avatar_URL = user.thumbnailUrl;
 			dispatch(
-				receiveUser( response )
+				receiveUser( user )
 			);
+		}, err => {
+			console.error( err );
+			receiveUser( {
+				ID: userId,
+				username: userId,
+				error: err
+			} );
 		} );
 	};
 }

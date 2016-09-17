@@ -2,6 +2,7 @@
  * External Dependencies
  */
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 /**
@@ -9,8 +10,14 @@ import { connect } from 'react-redux';
  */
 import Gravatar from 'components/gravatar';
 import { getUserByLogin } from 'state/users/selectors';
+import { fetchUser } from 'state/users/actions';
+import Button from 'components/button';
 
-export function UserProfile( { user } ) {
+export function UserProfile( { user, userId, fetchUser } ) {
+	function fetch() {
+		fetchUser( userId );
+	}
+
 	return (
 		user ?
 		<div className="user-profile">
@@ -25,7 +32,9 @@ export function UserProfile( { user } ) {
 				</ol>
 			</section>
 		</div>
-		: <span>No user found</span>
+		: <span>
+			No user data ...
+			<Button onClick={ fetch }>Fetch</Button></span>
 	);
 }
 
@@ -34,5 +43,10 @@ export default connect(
 		return {
 			user: getUserByLogin( state, ownProps.userId )
 		};
+	},
+	dispatch => {
+		return bindActionCreators( {
+			fetchUser
+		}, dispatch );
 	}
 )( UserProfile );
