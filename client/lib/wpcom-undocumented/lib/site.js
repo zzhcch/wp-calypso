@@ -114,7 +114,7 @@ UndocumentedSite.prototype.embeds = function( attributes, callback ) {
 		url += '/render';
 	}
 
-	this.wpcom.req.get( url, attributes, callback );
+	return this.wpcom.req.get( url, attributes, callback );
 };
 
 UndocumentedSite.prototype.shortcodes = function( attributes, callback ) {
