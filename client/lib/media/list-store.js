@@ -139,7 +139,7 @@ MediaListStore.isItemMatchingQuery = function( siteId, item ) {
 		// Since we're testing binary data, we match the title only.
 		//
 		// See: https://core.trac.wordpress.org/browser/tags/4.2.2/src/wp-includes/query.php#L2091
-		matches = item.title && -1 !== item.title.toLowerCase().indexOf( query.search.toLowerCase() );
+		//matches = item.title && -1 !== item.title.toLowerCase().indexOf( query.search.toLowerCase() );
 	}
 
 	if ( query.mime_type && matches ) {
