@@ -9,24 +9,22 @@ import noop from 'lodash/noop';
  */
 import Site from 'blocks/site';
 import FollowButton from 'reader/follow-button';
-
-function randomImage() {
-	let ppgImages = [ 'http://3.bp.blogspot.com/-ZSh6OGPAIlM/U5l4IPFEfKI/AAAAAAAAAvQ/YoqmKmhYagw/s1600/9.png', 'http://vignette4.wikia.nocookie.net/powerpuff/images/1/14/Buttercup-pic.png', 'http://vignette2.wikia.nocookie.net/powerpuff/images/e/e4/Bubbles_kicking.jpg' ];
-	let ppgirlNumber = Math.floor( Math.random() * 3 );
-	return ppgImages[ ppgirlNumber ];
-}
+import PowerPuff from 'components/power-puff-girls';
 
 const PostHeader = ( { site, siteUrl, showFollow, onSiteSelect, onSiteClick } ) => (
 
 	<div className="reader__post-header">
 		{ showFollow ? <FollowButton siteUrl={ siteUrl } /> : null }
 
-		<img id="ppg" src={ randomImage() } />
+		<PowerPuff girlName="Bubbles" />
 
 		<Site site={ site }
 			href={ siteUrl }
 			onSelect={ onSiteSelect }
 			onClick={ onSiteClick } />
+
+		<PowerPuff girlName="Buttercup" />
+
 	</div>
 );
 
