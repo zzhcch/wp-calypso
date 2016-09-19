@@ -40,7 +40,7 @@ export default class Button extends PureComponent {
 			className: classNames( 'button', this.props.className, {
 				'is-small': this.props.compact,
 				'is-important': this.props.primary,
-				'is-scary': this.props.scary,
+				'is-danger': this.props.scary,
 				'is-borderless': this.props.borderless
 			} )
 		} );
