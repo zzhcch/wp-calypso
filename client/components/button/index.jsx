@@ -38,7 +38,7 @@ export default class Button extends PureComponent {
 		return createElement( tag, {
 			...omit( this.props, omitProps ),
 			className: classNames( 'button', this.props.className, {
-				'is-compact': this.props.compact,
+				'is-small': this.props.compact,
 				'is-primary': this.props.primary,
 				'is-scary': this.props.scary,
 				'is-borderless': this.props.borderless
