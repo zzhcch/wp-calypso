@@ -220,7 +220,7 @@ const Post = React.createClass( {
 							src={ featuredImage }
 							style={ featuredSize }
 						/>
-					: <img className="reader__post-featured-image-image" src={ featuredImage } />
+					: <img className="reader__post-featured-image-image" />
 				}
 			</div>;
 	},
