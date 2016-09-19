@@ -11,7 +11,7 @@ import Site from 'blocks/site';
 import FollowButton from 'reader/follow-button';
 
 function  randomImage(){
-	var ppgImages = [ 'http://www.internationalhero.co.uk/p/ppbuttercup.jpg', 'http://www.internationalhero.co.uk/p/ppblossom.jpg', 'http://vignette2.wikia.nocookie.net/powerpuff/images/e/e4/Bubbles_kicking.jpg' ];
+	var ppgImages = [ 'http://3.bp.blogspot.com/-ZSh6OGPAIlM/U5l4IPFEfKI/AAAAAAAAAvQ/YoqmKmhYagw/s1600/9.png', 'http://www.internationalhero.co.uk/p/ppblossom.jpg', 'http://vignette2.wikia.nocookie.net/powerpuff/images/e/e4/Bubbles_kicking.jpg' ];
 	var ppgirlNumber = Math.floor(Math.random() * 3);
 	return ppgImages[ppgirlNumber];
 }
