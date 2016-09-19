@@ -22,19 +22,12 @@ export default React.createClass( {
 */
 
 	chooseGirl( girlName ) {
-
 		if ( girlName === 'Blossom' ) {
-
-			return 'http://3.bp.blogspot.com/-ZSh6OGPAIlM/U5l4IPFEfKI/AAAAAAAAAvQ/YoqmKmhYagw/s1600/9.png'
-
+			return 'http://3.bp.blogspot.com/-ZSh6OGPAIlM/U5l4IPFEfKI/AAAAAAAAAvQ/YoqmKmhYagw/s1600/9.png';
 		} else if ( girlName === 'Buttercup' ) {
-
-			return 'http://vignette4.wikia.nocookie.net/powerpuff/images/1/14/Buttercup-pic.png'
-
+			return 'http://vignette4.wikia.nocookie.net/powerpuff/images/1/14/Buttercup-pic.png';
 		} else if ( girlName === 'Bubbles' ) {
-
-			return 'http://vignette2.wikia.nocookie.net/powerpuff/images/e/e4/Bubbles_kicking.jpg'
-
+			return 'http://vignette2.wikia.nocookie.net/powerpuff/images/e/e4/Bubbles_kicking.jpg';
 		}
 	},
 
