@@ -9,8 +9,8 @@ import { localize } from 'i18n-calypso';
  */
 import CompactCard from 'components/card/compact';
 import {
-	Username,
 	Email,
+	Password,
 	CreateAccountTip,
 	SubmitSection,
 	WPOrgURL,
@@ -42,15 +42,15 @@ class Pressable extends Component {
 							'of our Happiness Engineers can get the transfer going for you.' ) }
 					</p>
 					<div>
-						<Username
-							value={ fieldValues.username }
-							onChange={ onFieldChange( 'username' ) }
-							hostLabel={ hostInfo.label }
-							disabled={ isSubmitting }
-						/>
 						<Email
 							value={ fieldValues.email }
 							onChange={ onFieldChange( 'email' ) }
+							hostLabel={ hostInfo.label }
+							disabled={ isSubmitting }
+						/>
+						<Password
+							value={ fieldValues.password }
+							onChange={ onFieldChange( 'password' ) }
 							hostLabel={ hostInfo.label }
 							disabled={ isSubmitting }
 						/>
@@ -74,4 +74,4 @@ class Pressable extends Component {
 	}
 }
 
-export default localize( SiteGround );
+export default localize( Pressable );
