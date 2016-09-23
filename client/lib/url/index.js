@@ -4,6 +4,8 @@
  * External dependencies
  */
 import startsWith from 'lodash/startsWith';
+import qsLib from 'qs';
+import urlLib from 'url';
 
 /**
  * Check if a URL is located outside of Calypso.
@@ -45,9 +47,19 @@ function withoutHttp( url ) {
 	return url.replace( urlWithoutHttpRegex, '' );
 }
 
+function addQueryArgs( url, query ) {
+	const parsedUrl = urlLib.parse( url );
+	const parsedQuery = qsLib.parse( parsedUrl.query );
+	const newQuery = { ...parsedQuery, ...query };
+	parsedUrl.search = qsLib.stringify( newQuery );
+
+	return urlLib.format( parsedUrl );
+}
+
 export default {
 	isOutsideCalypso,
 	isExternal,
 	isHttps,
-	withoutHttp
+	withoutHttp,
+	addQueryArgs,
 };

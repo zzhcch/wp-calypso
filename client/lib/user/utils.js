@@ -8,13 +8,14 @@ var debug = require( 'debug' )( 'calypso:user:utilities' ),
  * Internal dependencies
  */
 var user = require( 'lib/user' )();
+var addQueryArgs = require( 'lib/url' ).addQueryArgs;
 
 var userUtils = {
 	getLoginUrl: function( redirect ) {
-		let url = config( 'login_url' );
+		const url = config( 'login_url' );
 
 		if ( redirect ) {
-			url += '?redirect_to=' + encodeURIComponent( redirect );
+			return addQueryArgs( url, { redirect_to: redirect } );
 		}
 
 		return url;
