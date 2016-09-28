@@ -2,11 +2,18 @@
  * External dependencies
  */
 import { combineReducers } from 'redux';
+import { without } from 'lodash';
 
 /**
  * Internal dependencies
  */
-import { EDITOR_POST_ID_SET, EDITOR_SHOW_DRAFTS_TOGGLE } from 'state/action-types';
+import { createReducer } from 'state/utils';
+import {
+	EDITOR_EMBED_REVERSAL_QUEUE,
+	EDITOR_EMBED_REVERSAL_PENDING_REMOVE,
+	EDITOR_POST_ID_SET,
+	EDITOR_SHOW_DRAFTS_TOGGLE
+} from 'state/action-types';
 import imageEditor from './image-editor/reducer';
 import lastDraft from './last-draft/reducer';
 import contactForm from './contact-form/reducer';
@@ -45,10 +52,17 @@ export function showDrafts( state = false, action ) {
 	return state;
 }
 
+export const pendingEmbedReversals = createReducer( [], {
+	[ EDITOR_EMBED_REVERSAL_QUEUE ]: ( state, { markup } ) => [ ...state, markup ],
+	[ EDITOR_EMBED_REVERSAL_PENDING_REMOVE ]: ( state, { markup } ) => without( state, markup ),
+	[ EDITOR_POST_ID_SET ]: () => []
+} );
+
 export default combineReducers( {
 	postId,
 	showDrafts,
 	imageEditor,
+	pendingEmbedReversals,
 	lastDraft,
 	contactForm
 } );
