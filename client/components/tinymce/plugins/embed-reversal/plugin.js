@@ -18,7 +18,7 @@ function embedReversal( editor ) {
 	}
 
 	function replaceMarkup( markup, result ) {
-		if ( ! result ) {
+		if ( ! result || ! editor ) {
 			return;
 		}
 
