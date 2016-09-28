@@ -1,12 +1,7 @@
 /**
  * Internal dependencies
  */
-import {
-	EDITOR_EMBED_REVERSAL_QUEUE,
-	EDITOR_EMBED_REVERSAL_PENDING_REMOVE,
-	EDITOR_POST_ID_SET,
-	EDITOR_SHOW_DRAFTS_TOGGLE
-} from 'state/action-types';
+import { EDITOR_POST_ID_SET, EDITOR_SHOW_DRAFTS_TOGGLE } from 'state/action-types';
 
 /**
  * Returns an action object to be used in signalling that the editor should
@@ -31,19 +26,5 @@ export function setEditorPostId( postId ) {
 export function toggleEditorDraftsVisible() {
 	return {
 		type: EDITOR_SHOW_DRAFTS_TOGGLE
-	};
-}
-
-export function queueEditorEmbedReversal( markup ) {
-	return {
-		type: EDITOR_EMBED_REVERSAL_QUEUE,
-		markup
-	};
-}
-
-export function removePendingEditorEmbedReversal( markup ) {
-	return {
-		type: EDITOR_EMBED_REVERSAL_PENDING_REMOVE,
-		markup
 	};
 }

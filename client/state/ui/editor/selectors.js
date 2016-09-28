@@ -84,7 +84,3 @@ export function getEditorPath( state, siteId, postId, defaultType = 'post' ) {
 
 	return path;
 }
-
-export function getPendingEmbedReversals( state ) {
-	return state.ui.editor.pendingEmbedReversals;
-}

@@ -15,7 +15,6 @@ import componentsUsageStats from './components-usage-stats/reducer';
 import currentUser from './current-user/reducer';
 import documentHead from './document-head/reducer';
 import domains from './domains/reducer';
-import embeds from './embeds/reducer';
 import googleAppsUsers from './google-apps-users/reducer';
 import help from './help/reducer';
 import jetpackConnect from './jetpack-connect/reducer';
@@ -57,7 +56,6 @@ export const reducer = combineReducers( {
 	currentUser,
 	documentHead,
 	domains,
-	embeds,
 	googleAppsUsers,
 	happychat,
 	help,
