@@ -60,7 +60,8 @@ function embedReversal( editor ) {
 		wpcom.undocumented()
 			.site( getSelectedSiteId( store.getState() ) )
 			.embedReversal( markup )
-			.then( partial( replaceMarkup, markup ) );
+			.then( partial( replaceMarkup, markup ) )
+			.catch( () => {} );
 	}
 
 	// Bind paste event listeners to both Visual and HTML editors
