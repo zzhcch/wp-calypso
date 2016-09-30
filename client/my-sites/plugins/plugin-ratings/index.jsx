@@ -58,15 +58,19 @@ export default React.createClass( {
 				>
 					<span className="plugin-ratings__rating-tier-text">
 						{
-							this.translate( '%(ratingTier)s stars', {
-								args: { ratingTier }
+							this.translate( '%(ratingTier)s star', '%(ratingTier)s stars', {
+								count: ratingTier,
+ 								args: { ratingTier }
 							} )
 						}
 					</span>
 					<span className="plugin_ratings__bar">
 						<ProgressBar value={ numberOfRatings }
 							total={ numRatings }
-							title={ this.translate( '%(numberOfRatings)s ratings', { args: { numberOfRatings } } ) }
+							title={ this.translate( '%(numberOfRatings)s rating', '%(numberOfRatings)s ratings', {
+								count: numberOfRatings,
+								args: { numberOfRatings }
+							} ) }
 						/>
 					</span>
 				</a>

@@ -51,7 +51,8 @@
 }
 
 .plugin-ratings__rating-tier-text {
-	padding-right: 16px;
+	padding-right: 8px;
+	min-width: 48px;
 }
 
 .plugin-ratings__downloads {
@@ -59,7 +60,6 @@
 }
 
 .plugin_ratings__bar {
-	width: 78px;
 	display: inline-block;
 	flex-grow: 1;
 
