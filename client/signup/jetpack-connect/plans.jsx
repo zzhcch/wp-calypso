@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux';
  * Internal dependencies
  */
 import { getPlansBySite } from 'state/sites/plans/selectors';
+import { isCurrentPlanPaid } from 'state/sites/selectors';
 import { getFlowType } from 'state/jetpack-connect/selectors';
 import Main from 'components/main';
 import ConnectHeader from './connect-header';
@@ -25,8 +26,10 @@ import QueryPlans from 'components/data/query-plans';
 import QuerySitePlans from 'components/data/query-site-plans';
 import { requestPlans } from 'state/plans/actions';
 import { isRequestingPlans, getPlanBySlug } from 'state/plans/selectors';
+import { getSelectedSiteId } from 'state/ui/selectors';
 
 const CALYPSO_REDIRECTION_PAGE = '/posts/';
+const CALYPSO_PLAN_PAGE = '/plans/my-plan/';
 
 const Plans = React.createClass( {
 	mixins: [ observe( 'sites', 'plans' ) ],
@@ -59,7 +62,7 @@ const Plans = React.createClass( {
 
 	componentDidUpdate() {
 		if ( this.hasPlan( this.props.selectedSite ) ) {
-			page.redirect( CALYPSO_REDIRECTION_PAGE + this.props.selectedSite.slug );
+			page.redirect( CALYPSO_PLAN_PAGE + this.props.selectedSite.slug );
 		}
 		if ( ! this.props.canPurchasePlans ) {
 			page.redirect( CALYPSO_REDIRECTION_PAGE + this.props.selectedSite.slug );
@@ -151,7 +154,7 @@ const Plans = React.createClass( {
 						<div id="plans">
 							<PlansFeaturesMain
 								site={ this.props.selectedSite }
-								isInSignup={ false }
+								isInSignup={ ! this.props.hasPaidPlan }
 								isInJetpackConnect={ true }
 								onUpgradeClick={ this.selectPlan }
 								intervalType={ this.props.intervalType } />
@@ -172,8 +175,12 @@ export default connect(
 			return getPlanBySlug( state, planSlug );
 		};
 
+		const selectedSiteId = getSelectedSiteId( state );
+		const hasPaidPlan = isCurrentPlanPaid( state, selectedSiteId );
+
 		return {
 			selectedSite,
+			hasPaidPlan: hasPaidPlan,
 			sitePlans: getPlansBySite( state, selectedSite ),
 			jetpackConnectAuthorize: state.jetpackConnect.jetpackConnectAuthorize,
 			userId: user ? user.ID : null,
