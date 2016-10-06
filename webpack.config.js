@@ -13,7 +13,7 @@ var webpack = require( 'webpack' ),
 var config = require( './server/config' ),
 	sections = require( './client/sections' ),
 	ChunkFileNamePlugin = require( './server/bundler/plugin' ),
-	CopyWebpackPlugin = require( 'copy-webpack-plugin' ),
+	CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 	HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 /**
@@ -90,7 +90,7 @@ webpackConfig = {
 		} ),
 		new webpack.optimize.OccurenceOrderPlugin( true ),
 		new webpack.IgnorePlugin( /^props$/ ),
-		new CopyWebpackPlugin( [ { from: 'node_modules/flag-icon-css/flags', to: 'images/flags' } ] )
+		new CopyWebpackPlugin( [ { from: 'node_modules/flag-icon-css/flags/4x3', to: 'images/flags' } ] )
 	],
 	externals: [ 'electron' ]
 };
