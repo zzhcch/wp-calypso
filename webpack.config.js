@@ -113,7 +113,15 @@ if ( CALYPSO_ENV === 'desktop' || CALYPSO_ENV === 'desktop-mac-app-store' ) {
 jsLoader = {
 	test: /\.jsx?$/,
 	exclude: /node_modules/,
-	loaders: [ 'babel-loader?cacheDirectory' ]
+	loader: 'babel',
+	query: {
+		cacheDirectory: true,
+		plugins: [
+			[ 'transform-wpcalypso-async', {
+				async: config.isEnabled( 'code-splitting' )
+			} ]
+		]
+	}
 };
 
 if ( CALYPSO_ENV === 'development' ) {
