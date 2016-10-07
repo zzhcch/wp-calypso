@@ -44,6 +44,7 @@
 		"manage/plugins/cache": false,
 		"manage/plugins/setup": false,
 		"manage/posts": true,
+		"manage/media/media-section": false,
 		"manage/security": true,
 		"manage/seo": true,
 		"manage/sharing": true,
