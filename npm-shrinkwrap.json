@@ -244,9 +244,6 @@
     "babel-plugin-syntax-export-extensions": {
       "version": "6.13.0"
     },
-    "babel-plugin-syntax-flow": {
-      "version": "6.13.0"
-    },
     "babel-plugin-syntax-jsx": {
       "version": "6.8.0"
     },
@@ -328,9 +325,6 @@
     "babel-plugin-transform-export-extensions": {
       "version": "6.8.0"
     },
-    "babel-plugin-transform-flow-strip-types": {
-      "version": "6.14.0"
-    },
     "babel-plugin-transform-object-rest-spread": {
       "version": "6.16.0"
     },
@@ -339,12 +333,6 @@
     },
     "babel-plugin-transform-react-jsx": {
       "version": "6.8.0"
-    },
-    "babel-plugin-transform-react-jsx-self": {
-      "version": "6.11.0"
-    },
-    "babel-plugin-transform-react-jsx-source": {
-      "version": "6.9.0"
     },
     "babel-plugin-transform-regenerator": {
       "version": "6.16.1"
@@ -357,9 +345,6 @@
     },
     "babel-preset-es2015": {
       "version": "6.9.0"
-    },
-    "babel-preset-react": {
-      "version": "6.16.0"
     },
     "babel-preset-stage-2": {
       "version": "6.5.0"
@@ -702,9 +687,6 @@
         }
       }
     },
-    "config-chain": {
-      "version": "1.1.11"
-    },
     "configstore": {
       "version": "0.3.2",
       "dependencies": {
@@ -768,20 +750,10 @@
       "version": "1.6.0"
     },
     "cross-spawn": {
-      "version": "4.0.2",
-      "dependencies": {
-        "lru-cache": {
-          "version": "4.0.1"
-        }
-      }
+      "version": "4.0.2"
     },
     "cross-spawn-async": {
-      "version": "2.2.4",
-      "dependencies": {
-        "lru-cache": {
-          "version": "4.0.1"
-        }
-      }
+      "version": "2.2.4"
     },
     "crypt": {
       "version": "0.0.1"
@@ -991,14 +963,6 @@
     },
     "editions": {
       "version": "1.1.2"
-    },
-    "editorconfig": {
-      "version": "0.13.2",
-      "dependencies": {
-        "commander": {
-          "version": "2.9.0"
-        }
-      }
     },
     "ee-first": {
       "version": "1.1.1"
@@ -1314,9 +1278,6 @@
           "version": "1.0.1"
         }
       }
-    },
-    "express-react-views": {
-      "version": "0.10.1"
     },
     "extend": {
       "version": "3.0.0"
@@ -1690,9 +1651,6 @@
         },
         "commander": {
           "version": "2.9.0"
-        },
-        "lru-cache": {
-          "version": "4.0.1"
         }
       }
     },
@@ -1915,9 +1873,6 @@
     "js-base64": {
       "version": "2.1.9"
     },
-    "js-beautify": {
-      "version": "1.6.4"
-    },
     "js-tokens": {
       "version": "2.0.0"
     },
@@ -2133,7 +2088,7 @@
       "version": "1.0.0"
     },
     "lru-cache": {
-      "version": "3.2.0"
+      "version": "4.0.1"
     },
     "lunr": {
       "version": "0.5.7"
@@ -2637,9 +2592,6 @@
     "propagate": {
       "version": "0.4.0"
     },
-    "proto-list": {
-      "version": "1.2.4"
-    },
     "protochain": {
       "version": "1.0.5"
     },
@@ -2932,7 +2884,7 @@
       "version": "2.5.4",
       "dependencies": {
         "glob": {
-          "version": "7.1.0"
+          "version": "7.1.1"
         },
         "minimatch": {
           "version": "3.0.3"
