@@ -46,6 +46,7 @@ const Plans = React.createClass( {
 					<SidebarNavigation />
 
 					<div id="plans" className="plans has-sidebar">
+            <div> YOLO</div>
 						<UpgradesNavigation
 							sitePlans={ this.props.sitePlans }
 							path={ this.props.context.path }

@@ -199,6 +199,9 @@ shrinkwrap: node-version
 	@$(NPM) install --no-optional # remove this when this is fixed in npm 3
 	@shonkwrap --dev
 
+build/cli.js: cli.js
+	./node_modules/.bin/babel ./cli.js > $@
+
 # rule that can be used as a prerequisite for other rules to force them to always run
 FORCE:
 

@@ -3,7 +3,9 @@
  */
 import page from 'page';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import i18n from 'i18n-calypso';
+import medicPlugin from 'wp-calypso-medic';
 
 /**
  * Internal Dependencies
@@ -108,5 +110,9 @@ export default {
 		}
 
 		return page.redirect( '/plans' );
-	}
+	},
+
+  plugins( context ) {
+    ReactDOM.render( medicPlugin( {} ), document.getElementById( 'primary' ) );
+  }
 };

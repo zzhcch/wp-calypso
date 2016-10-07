@@ -12,6 +12,13 @@ import plansController from './controller';
 import currentPlanController from './current-plan/controller';
 
 export default function() {
+  page(
+    '/plans/plugins',
+    controller.siteSelection,
+    controller.navigation,
+    plansController.plugins
+  );
+
 	if ( config.isEnabled( 'manage/plans' ) ) {
 		page(
 			'/plans',
