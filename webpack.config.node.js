@@ -70,9 +70,7 @@ var webpackConfig = {
 				loader: 'babel',
 				query: {
 					plugins: [
-						[ 'transform-wpcalypso-async', {
-							async: config.isEnabled( 'code-splitting' )
-						} ]
+						[ 'transform-wpcalypso-async', { async: false } ]
 					]
 				}
 			},
