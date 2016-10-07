@@ -12,7 +12,7 @@ import Accordion from 'components/accordion';
 import AccordionSection from 'components/accordion/section';
 import Gridicon from 'components/gridicon';
 import CategoriesTagsAccordion from 'post-editor/editor-categories-tags/accordion';
-import AsyncLoad from 'components/async-load';
+import EditorSharingAccordion from 'async-component!post-editor/editor-sharing/accordion';
 import FormTextarea from 'components/forms/form-textarea';
 import PostFormatsData from 'components/data/post-formats-data';
 import PostFormatsAccordion from 'post-editor/editor-post-formats/accordion';
@@ -147,8 +147,7 @@ const EditorDrawer = React.createClass( {
 
 	renderSharing: function() {
 		return (
-			<AsyncLoad
-				require="post-editor/editor-sharing/accordion"
+			<EditorSharingAccordion
 				site={ this.props.site }
 				post={ this.props.post } />
 		);
