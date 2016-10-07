@@ -149,6 +149,32 @@ module.exports = React.createClass( {
 						}
 					];
 				},
+				"linkedin-oauth2": function() {
+					return [
+						{
+							image: {
+								src: '/calypso/images/sharing/linkedin-publicize.png',
+								alt: this.translate( 'Share posts with your LinkedIn connections', { textOnly: true } )
+							},
+							label: this.translate( '{{strong}}Connect{{/strong}} to automatically share posts with your LinkedIn connections.', {
+								components: {
+									strong: <strong />
+								}
+							} )
+						},
+						{
+							image: {
+								src: '/calypso/images/sharing/linkedin-sharing.png',
+								alt: this.translate( 'Add a sharing button', { textOnly: true } )
+							},
+							label: this.translate( 'Add a {{link}}sharing button{{/link}} to your posts so readers can share your story with their connections.', {
+								components: {
+									link: <a href={ this.props.site ? '/sharing/buttons/' + this.props.site.slug : 'https://support.wordpress.com/sharing/' } />
+								}
+							} )
+						}
+					];
+				},
 				tumblr: function() {
 					return [
 						{

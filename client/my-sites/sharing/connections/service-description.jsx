@@ -51,6 +51,13 @@ module.exports = React.createClass( {
 						return this.translate( 'Share posts to your connections.', { comment: 'Description for LinkedIn Publicize when no accounts are connected' } );
 					}
 				},
+				"linkedin-oauth2": function() {
+					if ( this.props.numberOfConnections > 0 ) {
+						return this.translate( 'Sharing posts to your connections.', { comment: 'Description for LinkedIn Publicize when one or more accounts are connected' } );
+					} else {
+						return this.translate( 'Share posts to your connections.', { comment: 'Description for LinkedIn Publicize when no accounts are connected' } );
+					}
+				},
 				tumblr: function() {
 					if ( this.props.numberOfConnections > 0 ) {
 						return this.translate( 'Sharing posts to your Tumblr blog.', 'Sharing posts to your Tumblr blogs.', {
