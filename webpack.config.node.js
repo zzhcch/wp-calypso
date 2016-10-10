@@ -76,9 +76,10 @@ var webpackConfig = {
 				exclude: /(node_modules|devdocs\/search-index)/,
 				loader: 'babel',
 				query: {
-					plugins: [
-						[ 'transform-wpcalypso-async', { async: false } ]
-					]
+					plugins: [ [
+						path.join( __dirname, 'server', 'bundler', 'babel', 'babel-plugin-transform-wpcalypso-async' ),
+						{ async: config.isEnabled( 'code-splitting' ) }
+					] ]
 				}
 			}
 		]

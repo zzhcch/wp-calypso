@@ -117,11 +117,10 @@ jsLoader = {
 	loader: 'babel',
 	query: {
 		cacheDirectory: true,
-		plugins: [
-			[ 'transform-wpcalypso-async', {
-				async: config.isEnabled( 'code-splitting' )
-			} ]
-		]
+		plugins: [ [
+			path.join( __dirname, 'server', 'bundler', 'babel', 'babel-plugin-transform-wpcalypso-async' ),
+			{ async: config.isEnabled( 'code-splitting' ) }
+		] ]
 	}
 };
 
