@@ -42,7 +42,6 @@
 		"manage/jetpack": true,
 		"manage/jetpack-plans": true,
 		"manage/media": true,
-		"manage/media/media-section": false,
 		"manage/menus": true,
 		"manage/menus-jetpack": true,
 		"manage/pages": true,
