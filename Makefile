@@ -17,6 +17,7 @@ NODE_BIN := $(THIS_DIR)/node_modules/.bin
 # applications
 NODE ?= node
 NPM ?= npm
+YARN ?= yarn
 BUNDLER ?= $(BIN)/bundler
 I18N_CALYPSO ?= $(NODE_BIN)/i18n-calypso
 SASS ?= $(NODE_BIN)/node-sass --include-path 'client'
@@ -80,7 +81,10 @@ welcome:
 	@printf "\033[36m               |___/|_|                  \n"
 	@printf "\033[m\n"
 
-install: node_modules
+install_yarn:
+	@$(NPM) install yarn@0.15.1
+
+install: install_yarn node_modules
 
 # Simply running `make run` will spawn the Node.js server instance.
 run: welcome githooks install build
@@ -100,8 +104,7 @@ node-version: node_modules/semver
 # ensures that the `node_modules` directory is installed and up-to-date with
 # the dependencies listed in the "package.json" file.
 node_modules: package.json | node-version
-	@$(NPM) prune
-	@$(NPM) install
+	@$(YARN) install
 	@touch node_modules
 
 test: build
