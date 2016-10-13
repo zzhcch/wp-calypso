@@ -1256,6 +1256,19 @@ Undocumented.prototype.saveABTestData = function( name, variation, fn ) {
 };
 
 /**
+ * Retrieves a user's A/B test variation from the backend
+ *
+ * @param {string} name - The name of the A/B test. No leading 'abtest_' needed
+ * @api public
+ */
+Undocumented.prototype.getABTestVariation = function( name, fn ) {
+	debug( '/me/abtests/:name/variation' );
+	return this.wpcom.req.get( {
+		path: '/me/abtests/' + name + '/variation'
+	}, fn );
+};
+
+/**
  * Sign up for a new user account
  * Create a new user
  *

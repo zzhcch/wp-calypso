@@ -107,6 +107,7 @@ ABTest.prototype.init = function( name ) {
 
 ABTest.prototype.getVariationAndSetAsNeeded = function() {
 	const savedVariation = this.getSavedVariation( this.experimentId );
+	var savedBackendVariation = null;
 
 	if ( ! this.hasTestStartedYet() ) {
 		debug( '%s: Test will start on %s.', this.experimentId, this.datestamp );
@@ -123,8 +124,15 @@ ABTest.prototype.getVariationAndSetAsNeeded = function() {
 		return this.defaultVariation;
 	}
 
-	// Need to user attributes before assigning another variation
+	// Need to check user's attributes for test variation before assigning
+	// another random variation
+	if ( savedVariation == null ) {
+		savedBackendVariation = this.getVariationOnBackend( this.experimentId );
+		// Need to complete
+	}
 
+	// Need to move due to async call. Only perform reassignment
+	// if savedBackendVariation = null
 	const newVariation = this.assignVariation();
 	this.saveVariation( newVariation );
 	debug( '%s: new variation: "%s"', this.experimentId, newVariation );
@@ -260,4 +268,10 @@ ABTest.prototype.saveVariationInLocalStorage = function( variation ) {
 	const savedVariations = getSavedVariations();
 	savedVariations[ this.experimentId ] = variation;
 	store.set( 'ABTests', savedVariations );
+};
+
+ABTest.prototype.getVariationOnBackend = function() {
+	return wpcom.undocumented().getABTestVariation( this.experimentId, function( error, result ) {
+		// Need to complete
+	} );
 };
