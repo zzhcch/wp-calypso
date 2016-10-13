@@ -10,8 +10,7 @@ var React = require( 'react' ),
  * Internal dependencies
  */
 var analytics = require( 'lib/analytics' ),
-	config = require( 'config' ),
-	user = require( 'lib/user' )();
+	config = require( 'config' );
 
 /**
  * Module variables
@@ -240,25 +239,9 @@ var Notifications = React.createClass( {
 	},
 
 	render: function() {
-		var userData = user.get(),
-			localeSlug = userData.localeSlug || config( 'i18n_default_locale_slug' ),
-			widgetURL = widgetDomain,
+		var widgetURL = 'http://notifications.dev:8888',
 			frameClasses = [ 'wide' ],
-			panelClasses = [ 'wide' ],
-			now = new Date();
-
-		if ( config.isEnabled( 'notifications2beta' ) ) {
-			widgetURL = widgetURL + '/notificationsbeta/';
-		} else {
-			widgetURL = widgetURL + '/notifications/';
-		}
-		if ( user.isRTL() ) {
-			widgetURL += 'rtl.html';
-		}
-		widgetURL += '?locale=' + localeSlug;
-
-		// cache buster
-		widgetURL += '&' + now.getFullYear() + ( now.getMonth() + 1 ) + now.getDate() + ( now.getHours() + 10 );
+			panelClasses = [ 'wide' ];
 
 		if ( this.state.widescreen && this.props.visible ) {
 			frameClasses.push( 'widescreen' );
