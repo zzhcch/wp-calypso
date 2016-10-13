@@ -123,6 +123,8 @@ ABTest.prototype.getVariationAndSetAsNeeded = function() {
 		return this.defaultVariation;
 	}
 
+	// Need to user attributes before assigning another variation
+
 	const newVariation = this.assignVariation();
 	this.saveVariation( newVariation );
 	debug( '%s: new variation: "%s"', this.experimentId, newVariation );
