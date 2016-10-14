@@ -100,6 +100,7 @@ function getDefaultContext( request ) {
 		compileDebug: config( 'env' ) === 'development' ? true : false,
 		urls: generateStaticUrls( request ),
 		user: false,
+		isRtl: config( 'rtl' ),
 		isDebug: request.query.debug !== undefined ? true : false,
 		lang: config( 'i18n_default_locale_slug' ),
 		jsFile: 'build',
@@ -180,7 +181,7 @@ function setUpLoggedInRoute( req, res, next ) {
 
 			debug( 'Rendering with bootstrapped user object. Fetched in %d ms', end );
 			context.user = data;
-			context.isRTL = data.isRTL ? true : false;
+			context.isRtl = data.isRTL ? true : false;
 
 			if ( data.localeSlug ) {
 				context.lang = data.localeSlug;
