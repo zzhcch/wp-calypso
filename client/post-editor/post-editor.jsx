@@ -721,7 +721,7 @@ const PostEditor = React.createClass( {
 
 			window.scrollTo( 0, 0 );
 		} else {
-			nextState.notice = {};
+			nextState.notice = null;
 		}
 
 		this.setState( nextState );
