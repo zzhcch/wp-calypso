@@ -96,6 +96,7 @@ module.exports = React.createClass( {
 		var selectedItems = this.props.mediaLibrarySelectedItems,
 			gallerySettings = this.state.gallerySettings,
 			media, stat;
+		const site = this.props.site;
 
 		if ( ! this.props.visible ) {
 			return;
@@ -103,13 +104,13 @@ module.exports = React.createClass( {
 
 		if ( ModalViews.GALLERY === this.state.activeView ) {
 			if ( gallerySettings && 'individual' === gallerySettings.type ) {
-				media = gallerySettings.items.map( markup.get ).join( '' );
+				media = gallerySettings.items.map( item => markup.get( site, item ) ).join( '' );
 			} else {
 				media = MediaUtils.generateGalleryShortcode( gallerySettings );
 			}
 			stat = 'insert_gallery';
 		} else {
-			media = selectedItems.map( markup.get ).join( '' );
+			media = selectedItems.map( item => markup.get( site, item ) ).join( '' );
 			stat = 'insert_item';
 		}
 
