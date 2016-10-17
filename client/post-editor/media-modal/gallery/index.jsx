@@ -18,6 +18,7 @@ import EditorMediaModalGalleryFields from './fields';
 import EditorMediaModalGalleryPreview from './preview';
 import { Views as MediaViews } from '../constants';
 import { GalleryDefaultAttrs } from 'lib/media/constants';
+import { isModuleActive } from 'lib/site/utils';
 
 export default React.createClass( {
 	displayName: 'EditorMediaModalGallery',
@@ -100,7 +101,7 @@ export default React.createClass( {
 
 		let defaultSettings = assign( {}, GalleryDefaultAttrs, { items } );
 
-		if ( site && ( ! site.jetpack || site.isModuleActive( 'tiled-gallery' ) ) ) {
+		if ( site && ( ! site.jetpack || isModuleActive( site, 'tiled-gallery' ) ) ) {
 			defaultSettings.type = 'rectangular';
 		}
 
