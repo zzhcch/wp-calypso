@@ -20,7 +20,7 @@ const actions = require( 'lib/posts/actions' ),
 	EditorDrawer = require( 'post-editor/editor-drawer' ),
 	FeaturedImage = require( 'post-editor/editor-featured-image' ),
 	EditorGroundControl = require( 'post-editor/editor-ground-control' ),
-	EditorTitleContainer = require( 'post-editor/editor-title/container' ),
+	EditorTitle = require( 'post-editor/editor-title' ),
 	EditorPageSlug = require( 'post-editor/editor-page-slug' ),
 	protectForm = require( 'lib/mixins/protect-form' ),
 	TinyMCE = require( 'components/tinymce' ),
@@ -214,7 +214,7 @@ const PostEditor = React.createClass( {
 								post={ this.state.post }
 								maxWidth={ 1462 } />
 							<div className="editor__header">
-								<EditorTitleContainer
+								<EditorTitle
 									onChange={ this.debouncedAutosave }
 									tabIndex={ 1 } />
 								{ this.state.post && isPage && site
