@@ -30,7 +30,7 @@ const webpackConfig = {
 	output: {
 		path: path.join( __dirname, 'public' ),
 		publicPath: '/calypso/',
-		filename: '[name].[hash].js',
+		filename: '[name].[chunkhash].js',
 		chunkFilename: '[name].[chunkhash].js',
 		devtoolModuleFilenameTemplate: 'app:///[resource-path]'
 	},
@@ -100,11 +100,12 @@ if ( CALYPSO_ENV === 'desktop' || CALYPSO_ENV === 'desktop-mac-app-store' ) {
 			manifest: require( './build/dll/vendor.' + bundleEnv + '-manifest.json' )
 		} )
 	);
+	webpackConfig.plugins.push( new webpack.optimize.CommonsChunkPlugin( { name: 'manifest', filename: 'manifest.[hash].js' } ) );
 	webpackConfig.plugins.push( new webpack.optimize.CommonsChunkPlugin( {
 		children: true,
 		minChunks: Math.floor( sectionCount * 0.25 ),
 		async: true,
-		filename: 'commons.[hash].js'
+		filename: 'commons.[chunkhash].js'
 	} ) );
 	webpackConfig.plugins.push( new ChunkFileNamePlugin() );
 	// jquery is only needed in the build for the desktop app
