@@ -262,7 +262,8 @@ export const plansList = {
 			FEATURE_EASY_SITE_MIGRATION,
 			FEATURE_EMAIL_LIVE_CHAT_SUPPORT,
 			FEATURE_ONE_CLICK_THREAT_RESOLUTION,
-			FEATURE_POLLS_PRO
+			FEATURE_POLLS_PRO,
+			FEATURE_ADVANCED_SEO
 		],
 		getBillingTimeFrame: () => i18n.translate( 'per month, billed yearly' )
 
@@ -285,7 +286,8 @@ export const plansList = {
 			FEATURE_EASY_SITE_MIGRATION,
 			FEATURE_EMAIL_LIVE_CHAT_SUPPORT,
 			FEATURE_ONE_CLICK_THREAT_RESOLUTION,
-			FEATURE_POLLS_PRO
+			FEATURE_POLLS_PRO,
+			FEATURE_ADVANCED_SEO
 		],
 		getBillingTimeFrame: () => i18n.translate( 'per month, billed monthly' )
 	}
@@ -442,7 +444,7 @@ export const featuresList = {
 		getDescription: () => i18n.translate(
 			'Adds tools to enhance your site\'s content for better results on search engines and social media.'
 		),
-		plans: [ PLAN_BUSINESS ]
+		plans: [ PLAN_BUSINESS, PLAN_JETPACK_BUSINESS, PLAN_JETPACK_BUSINESS_MONTHLY ]
 	},
 
 	[ FEATURE_WORDADS_INSTANT ]: {

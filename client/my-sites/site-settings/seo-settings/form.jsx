@@ -363,6 +363,7 @@ export const SeoForm = React.createClass( {
 			settings: {
 				blog_public = 1
 			} = {},
+			jetpack = false,
 		} = this.props.site;
 
 		const {
@@ -398,6 +399,10 @@ export const SeoForm = React.createClass( {
 		const hasError = function( service ) {
 			return includes( invalidCodes, service );
 		};
+
+		const nudgeTitle = jetpack
+			? this.translate( 'Enable Advanced SEO features by Upgrading to Jetpack Pro' )
+			: this.translate( 'Enable Advanced SEO features by Upgrading to the Business Plan' );
 
 		const submitButton = (
 			<Button
@@ -436,7 +441,7 @@ export const SeoForm = React.createClass( {
 					</Notice>
 				}
 
-				{ isJetpackUnsupported &&
+				{ showAdvancedSeo && isJetpackUnsupported &&
 					<Notice
 						status="is-warning"
 						showDismiss={ false }
@@ -453,9 +458,10 @@ export const SeoForm = React.createClass( {
 				{ showUpgradeNudge &&
 					<UpgradeNudge
 						feature={ FEATURE_ADVANCED_SEO }
-						title={ this.translate( 'Upgrade to a Business Plan and Enable Advanced SEO' ) }
-						message={ this.translate( `By upgrading to a Business Plan you'll enable advanced SEO features on your site.` ) }
+						title={ nudgeTitle }
+						message={ this.translate( 'Adds tools to optimize your site for search engines and social media sharing.' ) }
 						event={ 'calypso_seo_settings_upgrade_nudge' }
+						jetpack={ jetpack }
 					/>
 				}
 
