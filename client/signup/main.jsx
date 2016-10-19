@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import page from 'page';
 import startsWith from 'lodash/startsWith';
-import sortBy from 'lodash/sortBy';
 import last from 'lodash/last';
 import find from 'lodash/find';
 import some from 'lodash/some';
