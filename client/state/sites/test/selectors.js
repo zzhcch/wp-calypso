@@ -42,7 +42,7 @@ import {
 	hasJetpackSiteCustomDomain,
 	getJetpackSiteFileModDisableReasons,
 	siteHasMinimumJetpackVersion,
-	isMainNetworkSite
+	isJetpackSiteMainNetworkSite
 } from '../selectors';
 
 /**
@@ -2180,7 +2180,7 @@ describe( 'selectors', () => {
 		} );
 	} );
 
-	describe( '#isMainNetworkSite()', () => {
+	describe( '#isJetpackSiteMainNetworkSite()', () => {
 		it( 'should return `null` for a non-existing site', () => {
 			const state = {
 				sites: {
@@ -2189,7 +2189,7 @@ describe( 'selectors', () => {
 			};
 			let siteId;
 
-			const isMainNetwork = isMainNetworkSite( state, siteId );
+			const isMainNetwork = isJetpackSiteMainNetworkSite( state, siteId );
 			expect( isMainNetwork ).to.equal( null );
 		} );
 
@@ -2209,7 +2209,7 @@ describe( 'selectors', () => {
 				}
 			};
 
-			const isMainNetwork = isMainNetworkSite( state, siteId );
+			const isMainNetwork = isJetpackSiteMainNetworkSite( state, siteId );
 			expect( isMainNetwork ).to.equal( false );
 		} );
 
@@ -2227,7 +2227,7 @@ describe( 'selectors', () => {
 				}
 			};
 
-			const isMainNetwork = isMainNetworkSite( state, siteId );
+			const isMainNetwork = isJetpackSiteMainNetworkSite( state, siteId );
 			expect( isMainNetwork ).to.equal( true );
 		} );
 
@@ -2249,7 +2249,7 @@ describe( 'selectors', () => {
 				}
 			};
 
-			const isMainNetwork = isMainNetworkSite( state, siteId );
+			const isMainNetwork = isJetpackSiteMainNetworkSite( state, siteId );
 			expect( isMainNetwork ).to.equal( false );
 		} );
 
@@ -2271,7 +2271,7 @@ describe( 'selectors', () => {
 				}
 			};
 
-			const isMainNetwork = isMainNetworkSite( state, siteId );
+			const isMainNetwork = isJetpackSiteMainNetworkSite( state, siteId );
 			expect( isMainNetwork ).to.equal( false );
 		} );
 
@@ -2294,7 +2294,7 @@ describe( 'selectors', () => {
 				}
 			};
 
-			const isMainNetwork = isMainNetworkSite( state, siteId );
+			const isMainNetwork = isJetpackSiteMainNetworkSite( state, siteId );
 			expect( isMainNetwork ).to.equal( true );
 		} );
 	} );
