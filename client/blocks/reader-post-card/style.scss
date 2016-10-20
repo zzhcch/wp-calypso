@@ -305,6 +305,13 @@ $reader-post-card-breakpoint-small: "( max-width: 550px )";
 	}
 }
 
+.reader-post-card__gallery-item {
+	list-style-type: none;
+	width: 24%;
+	margin-right: 1px;
+	float: left;
+}
+
 // For these borderless cards to look more presentable on Devdocs
 .is-section-devdocs .reader-post-card.card {
 	padding: 16px;
