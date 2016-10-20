@@ -1361,7 +1361,11 @@ describe( 'selectors', () => {
 				[ siteId ]: {
 					ID: siteId,
 					jetpack: true,
-					is_multi_network: true,
+					is_multisite: true,
+					options: {
+						is_multi_network: true,
+						jetpack_version: '3.4',
+					}
 				}
 			} );
 
@@ -1378,6 +1382,7 @@ describe( 'selectors', () => {
 					is_multisite: true,
 					options: {
 						is_multi_network: false,
+						jetpack_version: '3.4',
 						unmapped_url: 'https://example.wordpress.com',
 						main_network_site: 'https://anotherexample.wordpress.com'
 					}
@@ -1397,6 +1402,7 @@ describe( 'selectors', () => {
 					is_multisite: true,
 					options: {
 						is_multi_network: false,
+						jetpack_version: '3.4',
 						unmapped_url: 'https://example.wordpress.com',
 						main_network_site: 'https://example.wordpress.com',
 						file_mod_disabled: [
@@ -1419,6 +1425,7 @@ describe( 'selectors', () => {
 					is_multisite: true,
 					options: {
 						is_multi_network: false,
+						jetpack_version: '3.4',
 						unmapped_url: 'https://example.wordpress.com',
 						main_network_site: 'https://example.wordpress.com',
 						file_mod_disabled: [
@@ -1441,6 +1448,7 @@ describe( 'selectors', () => {
 					is_multisite: true,
 					options: {
 						is_multi_network: false,
+						jetpack_version: '3.4',
 						unmapped_url: 'https://example.wordpress.com',
 						main_network_site: 'https://example.wordpress.com',
 						file_mod_disabled: []
@@ -1449,7 +1457,7 @@ describe( 'selectors', () => {
 			} );
 
 			const canUpdateFiles = canJetpackSiteUpdateFiles( state, siteId );
-			expect( canUpdateFiles ).to.equal( false );
+			expect( canUpdateFiles ).to.equal( true );
 		} );
 	} );
 
