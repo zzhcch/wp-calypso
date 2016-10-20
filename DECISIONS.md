@@ -4,6 +4,7 @@ Decisions
 ### November 2015
 
 - Released Calypso as an open source project. #1
+- Introduce Redux in the codebase. #338
 
 ### February 2016
 
@@ -15,6 +16,7 @@ Decisions
 
 ### June 2016
 
+- Implement oAuth flow. #4506
 - Created `project` attribute in config files to describe specific application sections. The older `sections.js` holds generic appliction infrastructure only. #5487.
 
 ### July 2016
