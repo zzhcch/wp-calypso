@@ -5,6 +5,7 @@ Decisions
 
 - Released Calypso as an open source project. #1
 - Introduce Redux in the codebase. #338
+- Documenting our approach to components. #427
 
 ### February 2016
 
