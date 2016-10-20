@@ -583,7 +583,7 @@ export function canJetpackSiteManage( state, siteId ) {
  *
  * @param {Object} state Global state tree
  * @param {Number} siteId Site ID
- * @return {Boolean} if the site can update its file
+ * @return {Boolean} true if the site can update its file
  */
 export function canJetpackSiteUpdateFiles( state, siteId ) {
 	if ( ! isJetpackSite( state, siteId ) ) {
@@ -622,7 +622,7 @@ export function canJetpackSiteUpdateFiles( state, siteId ) {
  *
  * @param {Object} state Global state tree
  * @param {Number} siteId Site ID
- * @return {Boolean} if the site can auto update
+ * @return {Boolean} true if the site can auto update
  */
 export function canJetpackSiteAutoUpdateFiles( state, siteId ) {
 	if ( ! canJetpackSiteUpdateFiles( state, siteId ) ) {
@@ -643,7 +643,7 @@ export function canJetpackSiteAutoUpdateFiles( state, siteId ) {
  *
  * @param {Object} state Global state tree
  * @param {Number} siteId Site ID
- * @return {Boolean} if the site can auto update WordPress
+ * @return {Boolean} true if the site can auto update WordPress
  */
 export function canJetpackSiteAutoUpdateCore( state, siteId ) {
 	return canJetpackSiteAutoUpdateFiles( state, siteId );
@@ -654,7 +654,7 @@ export function canJetpackSiteAutoUpdateCore( state, siteId ) {
  *
  * @param {Object} state Global state tree
  * @param {Number} siteId Site ID
- * @return {Boolean} if the site has Jetpack menus
+ * @return {Boolean} true if the site has Jetpack menus management
  */
 export function hasJetpackSiteJetpackMenus( state, siteId ) {
 	const siteJetpackVersion = getSiteOption( state, siteId, 'jetpack_version' );
@@ -666,7 +666,7 @@ export function hasJetpackSiteJetpackMenus( state, siteId ) {
  *
  * @param {Object} state Global state tree
  * @param {Number} siteId Site ID
- * @return {Boolean} if the site has Jetpack themes
+ * @return {Boolean} true if the site has Jetpack themes management
  */
 export function hasJetpackSiteJetpackThemes( state, siteId ) {
 	const siteJetpackVersion = getSiteOption( state, siteId, 'jetpack_version' );
@@ -680,7 +680,7 @@ export function hasJetpackSiteJetpackThemes( state, siteId ) {
  *
  * @param {Object} state Global state tree
  * @param {Number} siteId Site ID
- * @return {Boolean} if the site is the main site
+ * @return {Boolean} true if the site is the main site
  */
 export function isJetpackSiteMainNetworkSite( state, siteId ) {
 	const site = getRawSite( state, siteId );
@@ -719,7 +719,7 @@ export function isJetpackSiteMainNetworkSite( state, siteId ) {
  *
  * @param {Object} state Global state tree
  * @param {Number} siteId Site ID
- * @return {Boolean} if the site is a secondary network site
+ * @return {Boolean} true if the site is a secondary network site
  */
 export function isJetpackSiteSecondaryNetworkSite( state, siteId ) {
 	const site = getRawSite( state, siteId );
@@ -747,7 +747,7 @@ export function isJetpackSiteSecondaryNetworkSite( state, siteId ) {
  * @param {Object} state Global state tree
  * @param {Number} siteId Site ID
  * @param {Array} moduleIds A list of active module ids to verify
- * @return {Boolean} if the all the given modules are active for this site
+ * @return {Boolean} true if the all the given modules are active for this site
  */
 export function verifyJetpackModulesActive( state, siteId, moduleIds ) {
 	if ( ! isJetpackSite( state, siteId ) ) {
@@ -838,7 +838,7 @@ export function getJetpackSiteUpdateFilesDisabledReasons( state, siteId, action 
  *
  * @param  {Object} state - whole state tree
  * @param  {Number} siteId - site id
- * @return {Boolean} true is the site has minimum jetpack version
+ * @return {Boolean} true if the site has minimum jetpack version
  */
 export function siteHasMinimumJetpackVersion( state, siteId ) {
 	if ( ! siteId ) {
