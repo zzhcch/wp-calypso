@@ -4,6 +4,7 @@
 import React from 'react';
 import debounce from 'lodash/debounce';
 import classNames from 'classnames';
+import { localize } from 'i18n-calypso';
 
 /**
  * Internal dependencies
@@ -94,9 +95,9 @@ const ThemesMagicSearchCard = React.createClass( {
 		const isPremiumThemesEnabled = config.isEnabled( 'upgrades/premium-themes' );
 
 		const tiers = [
-			{ value: 'all', label: this.translate( 'All' ) },
-			{ value: 'free', label: this.translate( 'Free' ) },
-			{ value: 'premium', label: this.translate( 'Premium' ) },
+			{ value: 'all', label: this.props.translate( 'All' ) },
+			{ value: 'free', label: this.props.translate( 'Free' ) },
+			{ value: 'premium', label: this.props.translate( 'Premium' ) },
 		];
 
 		const searchField = (
@@ -104,7 +105,7 @@ const ThemesMagicSearchCard = React.createClass( {
 				onSearch={ this.props.onSearch }
 				initialValue={ this.props.search }
 				ref="url-search"
-				placeholder={ this.translate( 'What kind of theme are you looking for?' ) }
+				placeholder={ this.props.translate( 'What kind of theme are you looking for?' ) }
 				analyticsGroup="Themes"
 				delaySearch={ true }
 				onSearchOpen={ this.onSearchOpen }
@@ -135,4 +136,4 @@ const ThemesMagicSearchCard = React.createClass( {
 	}
 } );
 
-export default ThemesMagicSearchCard;
+export default localize( ThemesMagicSearchCard );
