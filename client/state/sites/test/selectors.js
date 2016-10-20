@@ -40,7 +40,7 @@ import {
 	verifyJetpackModulesActive,
 	getJetpackSiteRemoteManagementURL,
 	hasJetpackSiteCustomDomain,
-	getJetpackSiteFileModDisableReasons,
+	getJetpackSiteUpdateFilesDisabledReasons,
 	siteHasMinimumJetpackVersion,
 	isJetpackSiteMainNetworkSite
 } from '../selectors';
@@ -1858,7 +1858,7 @@ describe( 'selectors', () => {
 		} );
 	} );
 
-	describe( '#getJetpackSiteFileModDisableReasons()', () => {
+	describe( '#getJetpackSiteUpdateFilesDisabledReasons()', () => {
 		it( 'it should have the correct reason for the clue `has_no_file_system_write_access`', () => {
 			const state = createStateWithItems( {
 				[ siteId ]: {
@@ -1869,7 +1869,7 @@ describe( 'selectors', () => {
 				}
 			} );
 
-			const reason = getJetpackSiteFileModDisableReasons( state, siteId );
+			const reason = getJetpackSiteUpdateFilesDisabledReasons( state, siteId );
 			expect( reason ).to.deep.equal( [ 'The file permissions on this host prevent editing files.' ] );
 		} );
 
@@ -1883,7 +1883,7 @@ describe( 'selectors', () => {
 				}
 			} );
 
-			const reason = getJetpackSiteFileModDisableReasons( state, siteId );
+			const reason = getJetpackSiteUpdateFilesDisabledReasons( state, siteId );
 			expect( reason ).to.deep.equal( [ 'File modifications are explicitly disabled by a site administrator.' ] );
 		} );
 
@@ -1897,7 +1897,7 @@ describe( 'selectors', () => {
 				}
 			} );
 
-			const reason = getJetpackSiteFileModDisableReasons( state, siteId, 'autoupdateCore' );
+			const reason = getJetpackSiteUpdateFilesDisabledReasons( state, siteId, 'autoupdateCore' );
 			expect( reason ).to.deep.equal( [ 'Any autoupdates are explicitly disabled by a site administrator.' ] );
 		} );
 
@@ -1911,7 +1911,7 @@ describe( 'selectors', () => {
 				}
 			} );
 
-			const reason = getJetpackSiteFileModDisableReasons( state, siteId, 'autoupdateCore' );
+			const reason = getJetpackSiteUpdateFilesDisabledReasons( state, siteId, 'autoupdateCore' );
 			expect( reason ).to.deep.equal( [ 'Core autoupdates are explicitly disabled by a site administrator.' ] );
 		} );
 	} );
