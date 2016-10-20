@@ -95,25 +95,30 @@ export default class RefreshPostCard extends React.Component {
 		const { post, site, feed, onCommentClick } = this.props;
 		const featuredImage = post.canonical_image;
 		const isPhotoOnly = post.display_type & DisplayTypes.PHOTO_ONLY;
+		const isGallery = post.display_type & DisplayTypes.GALLERY;
 		const title = truncate( post.title, {
 			length: 140,
 			separator: /,? +/
 		} );
 		const classes = classnames( 'reader-post-card', {
 			'has-thumbnail': !! featuredImage,
-			'is-photo': isPhotoOnly
+			'is-photo': isPhotoOnly,
+			'is-gallery': isGallery
 		} );
+		const showExcerpt = ! isPhotoOnly && ! isGallery;
+		const showFeaturedImage = ! isGallery && featuredImage;
 
 		return (
 			<Card className={ classes } onClick={ this.handleCardClick }>
 				<PostByline post={ post } site={ site } feed={ feed } />
 				<div className="reader-post-card__post">
-					{ featuredImage && <FeaturedImage image={ featuredImage } href={ post.URL } /> }
+					{ showFeaturedImage && <FeaturedImage image={ featuredImage } href={ post.URL } /> }
+					{ isGallery && <h1>GALLERY!</h1> }
 					<div className="reader-post-card__post-details">
 						<h1 className="reader-post-card__title">
 							<a className="reader-post-card__title-link" href={ post.URL }>{ title }</a>
 						</h1>
-						{ ! isPhotoOnly && <div className="reader-post-card__excerpt">{ post.short_excerpt }</div> }
+						{ showExcerpt && <div className="reader-post-card__excerpt">{ post.short_excerpt }</div> }
 						{ post &&
 							<ReaderPostActions
 								post={ post }
