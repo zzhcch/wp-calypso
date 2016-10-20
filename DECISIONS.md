@@ -3,7 +3,7 @@ Decisions
 
 ### November 2015
 
-- Released Calypso as an open source project.
+- Released Calypso as an open source project. #1
 
 ### February 2016
 
