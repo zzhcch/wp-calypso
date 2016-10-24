@@ -43,7 +43,7 @@ function canRegister( domainName, onComplete ) {
 			errorCode = serverError.error;
 		} else if ( ! data.is_available && data.is_mappable ) {
 			errorCode = 'not_available_but_mappable';
-		} else if ( ! data.is_mappable && data.unmappability_reason ) {
+		} else if ( ! data.is_available && ! data.is_mappable && data.unmappability_reason ) {
 			errorCode = `mappable_but_${data.unmappability_reason}`;
 		} else if ( ! data.is_registrable ) {
 			errorCode = 'not_registrable';
