@@ -162,6 +162,14 @@ const DomainsStep = React.createClass( {
 		} );
 	},
 
+	getSuggestion: function() {
+		if ( this.props.queryObject && this.props.queryObject.new ) {
+			return this.props.queryObject.new;
+		}
+
+		return 'developer' === this.props.flowName ? 'calypsodev' : '';
+	},
+
 	googleAppsForm: function() {
 		return (
 			<div className="domains-step__section-wrapper">
@@ -196,8 +204,8 @@ const DomainsStep = React.createClass( {
 				domainsWithPlansOnly={ this.props.domainsWithPlansOnly }
 				includeWordPressDotCom
 				isSignupStep
-				showExampleSuggestions
-				suggestion={ this.props.queryObject ? this.props.queryObject.new : '' } />
+				showExampleSuggestions= { ! 'developer' === this.props.flowName }
+				suggestion={ this.getSuggestion() } />
 		);
 	},
 
