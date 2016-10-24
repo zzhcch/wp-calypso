@@ -22,8 +22,12 @@ const getAuthorizationRemoteQueryData = ( state ) => {
 	return get( getAuthorizationData( state ), [ 'queryObject' ] );
 };
 
+const getAuthorizationRemoteSiteUrl = ( state ) => {
+	return get( getAuthorizationRemoteQueryData( state ), [ 'site' ] );
+};
+
 const getAuthorizationRemoteSite = ( state ) => {
-	const remoteUrl = get( getAuthorizationRemoteQueryData( state ), [ 'site' ] );
+	const remoteUrl = getAuthorizationRemoteSiteUrl( state );
 
 	if ( ! remoteUrl ) {
 		return null;
@@ -94,16 +98,36 @@ const hasXmlrpcError = function( state ) {
 	);
 };
 
+const getJetpackPlanSelected = function( state ) {
+	const selectedPlans = state.jetpackConnect.jetpackConnectSelectedPlans;
+	const siteUrl = state.jetpackConnect.jetpackConnectAuthorize.queryObject.site;
+
+	if ( siteUrl ) {
+		const siteSlug = siteUrl.replace( /^https?:\/\//, '' ).replace( /\//g, '::' );
+		if ( selectedPlans && selectedPlans[ siteSlug ] ) {
+			return selectedPlans[ siteSlug ];
+		}
+	}
+	return false;
+};
+
+const getSiteSelectedPlan = function( state, siteSlug ) {
+	return state.jetpackConnect.jetpackConnectSelectedPlans && state.jetpackConnect.jetpackConnectSelectedPlans[ siteSlug ];
+};
+
 export default {
 	getConnectingSite,
 	getAuthorizationData,
 	getAuthorizationRemoteQueryData,
 	getAuthorizationRemoteSite,
+	getAuthorizationRemoteSiteUrl,
 	getSessions,
 	getSSOSessions,
 	getSSO,
 	isCalypsoStartedConnection,
 	getFlowType,
 	getJetpackSiteByUrl,
-	hasXmlrpcError
+	hasXmlrpcError,
+	getJetpackPlanSelected,
+	getSiteSelectedPlan
 };

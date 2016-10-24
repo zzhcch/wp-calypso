@@ -10,7 +10,6 @@ import { bindActionCreators } from 'redux';
  * Internal dependencies
  */
 import { getPlansBySite } from 'state/sites/plans/selectors';
-import { getFlowType } from 'state/jetpack-connect/selectors';
 import Main from 'components/main';
 import StepHeader from '../step-header';
 import observe from 'lib/mixins/data-observe';
@@ -19,12 +18,17 @@ import { recordTracksEvent } from 'state/analytics/actions';
 import { getCurrentUser } from 'state/current-user/selectors';
 import * as upgradesActions from 'lib/upgrades/actions';
 import { userCan } from 'lib/site/utils';
-import { getAuthorizationData, isCalypsoStartedConnection } from 'state/jetpack-connect/selectors';
-import { goBackToWpAdmin } from 'state/jetpack-connect/actions';
+import { selectPlanInAdvance, goBackToWpAdmin } from 'state/jetpack-connect/actions';
 import QueryPlans from 'components/data/query-plans';
 import QuerySitePlans from 'components/data/query-site-plans';
 import { requestPlans } from 'state/plans/actions';
 import { isRequestingPlans, getPlanBySlug } from 'state/plans/selectors';
+import {
+	getFlowType,
+	getSiteSelectedPlan,
+	getAuthorizationData,
+	isCalypsoStartedConnection
+} from 'state/jetpack-connect/selectors';
 
 const CALYPSO_REDIRECTION_PAGE = '/posts/';
 
@@ -47,27 +51,49 @@ const Plans = React.createClass( {
 		};
 	},
 
-	componentDidMount() {
-		this.props.recordTracksEvent( 'calypso_jpc_plans_view', {
-			user: this.props.userId
-		} );
+	getInitialState: function getInitialState() {
+		return {
+			redirecting: false
+		};
+	},
 
-		if ( this.props.flowType === 'pro' || this.props.flowType === 'premium' ) {
-			return this.autoselectPlan();
+	componentDidMount() {
+		if ( this.hasPreSelectedPlan() ) {
+			this.autoselectPlan();
+		} else {
+			this.props.recordTracksEvent( 'calypso_jpc_plans_view', {
+				user: this.props.userId
+			} );
 		}
+
+		this.props.requestPlans( this.props.sitePlans );
 	},
 
 	componentDidUpdate() {
+		if ( this.props.sites ) {
+			return;
+		}
+
 		if ( this.hasPlan( this.props.selectedSite ) ) {
 			page.redirect( CALYPSO_REDIRECTION_PAGE + this.props.selectedSite.slug );
+			this.setState( { redirect: true } );
 		}
 		if ( ! this.props.canPurchasePlans ) {
 			page.redirect( CALYPSO_REDIRECTION_PAGE + this.props.selectedSite.slug );
+			this.setState( { redirect: true } );
 		}
 
 		if ( ! this.props.isRequestingPlans && ( this.props.flowType === 'pro' || this.props.flowType === 'premium' ) ) {
 			return this.autoselectPlan();
 		}
+	},
+
+	hasPreSelectedPlan() {
+		return (
+			this.props.flowType === 'pro' ||
+			this.props.flowType === 'premium' ||
+			( ! this.props.showFirst && this.props.selectedPlan )
+		);
 	},
 
 	hasPlan( site ) {
@@ -77,38 +103,51 @@ const Plans = React.createClass( {
 	},
 
 	autoselectPlan() {
-		if ( this.props.flowType === 'pro' ) {
-			this.props.requestPlans();
-			const plan = this.props.getPlanBySlug( 'jetpack_business' );
-			if ( plan ) {
-				this.selectPlan( plan );
-				return;
+		if ( ! this.props.showFirst ) {
+			if ( this.props.flowType === 'pro' || this.props.selectedPlan === 'jetpack_business' ) {
+				this.props.requestPlans();
+				const plan = this.props.getPlanBySlug( 'jetpack_business' );
+				if ( plan ) {
+					this.selectPlan( plan );
+					return;
+				}
 			}
-		}
-		if ( this.props.flowType === 'premium' ) {
-			this.props.requestPlans();
-			const plan = this.props.getPlanBySlug( 'jetpack_premium' );
-			if ( plan ) {
-				this.selectPlan( plan );
-				return;
+			if ( this.props.flowType === 'premium' || this.props.selectedPlan === 'jetpack_premium' ) {
+				this.props.requestPlans();
+				const plan = this.props.getPlanBySlug( 'jetpack_premium' );
+				if ( plan ) {
+					this.selectPlan( plan );
+					return;
+				}
+			}
+			if ( this.props.selectedPlan === 'free' ||
+				this.props.selectedPlan === 'jetpack_free' ) {
+				this.selectFreeJetpackPlan();
 			}
 		}
 	},
 
 	selectFreeJetpackPlan() {
+		// clears whatever we had stored in local cache
+		this.props.selectPlanInAdvance( null, this.props.selectedSite.slug );
 		this.props.recordTracksEvent( 'calypso_jpc_plans_submit_free', {
 			user: this.props.userId
 		} );
 		if ( this.props.calypsoStartedConnection ) {
 			page.redirect( CALYPSO_REDIRECTION_PAGE + this.props.selectedSite.slug );
+			this.setState( { redirecting: true } );
 		} else {
 			const { queryObject } = this.props.jetpackConnectAuthorize;
 			this.props.goBackToWpAdmin( queryObject.redirect_after_auth );
+			this.setState( { redirecting: true } );
 		}
 	},
 
 	selectPlan( cartItem ) {
 		const checkoutPath = `/checkout/${ this.props.selectedSite.slug }`;
+		// clears whatever we had stored in local cache
+		this.props.selectPlanInAdvance( null, this.props.selectedSite.slug );
+
 		if ( cartItem.product_slug === 'jetpack_free' ) {
 			return this.selectFreeJetpackPlan();
 		}
@@ -123,36 +162,63 @@ const Plans = React.createClass( {
 			} );
 		}
 		upgradesActions.addItem( cartItem );
+		this.setState( { redirecting: true } );
 		page( checkoutPath );
 	},
 
+	storeSelectedPlan( cartItem ) {
+		this.props.recordTracksEvent( 'calypso_jpc_plans_store_plan', {
+			user: this.props.userId,
+			plan: cartItem ? cartItem.product_slug : 'free'
+		} );
+		this.props.selectPlanInAdvance(
+			cartItem ? cartItem.product_slug : 'free',
+			this.props.siteSlug
+		);
+	},
+
+	renderConnectHeader() {
+		const headerText = this.props.showFirst
+			? this.translate( 'You are moments away from connecting your site' )
+			: this.translate( 'Your site is now connected!' );
+		return (
+			<StepHeader
+				headerText={ headerText }
+				subHeaderText={ this.translate( 'Now pick a plan that\'s right for you.' ) }
+				step={ 1 }
+				steps={ 3 } />
+		);
+	},
+
 	render() {
-		if ( this.props.flowType === 'pro' || this.props.flowType === 'premium' ) {
+		if ( this.state.redirecting ||
+			this.props.flowType === 'pro' ||
+			this.props.flowType === 'premium' ||
+			this.hasPreSelectedPlan() ||
+			( ! this.props.showFirst && ! this.props.canPurchasePlans ) ||
+			( ! this.props.showFirst && this.hasPlan( this.props.selectedSite ) )
+		) {
 			return null;
 		}
 
-		if ( ! this.props.canPurchasePlans || this.hasPlan( this.props.selectedSite ) ) {
-			return null;
-		}
+		const defaultJetpackSite = { jetpack: true, plan: {}, isUpgradeable: () => true };
 
 		return (
 			<div>
 				<Main wideLayout>
 					<QueryPlans />
-					<QuerySitePlans siteId={ this.props.selectedSite.ID } />
+					{ this.props.selectedSite
+						? <QuerySitePlans siteId={ this.props.selectedSite.ID } />
+						: null
+					}
 					<div className="jetpack-connect__plans">
-						<StepHeader
-							headerText={ this.translate( 'Your site is now connected!' ) }
-							subHeaderText={ this.translate( 'Now pick a plan that\'s right for you.' ) }
-							step={ 1 }
-							steps={ 3 } />
-
+						{ this.renderConnectHeader() }
 						<div id="plans">
 							<PlansFeaturesMain
-								site={ this.props.selectedSite }
+								site={ this.props.selectedSite || defaultJetpackSite }
 								isInSignup={ true }
 								isInJetpackConnect={ true }
-								onUpgradeClick={ this.selectPlan }
+								onUpgradeClick={ this.props.showFirst ? this.storeSelectedPlan : this.selectPlan }
 								intervalType={ this.props.intervalType } />
 						</div>
 					</div>
@@ -165,7 +231,7 @@ const Plans = React.createClass( {
 export default connect(
 	( state, props ) => {
 		const user = getCurrentUser( state );
-		const selectedSite = props.sites.getSelectedSite();
+		const selectedSite = props.sites ? props.sites.getSelectedSite() : null;
 
 		const searchPlanBySlug = ( planSlug ) => {
 			return getPlanBySlug( state, planSlug );
@@ -176,16 +242,17 @@ export default connect(
 			sitePlans: getPlansBySite( state, selectedSite ),
 			jetpackConnectAuthorize: getAuthorizationData( state ),
 			userId: user ? user.ID : null,
-			canPurchasePlans: userCan( 'manage_options', selectedSite ),
+			canPurchasePlans: selectedSite ? userCan( 'manage_options', selectedSite ) : true,
 			flowType: getFlowType( state, selectedSite && selectedSite.slug ),
 			isRequestingPlans: isRequestingPlans( state ),
 			getPlanBySlug: searchPlanBySlug,
-			calypsoStartedConnection: isCalypsoStartedConnection( state, selectedSite.slug )
+			calypsoStartedConnection: selectedSite ? isCalypsoStartedConnection( state, selectedSite.slug ) : null,
+			selectedPlan: selectedSite ? getSiteSelectedPlan( state, selectedSite.slug ) : null,
 		};
 	},
 	( dispatch ) => {
 		return Object.assign( {},
-			bindActionCreators( { goBackToWpAdmin, requestPlans }, dispatch ),
+			bindActionCreators( { goBackToWpAdmin, requestPlans, selectPlanInAdvance }, dispatch ),
 			{
 				recordTracksEvent( eventName, props ) {
 					dispatch( recordTracksEvent( eventName, props ) );

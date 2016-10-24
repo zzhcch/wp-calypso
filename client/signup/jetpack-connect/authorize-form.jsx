@@ -28,10 +28,11 @@ import {
 } from 'state/jetpack-connect/actions';
 import {
 	getAuthorizationData,
-	getAuthorizationRemoteSite,
+	getAuthorizationRemoteSiteUrl,
 	getSSOSessions,
 	isCalypsoStartedConnection,
-	hasXmlrpcError
+	hasXmlrpcError,
+	getJetpackPlanSelected
 } from 'state/jetpack-connect/selectors';
 import JetpackConnectNotices from './jetpack-connect-notices';
 import observe from 'lib/mixins/data-observe';
@@ -59,6 +60,8 @@ import FormLabel from 'components/forms/form-label';
 import FormSettingExplanation from 'components/forms/form-setting-explanation';
 import Notice from 'components/notice';
 import NoticeAction from 'components/notice/notice-action';
+import Plans from './plans';
+import CheckoutData from 'components/data/checkout';
 
 /**
  * Constants
@@ -186,7 +189,8 @@ const LoggedInForm = React.createClass( {
 
 	getInitialState() {
 		return {
-			hasRefetchedSites: false
+			hasRefetchedSites: false,
+			haveAuthorized: false
 		};
 	},
 
@@ -205,6 +209,7 @@ const LoggedInForm = React.createClass( {
 			debug( 'Authorizing automatically on component mount' );
 			return this.props.authorize( queryObject );
 		}
+		console.log( this.props.calypsoStartedConnection, this.props.isSSO );
 		if ( this.props.isAlreadyOnSitesList && ! this.state.hasRefetchedSites && ! this.props.isFetchingSites() ) {
 			this.props.requestSites();
 			this.setState( { hasRefetchedSites: true } );
@@ -225,6 +230,11 @@ const LoggedInForm = React.createClass( {
 			if ( ! isRedirectingToWpAdmin && authorizeSuccess ) {
 				this.props.goBackToWpAdmin( queryObject.redirect_after_auth );
 			}
+		} else if ( this.props.plansFirst && this.props.hasJetpackPlanSelected && ! this.state.haveAuthorized ) {
+			this.setState( {
+				haveAuthorized: true
+			} );
+			this.props.authorize( queryObject );
 		} else if ( siteReceived && ! isActivating ) {
 			this.activateManageAndRedirect();
 		}
@@ -579,6 +589,12 @@ const JetpackConnectAuthorizeForm = React.createClass( {
 	displayName: 'JetpackConnectAuthorizeForm',
 	mixins: [ observe( 'userModule' ) ],
 
+	getInitialState: function() {
+		return {
+			plan: null
+		};
+	},
+
 	isSSO() {
 		const site = this.props.jetpackConnectAuthorize.queryObject.site.replace( /.*?:\/\//g, '' );
 		if ( this.props.jetpackSSOSessions && this.props.jetpackSSOSessions[ site ] ) {
@@ -608,6 +624,17 @@ const JetpackConnectAuthorizeForm = React.createClass( {
 		);
 	},
 
+
+	renderPlansSelector() {
+		return (
+				<div>
+					<CheckoutData>
+						<Plans plans={ this.props.plans } showFirst={ true } siteSlug={ this.props.siteSlug } />
+					</CheckoutData>
+				</div>
+		);
+	},
+
 	renderForm() {
 		const { userModule } = this.props;
 		const user = userModule.get();
@@ -617,14 +644,23 @@ const JetpackConnectAuthorizeForm = React.createClass( {
 
 		return (
 			( user )
-				? <LoggedInForm { ...props } calypsoStartedConnection={ this.props.calypsoStartedConnection } isSSO={ this.isSSO() } />
+				? <LoggedInForm { ...props } isSSO={ this.isSSO() } />
 				: <LoggedOutForm { ...props } isSSO={ this.isSSO() } />
 		);
 	},
 	render() {
 		const { queryObject } = this.props.jetpackConnectAuthorize;
+
 		if ( typeof queryObject === 'undefined' ) {
 			return this.renderNoQueryArgsError();
+		}
+
+		if ( queryObject && queryObject.already_authorized && ! this.props.isAlreadyOnSitesList ) {
+			this.renderMainForm();
+		}
+
+		if ( this.props.plansFirst && ! this.props.hasJetpackPlanSelected ) {
+			return this.renderPlansSelector()
 		}
 
 		return (
@@ -639,7 +675,7 @@ const JetpackConnectAuthorizeForm = React.createClass( {
 
 export default connect(
 	state => {
-		const remoteSite = getAuthorizationRemoteSite( state );
+		const remoteSiteUrl = getAuthorizationRemoteSiteUrl( state );
 
 		const requestHasXmlrpcError = () => {
 			return hasXmlrpcError( state );
@@ -650,12 +686,15 @@ export default connect(
 		};
 
 		return {
+			siteSlug: withoutHttp( remoteSiteUrl ).replace( /\//g, '::' ),
+			hasJetpackPlanSelected: !! getJetpackPlanSelected( state ),
 			jetpackConnectAuthorize: getAuthorizationData( state ),
+			plansFirst: false,
 			jetpackSSOSessions: getSSOSessions( state ),
-			isAlreadyOnSitesList: !! remoteSite,
+			isAlreadyOnSitesList: !! remoteSiteUrl,
 			isFetchingSites,
 			requestHasXmlrpcError,
-			calypsoStartedConnection: remoteSite && isCalypsoStartedConnection( state, remoteSite.URL )
+			calypsoStartedConnection: remoteSiteUrl && isCalypsoStartedConnection( state, remoteSiteUrl )
 		};
 	},
 	dispatch => bindActionCreators( {
