@@ -37,12 +37,8 @@ const Plans = React.createClass( {
 	mixins: [ observe( 'sites', 'plans' ) ],
 
 	propTypes: {
-		cart: React.PropTypes.object.isRequired,
-		context: React.PropTypes.object.isRequired,
-		destinationType: React.PropTypes.string,
 		sites: React.PropTypes.object.isRequired,
 		sitePlans: React.PropTypes.object.isRequired,
-		showJetpackFreePlan: React.PropTypes.bool,
 		intervalType: React.PropTypes.string
 	},
 
