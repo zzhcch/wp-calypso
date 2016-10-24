@@ -1,25 +1,27 @@
 /**
  * External dependencies
  */
-var debug = require( 'debug' )( 'calypso:media' ),
-	assign = require( 'lodash/assign' ),
-	uniqueId = require( 'lodash/uniqueId' ),
-	path = require( 'path' );
+import debugFactory from 'debug';
+import assign from 'lodash/assign';
+import uniqueId from 'lodash/uniqueId';
+import path from 'path';
 
 /**
  * Internal dependencies
  */
-var Dispatcher = require( 'dispatcher' ),
-	wpcom = require( 'lib/wp' ),
-	MediaUtils = require( './utils' ),
-	PostEditStore = require( 'lib/posts/post-edit-store' ),
-	MediaStore = require( './store' ),
-	MediaListStore = require( './list-store' ),
-	MediaValidationStore = require( './validation-store' );
+import Dispatcher from 'dispatcher';
+import wpcom from 'lib/wp';
+import MediaUtils from './utils';
+import PostEditStore from 'lib/posts/post-edit-store';
+import MediaStore from './store';
+import MediaListStore from './list-store';
+import MediaValidationStore from './validation-store';
 
 /**
  * Module variables
  */
+const debug = debugFactory( 'calypso:media' );
+
 const MediaActions = {
 	_fetching: {}
 };
@@ -38,7 +40,7 @@ MediaActions.setQuery = function( siteId, query ) {
 };
 
 MediaActions.fetch = function( siteId, itemId ) {
-	var fetchKey = [ siteId, itemId ].join();
+	const fetchKey = [ siteId, itemId ].join();
 	if ( MediaActions._fetching[ fetchKey ] ) {
 		return;
 	}
@@ -64,8 +66,6 @@ MediaActions.fetch = function( siteId, itemId ) {
 };
 
 MediaActions.fetchNextPage = function( siteId ) {
-	var query;
-
 	if ( MediaListStore.isFetchingNextPage( siteId ) ) {
 		return;
 	}
@@ -75,7 +75,7 @@ MediaActions.fetchNextPage = function( siteId ) {
 		siteId: siteId
 	} );
 
-	query = MediaListStore.getNextPageQuery( siteId );
+	const query = MediaListStore.getNextPageQuery( siteId );
 
 	debug( 'Fetching media for %d using query %o', siteId, query );
 	wpcom.site( siteId ).mediaList( query, function( error, data ) {
@@ -209,7 +209,7 @@ MediaActions.add = function( siteId, files ) {
 };
 
 MediaActions.edit = function( siteId, item ) {
-	var newItem = assign( {}, MediaStore.get( siteId, item.ID ), item );
+	const newItem = assign( {}, MediaStore.get( siteId, item.ID ), item );
 
 	Dispatcher.handleViewAction( {
 		type: 'RECEIVE_MEDIA_ITEM',
