@@ -75,11 +75,10 @@ $accordion-background-expanded: $white;
 .accordion__title,
 .accordion__subtitle {
 	display: block;
-}
 
-.accordion__header.has-icon .accordion__title,
-.accordion__header.has-icon .accordion__subtitle {
-	padding-left: 28px;
+	.accordion.has-icon & {
+		padding-left: 28px;
+	}
 }
 
 .accordion__subtitle {
