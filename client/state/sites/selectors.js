@@ -20,7 +20,7 @@ import {
  * Internal dependencies
  */
 import config from 'config';
-import { isHttps, withoutHttp } from 'lib/url';
+import { isHttps, withoutHttp, addQueryArgs } from 'lib/url';
 
 /**
  * Internal dependencies
@@ -560,4 +560,56 @@ export function getSiteFrontPageType( state, siteId ) {
  */
 export function hasStaticFrontPage( state, siteId ) {
 	return !! getSiteFrontPage( state, siteId );
+}
+
+/**
+ * Returns the url to the wp-admin area for a site, or null if the admin URL
+ * for the site cannot be determined.
+ *
+ * @see https://developer.wordpress.org/reference/functions/get_admin_url/
+ *
+ * @param  {Object}  state  Global state tree
+ * @param  {Number}  siteId Site ID
+ * @param  {?String} path   Admin screen path
+ * @return {?String}        Admin URL
+ */
+export function getSiteAdminUrl( state, siteId, path = '' ) {
+	const adminUrl = getSiteOption( state, siteId, 'admin_url' );
+	if ( ! adminUrl ) {
+		return null;
+	}
+
+	return adminUrl + path.replace( /^\//, '' );
+}
+
+/**
+ * Returns the customizer URL for a site, or null if it cannot be determined.
+ *
+ * @param  {Object} state  Global state tree
+ * @param  {Number} siteId Site ID
+ * @return {String}        Customizer URL
+ */
+export function getCustomizerUrl( state, siteId ) {
+	if ( ! isJetpackSite( state, siteId ) ) {
+		const siteSlug = getSiteSlug( state, siteId );
+		if ( ! siteSlug ) {
+			return null;
+		}
+
+		return `/customize/${ siteSlug }`;
+	}
+
+	const adminUrl = getSiteAdminUrl( state, siteId, 'customize.php' );
+	if ( ! adminUrl ) {
+		return null;
+	}
+
+	let returnUrl;
+	if ( 'undefined' !== typeof window ) {
+		returnUrl = encodeURIComponent( window.location );
+	}
+
+	return addQueryArgs( {
+		'return': returnUrl
+	}, adminUrl );
 }
