@@ -28,6 +28,7 @@ import {
 } from 'state/jetpack-connect/actions';
 import {
 	getAuthorizationData,
+	getAuthorizationRemoteSite,
 	getAuthorizationRemoteSiteUrl,
 	getSSOSessions,
 	isCalypsoStartedConnection,
@@ -209,7 +210,6 @@ const LoggedInForm = React.createClass( {
 			debug( 'Authorizing automatically on component mount' );
 			return this.props.authorize( queryObject );
 		}
-		console.log( this.props.calypsoStartedConnection, this.props.isSSO );
 		if ( this.props.isAlreadyOnSitesList && ! this.state.hasRefetchedSites && ! this.props.isFetchingSites() ) {
 			this.props.requestSites();
 			this.setState( { hasRefetchedSites: true } );
@@ -624,7 +624,6 @@ const JetpackConnectAuthorizeForm = React.createClass( {
 		);
 	},
 
-
 	renderPlansSelector() {
 		return (
 				<div>
@@ -660,7 +659,7 @@ const JetpackConnectAuthorizeForm = React.createClass( {
 		}
 
 		if ( this.props.plansFirst && ! this.props.hasJetpackPlanSelected ) {
-			return this.renderPlansSelector()
+			return this.renderPlansSelector();
 		}
 
 		return (
@@ -676,7 +675,7 @@ const JetpackConnectAuthorizeForm = React.createClass( {
 export default connect(
 	state => {
 		const remoteSiteUrl = getAuthorizationRemoteSiteUrl( state );
-
+		const remoteSiteInList = getAuthorizationRemoteSite( state );
 		const requestHasXmlrpcError = () => {
 			return hasXmlrpcError( state );
 		};
@@ -691,7 +690,7 @@ export default connect(
 			jetpackConnectAuthorize: getAuthorizationData( state ),
 			plansFirst: false,
 			jetpackSSOSessions: getSSOSessions( state ),
-			isAlreadyOnSitesList: !! remoteSiteUrl,
+			isAlreadyOnSitesList: !! remoteSiteInList,
 			isFetchingSites,
 			requestHasXmlrpcError,
 			calypsoStartedConnection: remoteSiteUrl && isCalypsoStartedConnection( state, remoteSiteUrl )

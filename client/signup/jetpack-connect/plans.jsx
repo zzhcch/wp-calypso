@@ -31,6 +31,7 @@ import {
 } from 'state/jetpack-connect/selectors';
 
 const CALYPSO_REDIRECTION_PAGE = '/posts/';
+const CALYPSO_PLANS_PAGE = '/plans/my-plan/';
 
 const Plans = React.createClass( {
 	mixins: [ observe( 'sites', 'plans' ) ],
@@ -70,22 +71,23 @@ const Plans = React.createClass( {
 	},
 
 	componentDidUpdate() {
-		if ( this.props.sites ) {
-			return;
+		if ( this.hasPlan( this.props.selectedSite ) && ! this.state.redirecting ) {
+			this.redirect( CALYPSO_PLANS_PAGE );
+		}
+		if ( ! this.props.canPurchasePlans && ! this.state.redirecting ) {
+			this.redirect( CALYPSO_REDIRECTION_PAGE );
 		}
 
-		if ( this.hasPlan( this.props.selectedSite ) ) {
-			page.redirect( CALYPSO_REDIRECTION_PAGE + this.props.selectedSite.slug );
-			this.setState( { redirect: true } );
-		}
-		if ( ! this.props.canPurchasePlans ) {
-			page.redirect( CALYPSO_REDIRECTION_PAGE + this.props.selectedSite.slug );
-			this.setState( { redirect: true } );
-		}
-
-		if ( ! this.props.isRequestingPlans && ( this.props.flowType === 'pro' || this.props.flowType === 'premium' ) ) {
+		if ( ! this.props.isRequestingPlans &&
+			( this.props.flowType === 'pro' || this.props.flowType === 'premium' ) &&
+			! this.state.redirecting ) {
 			return this.autoselectPlan();
 		}
+	},
+
+	redirect( path ) {
+		page.redirect( path + this.props.selectedSite.slug );
+		this.setState( { redirecting: true } );
 	},
 
 	hasPreSelectedPlan() {
@@ -134,8 +136,7 @@ const Plans = React.createClass( {
 			user: this.props.userId
 		} );
 		if ( this.props.calypsoStartedConnection ) {
-			page.redirect( CALYPSO_REDIRECTION_PAGE + this.props.selectedSite.slug );
-			this.setState( { redirecting: true } );
+			this.redirect( CALYPSO_REDIRECTION_PAGE );
 		} else {
 			const { queryObject } = this.props.jetpackConnectAuthorize;
 			this.props.goBackToWpAdmin( queryObject.redirect_after_auth );
