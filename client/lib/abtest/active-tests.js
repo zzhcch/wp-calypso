@@ -133,5 +133,15 @@ module.exports = {
 		},
 		defaultVariation: 'original',
 		allowExistingUsers: true
-	}
+	},
+	jetpackConnectPlansFirst: {
+		datestamp: '20161024',
+		variations: {
+			showPlansBeforeAuth: 50,
+			showPlansAfterAuth: 50
+		},
+		defaultVariation: 'showPlansAfterAuth',
+		allowExistingUsers: true
+	},
 };
+

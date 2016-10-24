@@ -35,6 +35,7 @@ import {
 	hasXmlrpcError,
 	getJetpackPlanSelected
 } from 'state/jetpack-connect/selectors';
+import { abtest } from 'lib/abtest';
 import JetpackConnectNotices from './jetpack-connect-notices';
 import observe from 'lib/mixins/data-observe';
 import userUtilities from 'lib/user/utils';
@@ -688,7 +689,7 @@ export default connect(
 			siteSlug: withoutHttp( remoteSiteUrl ).replace( /\//g, '::' ),
 			hasJetpackPlanSelected: !! getJetpackPlanSelected( state ),
 			jetpackConnectAuthorize: getAuthorizationData( state ),
-			plansFirst: false,
+			plansFirst: abtest( 'jetpackConnectPlansFirst' ) === 'showPlansBeforeAuth',
 			jetpackSSOSessions: getSSOSessions( state ),
 			isAlreadyOnSitesList: !! remoteSiteInList,
 			isFetchingSites,
