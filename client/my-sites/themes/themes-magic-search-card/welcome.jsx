@@ -24,7 +24,7 @@ const MagicSearchWelcome = React.createClass( {
 		suggestionsCallback: noop,
 	},
 
-	onMouseDown: function( event ) {
+	onMouseDown( event ) {
 		this.props.suggestionsCallback( event.target.textContent + ':' );
 	},
 
