@@ -1,6 +1,7 @@
 const root = 'https://support.wordpress.com';
 
 export default {
+	ACCOUNT_RECOVERY: `${ root }/account-recovery`,
 	ADDING_GOOGLE_APPS_TO_YOUR_SITE: `${root}/adding-g-suite-to-your-site`,
 	ADDING_USERS: `${root}/adding-users`,
 	ALL_ABOUT_DOMAINS: `${root}/all-about-domains`,
