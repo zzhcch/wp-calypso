@@ -218,19 +218,24 @@ class EditorMediaModalDetailItem extends Component {
 			'is-loading': ! item
 		} );
 
+		const hasOriginal = item.revision_history &&
+			item.revision_history.original &&
+			item.revision_history.original.URL;
+
 		return (
 			<figure className={ classes }>
 				<div className="editor-media-modal-detail__content editor-media-modal__content">
 					<div className="editor-media-modal-detail__preview-wrapper">
 						{ this.renderItem() }
 						{ this.renderEditButton( 'is-desktop' ) }
-						{ this.renderRestoreButton( 'is-desktop' ) }
+						{ hasOriginal && this.renderRestoreButton( 'is-desktop' ) }
 						{ this.renderPreviousItemButton() }
 						{ this.renderNextItemButton() }
 					</div>
+
 					<div className="editor-media-modal-detail__sidebar">
 						{ this.renderEditButton( 'is-mobile' ) }
-						{ this.renderRestoreButton( 'is-mobile' ) }
+						{ hasOriginal && this.renderRestoreButton( 'is-mobile' ) }
 						{ this.renderFields() }
 						<EditorMediaModalDetailFileInfo
 							item={ item } />
