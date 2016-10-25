@@ -100,15 +100,14 @@
 	}
 }
 
-.editor-media-modal-detail__edit {
+.editor-media-modal-detail__button-action {
 	font-weight: bold;
 	display: none;
 	&.is-desktop {
 		@include breakpoint( ">480px" ) {
 			display: block;
-			position: absolute;
-			top: 8px;
-			right: 8px;
+			float: right;
+    		margin: 8px 8px 0 0;
 		}
 	}
 
@@ -116,10 +115,13 @@
 		@include breakpoint( "<480px" ) {
 			display: block;
 			width: 100%;
- 			margin-bottom: 16px;
+ 			margin-bottom: 8px;
 		}
 	}
+}
 
+.editor-media-modal-detail__restore .gridicon {
+	transform: scaleX( -1 );
 }
 
 .editor-media-modal-detail__sidebar {

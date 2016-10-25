@@ -75,11 +75,51 @@ class EditorMediaModalDetailItem extends Component {
 
 		return (
 			<Button
-				className={ classNames( 'editor-media-modal-detail__edit', className ) }
+				className={ classNames(
+					'editor-media-modal-detail__button-action',
+					'editor-media-modal-detail__edit',
+				className ) }
 				onClick={ onEdit }
 				disabled={ isItemBeingUploaded( item ) }
 			>
 				<Gridicon icon="pencil" size={ 36 } /> { translate( 'Edit Image' ) }
+			</Button>
+		);
+	}
+
+	renderRestoreButton( className ) {
+		const {
+			item,
+			onRestore,
+			site,
+			translate
+		} = this.props;
+
+		// Do not render edit button for private sites
+		if ( site.is_private ) {
+			debug( 'Do not show `Restore button` for private sites' );
+
+			return null;
+		}
+
+		if (
+			! config.isEnabled( 'post-editor/image-editor' ) ||
+			isJetpack( site ) ||
+			! item
+		) {
+			return null;
+		}
+
+		return (
+			<Button
+				className={ classNames(
+					'editor-media-modal-detail__button-action',
+					'editor-media-modal-detail__restore',
+					className
+				) }
+				onClick={ onRestore }
+			>
+				<Gridicon icon="refresh" size={ 36 } /> { translate( 'Restore Original' ) }
 			</Button>
 		);
 	}
@@ -184,11 +224,13 @@ class EditorMediaModalDetailItem extends Component {
 					<div className="editor-media-modal-detail__preview-wrapper">
 						{ this.renderItem() }
 						{ this.renderEditButton( 'is-desktop' ) }
+						{ this.renderRestoreButton( 'is-desktop' ) }
 						{ this.renderPreviousItemButton() }
 						{ this.renderNextItemButton() }
 					</div>
 					<div className="editor-media-modal-detail__sidebar">
 						{ this.renderEditButton( 'is-mobile' ) }
+						{ this.renderRestoreButton( 'is-mobile' ) }
 						{ this.renderFields() }
 						<EditorMediaModalDetailFileInfo
 							item={ item } />
