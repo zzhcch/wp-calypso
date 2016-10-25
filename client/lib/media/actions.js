@@ -51,7 +51,7 @@ MediaActions.fetch = function( siteId, itemId ) {
 	} );
 
 	debug( 'Fetching media for %d using ID %d', siteId, itemId );
-	wpcom.site( siteId ).media( itemId ).get( function( error, data ) {
+	wpcom.site( siteId ).media( itemId ).get( { apiVersion: '1.2' }, function( error, data ) {
 		Dispatcher.handleServerAction( {
 			type: 'RECEIVE_MEDIA_ITEM',
 			error: error,
@@ -76,6 +76,8 @@ MediaActions.fetchNextPage = function( siteId ) {
 	} );
 
 	query = MediaListStore.getNextPageQuery( siteId );
+
+	query.apiVersion = '1.2';
 
 	debug( 'Fetching media for %d using query %o', siteId, query );
 	wpcom.site( siteId ).mediaList( query, function( error, data ) {
