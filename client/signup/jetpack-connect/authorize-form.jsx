@@ -33,7 +33,8 @@ import {
 	getSSOSessions,
 	isCalypsoStartedConnection,
 	hasXmlrpcError,
-	getJetpackPlanSelected
+	getSiteSelectedPlan,
+	getGlobalSelectedPlan
 } from 'state/jetpack-connect/selectors';
 import { abtest } from 'lib/abtest';
 import JetpackConnectNotices from './jetpack-connect-notices';
@@ -231,7 +232,7 @@ const LoggedInForm = React.createClass( {
 			if ( ! isRedirectingToWpAdmin && authorizeSuccess ) {
 				this.props.goBackToWpAdmin( queryObject.redirect_after_auth );
 			}
-		} else if ( this.props.plansFirst && this.props.hasJetpackPlanSelected && ! this.state.haveAuthorized ) {
+		} else if ( this.props.plansFirst && this.props.selectedPlan && ! this.state.haveAuthorized ) {
 			this.setState( {
 				haveAuthorized: true
 			} );
@@ -659,7 +660,7 @@ const JetpackConnectAuthorizeForm = React.createClass( {
 			this.renderMainForm();
 		}
 
-		if ( this.props.plansFirst && ! this.props.hasJetpackPlanSelected ) {
+		if ( this.props.plansFirst && ! this.props.selectedPlan ) {
 			return this.renderPlansSelector();
 		}
 
@@ -676,18 +677,20 @@ const JetpackConnectAuthorizeForm = React.createClass( {
 export default connect(
 	state => {
 		const remoteSiteUrl = getAuthorizationRemoteSiteUrl( state );
+		const siteSlug = withoutHttp( remoteSiteUrl ).replace( /\//g, '::' );
 		const remoteSiteInList = getAuthorizationRemoteSite( state );
 		const requestHasXmlrpcError = () => {
 			return hasXmlrpcError( state );
 		};
+		const selectedPlan = getSiteSelectedPlan( state, siteSlug ) || getGlobalSelectedPlan( state );
 
 		const isFetchingSites = () => {
 			return isRequestingSites( state );
 		};
 
 		return {
-			siteSlug: withoutHttp( remoteSiteUrl ).replace( /\//g, '::' ),
-			hasJetpackPlanSelected: !! getJetpackPlanSelected( state ),
+			siteSlug,
+			selectedPlan,
 			jetpackConnectAuthorize: getAuthorizationData( state ),
 			plansFirst: abtest( 'jetpackConnectPlansFirst' ) === 'showPlansBeforeAuth',
 			jetpackSSOSessions: getSSOSessions( state ),

@@ -9,16 +9,14 @@ import { bindActionCreators } from 'redux';
 /**
  * Internal dependencies
  */
+import PlansGrid from './plans-grid';
 import { getPlansBySite } from 'state/sites/plans/selectors';
-import Main from 'components/main';
-import StepHeader from '../step-header';
 import observe from 'lib/mixins/data-observe';
-import PlansFeaturesMain from 'my-sites/plans-features-main';
 import { recordTracksEvent } from 'state/analytics/actions';
 import { getCurrentUser } from 'state/current-user/selectors';
 import * as upgradesActions from 'lib/upgrades/actions';
 import { userCan } from 'lib/site/utils';
-import { selectPlanInAdvance, goBackToWpAdmin } from 'state/jetpack-connect/actions';
+import { selectPlanInAdvance, goBackToWpAdmin, completeFlow } from 'state/jetpack-connect/actions';
 import QueryPlans from 'components/data/query-plans';
 import QuerySitePlans from 'components/data/query-site-plans';
 import { requestPlans } from 'state/plans/actions';
@@ -26,6 +24,7 @@ import { isRequestingPlans, getPlanBySlug } from 'state/plans/selectors';
 import {
 	getFlowType,
 	getSiteSelectedPlan,
+	getGlobalSelectedPlan,
 	getAuthorizationData,
 	isCalypsoStartedConnection
 } from 'state/jetpack-connect/selectors';
@@ -37,14 +36,15 @@ const Plans = React.createClass( {
 	mixins: [ observe( 'sites', 'plans' ) ],
 
 	propTypes: {
-		sites: React.PropTypes.object.isRequired,
+		sites: React.PropTypes.object,
 		sitePlans: React.PropTypes.object.isRequired,
 		intervalType: React.PropTypes.string
 	},
 
 	getDefaultProps() {
 		return {
-			intervalType: 'yearly'
+			intervalType: 'yearly',
+			siteSlug: '*'
 		};
 	},
 
@@ -84,14 +84,15 @@ const Plans = React.createClass( {
 	redirect( path ) {
 		page.redirect( path + this.props.selectedSite.slug );
 		this.setState( { redirecting: true } );
+		this.props.completeFlow();
 	},
 
 	hasPreSelectedPlan() {
-		return (
-			this.props.flowType === 'pro' ||
-			this.props.flowType === 'premium' ||
-			( ! this.props.showFirst && this.props.selectedPlan )
-		);
+		if ( this.props.flowType === 'pro' || this.props.flowType === 'premium' || this.props.flowType === 'personal' ) {
+			return true;
+		}
+
+		return !! this.props.selectedPlan;
 	},
 
 	hasPlan( site ) {
@@ -137,6 +138,7 @@ const Plans = React.createClass( {
 			const { queryObject } = this.props.jetpackConnectAuthorize;
 			this.props.goBackToWpAdmin( queryObject.redirect_after_auth );
 			this.setState( { redirecting: true } );
+			this.props.completeFlow();
 		}
 	},
 
@@ -160,6 +162,7 @@ const Plans = React.createClass( {
 		}
 		upgradesActions.addItem( cartItem );
 		this.setState( { redirecting: true } );
+		this.props.completeFlow();
 		page( checkoutPath );
 	},
 
@@ -170,27 +173,12 @@ const Plans = React.createClass( {
 		} );
 		this.props.selectPlanInAdvance(
 			cartItem ? cartItem.product_slug : 'free',
-			this.props.siteSlug
-		);
-	},
-
-	renderConnectHeader() {
-		const headerText = this.props.showFirst
-			? this.translate( 'You are moments away from connecting your site' )
-			: this.translate( 'Your site is now connected!' );
-		return (
-			<StepHeader
-				headerText={ headerText }
-				subHeaderText={ this.translate( 'Now pick a plan that\'s right for you.' ) }
-				step={ 1 }
-				steps={ 3 } />
+			this.props.siteSlug,
 		);
 	},
 
 	render() {
 		if ( this.state.redirecting ||
-			this.props.flowType === 'pro' ||
-			this.props.flowType === 'premium' ||
 			this.hasPreSelectedPlan() ||
 			( ! this.props.showFirst && ! this.props.canPurchasePlans ) ||
 			( ! this.props.showFirst && this.hasPlan( this.props.selectedSite ) )
@@ -198,28 +186,16 @@ const Plans = React.createClass( {
 			return null;
 		}
 
-		const defaultJetpackSite = { jetpack: true, plan: {}, isUpgradeable: () => true };
-
 		return (
 			<div>
-				<Main wideLayout>
-					<QueryPlans />
-					{ this.props.selectedSite
-						? <QuerySitePlans siteId={ this.props.selectedSite.ID } />
-						: null
-					}
-					<div className="jetpack-connect__plans">
-						{ this.renderConnectHeader() }
-						<div id="plans">
-							<PlansFeaturesMain
-								site={ this.props.selectedSite || defaultJetpackSite }
-								isInSignup={ true }
-								isInJetpackConnect={ true }
-								onUpgradeClick={ this.props.showFirst ? this.storeSelectedPlan : this.selectPlan }
-								intervalType={ this.props.intervalType } />
-						</div>
-					</div>
-				</Main>
+				<QueryPlans />
+				{ this.props.selectedSite
+					? <QuerySitePlans siteId={ this.props.selectedSite.ID } />
+					: null
+				}
+				<PlansGrid
+					{ ...this.props }
+					onSelect={ this.props.showFirst || this.props.isLanding ? this.storeSelectedPlan : this.selectPlan } />
 			</div>
 		);
 	}
@@ -229,7 +205,9 @@ export default connect(
 	( state, props ) => {
 		const user = getCurrentUser( state );
 		const selectedSite = props.sites ? props.sites.getSelectedSite() : null;
+		const selectedSiteSlug = selectedSite ? selectedSite.slug : null;
 
+		const selectedPlan = getSiteSelectedPlan( state, selectedSiteSlug ) || getGlobalSelectedPlan( state );
 		const searchPlanBySlug = ( planSlug ) => {
 			return getPlanBySlug( state, planSlug );
 		};
@@ -243,13 +221,13 @@ export default connect(
 			flowType: getFlowType( state, selectedSite && selectedSite.slug ),
 			isRequestingPlans: isRequestingPlans( state ),
 			getPlanBySlug: searchPlanBySlug,
-			calypsoStartedConnection: selectedSite ? isCalypsoStartedConnection( state, selectedSite.slug ) : null,
-			selectedPlan: selectedSite ? getSiteSelectedPlan( state, selectedSite.slug ) : null,
+			calypsoStartedConnection: selectedSite ? isCalypsoStartedConnection( state, selectedSiteSlug ) : null,
+			selectedPlan
 		};
 	},
 	( dispatch ) => {
 		return Object.assign( {},
-			bindActionCreators( { goBackToWpAdmin, requestPlans, selectPlanInAdvance }, dispatch ),
+			bindActionCreators( { goBackToWpAdmin, completeFlow, requestPlans, selectPlanInAdvance }, dispatch ),
 			{
 				recordTracksEvent( eventName, props ) {
 					dispatch( recordTracksEvent( eventName, props ) );

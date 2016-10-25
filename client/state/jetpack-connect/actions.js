@@ -14,6 +14,7 @@ import {
 	JETPACK_CONNECT_CHECK_URL,
 	JETPACK_CONNECT_CHECK_URL_RECEIVE,
 	JETPACK_CONNECT_CONFIRM_JETPACK_STATUS,
+	JETPACK_CONNECT_COMPLETE_FLOW,
 	JETPACK_CONNECT_DISMISS_URL_STATUS,
 	JETPACK_CONNECT_AUTHORIZE,
 	JETPACK_CONNECT_AUTHORIZE_LOGIN_COMPLETE,
@@ -428,6 +429,14 @@ export default {
 				type: JETPACK_CONNECT_SELECT_PLAN_IN_ADVANCE,
 				plan: planSlug,
 				site: site
+			} );
+		};
+	},
+	completeFlow( site ) {
+		return ( dispatch ) => {
+			dispatch( {
+				type: JETPACK_CONNECT_COMPLETE_FLOW,
+				site
 			} );
 		};
 	}

@@ -13,6 +13,7 @@ import {
 	JETPACK_CONNECT_CHECK_URL_RECEIVE,
 	JETPACK_CONNECT_DISMISS_URL_STATUS,
 	JETPACK_CONNECT_CONFIRM_JETPACK_STATUS,
+	JETPACK_CONNECT_COMPLETE_FLOW,
 	JETPACK_CONNECT_QUERY_SET,
 	JETPACK_CONNECT_QUERY_UPDATE,
 	JETPACK_CONNECT_AUTHORIZE,
@@ -111,6 +112,8 @@ export function jetpackConnectSite( state = {}, action ) {
 			return state;
 		case JETPACK_CONNECT_CONFIRM_JETPACK_STATUS:
 			return Object.assign( {}, state, { installConfirmedByUser: action.status } );
+		case JETPACK_CONNECT_COMPLETE_FLOW:
+			return {};
 		case SERIALIZE:
 		case DESERIALIZE:
 			return {};
@@ -244,6 +247,8 @@ export function jetpackConnectAuthorize( state = {}, action ) {
 			return Object.assign( {}, state, { isRedirectingToWpAdmin: true } );
 		case JETPACK_CONNECT_REDIRECT_WP_ADMIN:
 			return Object.assign( {}, state, { isRedirectingToWpAdmin: true } );
+		case JETPACK_CONNECT_COMPLETE_FLOW:
+			return {};
 		case DESERIALIZE:
 			return state;
 		case SERIALIZE:
@@ -296,6 +301,8 @@ export function jetpackConnectSelectedPlans( state = {}, action ) {
 			const siteSlug = action.site.replace( /^https?:\/\//, '' ).replace( /\//g, '::' );
 			return Object.assign( {}, state, { [ siteSlug ]: action.plan } );
 		case JETPACK_CONNECT_CHECK_URL:
+			return { '*': state[ '*' ] };
+		case JETPACK_CONNECT_COMPLETE_FLOW:
 			return {};
 		case SERIALIZE:
 		case DESERIALIZE:

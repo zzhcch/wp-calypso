@@ -115,6 +115,10 @@ const getSiteSelectedPlan = function( state, siteSlug ) {
 	return state.jetpackConnect.jetpackConnectSelectedPlans && state.jetpackConnect.jetpackConnectSelectedPlans[ siteSlug ];
 };
 
+const getGlobalSelectedPlan = function( state ) {
+	return state.jetpackConnect.jetpackConnectSelectedPlans && state.jetpackConnect.jetpackConnectSelectedPlans[ '*' ];
+};
+
 export default {
 	getConnectingSite,
 	getAuthorizationData,
@@ -129,5 +133,6 @@ export default {
 	getJetpackSiteByUrl,
 	hasXmlrpcError,
 	getJetpackPlanSelected,
-	getSiteSelectedPlan
+	getSiteSelectedPlan,
+	getGlobalSelectedPlan
 };
