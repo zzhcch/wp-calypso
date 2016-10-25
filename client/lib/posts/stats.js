@@ -1,10 +1,10 @@
-/*
+/**
  * External dependencies
  */
-import debugModule from 'debug';
+import debugFactory from 'debug';
 import noop from 'lodash/noop';
 
-/*
+/**
  * Internal dependencies
  */
 import config from 'config';
@@ -13,10 +13,10 @@ import PostEditStore from 'lib/posts/post-edit-store';
 import utils from 'lib/posts/utils';
 import SitesList from 'lib/sites-list';
 
-/*
+/**
  * Module variables
  */
-const debug = debugModule( 'calypso:posts:stats' );
+const debug = debugFactory( 'calypso:posts:stats' );
 const sites = new SitesList();
 
 function recordUsageStats( action, postType ) {
