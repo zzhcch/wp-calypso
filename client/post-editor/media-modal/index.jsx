@@ -182,7 +182,7 @@ module.exports = React.createClass( {
 	},
 
 	deleteMedia: function() {
-		var selectedCount, confirmMessage;
+		let selectedCount;
 
 		if ( ModalViews.DETAIL === this.state.activeView ) {
 			selectedCount = 1;
@@ -190,7 +190,7 @@ module.exports = React.createClass( {
 			selectedCount = this.props.mediaLibrarySelectedItems.length;
 		}
 
-		confirmMessage = this.translate(
+		const confirmMessage = this.translate(
 			'Are you sure you want to permanently delete this item?',
 			'Are you sure you want to permanently delete these items?',
 			{ count: selectedCount }
@@ -210,7 +210,7 @@ module.exports = React.createClass( {
 		this.setView( ModalViews.IMAGE_EDITOR );
 	},
 
-	onImageEditorDone( error, blob, imageEditorProps ) {
+	onImageEditorDone( error, blob, imageEditorProps, media ) {
 		if ( error ) {
 			this.onImageEditorCancel( imageEditorProps );
 
@@ -225,31 +225,16 @@ module.exports = React.createClass( {
 
 		const mimeType = MediaUtils.getMimeType( fileName );
 
-		// check if a title is already post-fixed with '(edited copy)'
-		const editedCopyText = this.translate(
-			'%(title)s (edited copy)', {
-				args: {
-					title: ''
-				}
-			} );
+		const item = {
+			ID: media.ID,
+			media: {
+				fileName: fileName,
+				fileContents: blob,
+				mimeType: mimeType
+			}
+		};
 
-		let { title } = imageEditorProps;
-
-		if ( title.indexOf( editedCopyText ) === -1 ) {
-			title = this.translate(
-				'%(title)s (edited copy)', {
-					args: {
-						title: title
-					}
-				} );
-		}
-
-		MediaActions.add( site.ID, {
-			fileName: fileName,
-			fileContents: blob,
-			title: title,
-			mimeType: mimeType
-		} );
+		MediaActions.update( site.ID, item );
 
 		resetAllImageEditorState();
 
@@ -453,11 +438,15 @@ module.exports = React.createClass( {
 				const selectedIndex = this.getDetailSelectedIndex(),
 					media = items ? items[ selectedIndex ] : null;
 
+				const imageEditionIsDone = ( error, blob, imageEditorProps ) => {
+					this.onImageEditorDone( error, blob, imageEditorProps, media );
+				};
+
 				content = (
 					<ImageEditor
 						siteId={ site && site.ID }
 						media={ media }
-						onDone={ this.onImageEditorDone }
+						onDone={ imageEditionIsDone }
 						onCancel={ this.onImageEditorCancel }
 					/>
 				);
