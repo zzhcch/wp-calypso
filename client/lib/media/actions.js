@@ -90,11 +90,11 @@ MediaActions.fetchNextPage = function( siteId ) {
 };
 
 MediaActions.getTransientMedia = function( id, file, date ) {
-	const transientMedia = {
-		ID: id,
-		'transient': true,
-		date
-	};
+	const transientMedia = { ID: id, 'transient': true };
+
+	if ( date ) {
+		transientMedia.date = date;
+	}
 
 	if ( 'string' === typeof file ) {
 		// Generate from string
@@ -219,26 +219,36 @@ MediaActions.edit = function( siteId, item ) {
 };
 
 MediaActions.update = function( siteId, item ) {
-	var newItem;
-
 	if ( Array.isArray( item ) ) {
 		item.forEach( MediaActions.update.bind( null, siteId ) );
 		return;
 	}
 
-	newItem = assign( {}, MediaStore.get( siteId, item.ID ), item );
+	const mediaId = item.ID;
+	const newItem = assign( {}, MediaStore.get( siteId, item.ID ), item );
 
-	Dispatcher.handleViewAction( {
+	// let's updated data immediately
+	const updateAction = {
 		type: 'RECEIVE_MEDIA_ITEM',
-		siteId: siteId,
+		siteId,
 		data: newItem
-	} );
+	};
 
-	debug( 'Updating media for %o by ID %o to %o', siteId, item.ID, item );
+	if ( item.media ) {
+		// also print edited image as soon as possible
+		updateAction.data = Object.assign(
+			{},
+			newItem,
+			MediaActions.getTransientMedia( mediaId, item.media )
+		);
+	}
+
+	debug( 'Updating media for %o by ID %o to %o', siteId, mediaId, updateAction );
+	Dispatcher.handleViewAction( updateAction );
 
 	wpcom
 	.site( siteId )
-	.media( item.ID )
+	.media( mediaId )
 	.edit( item, function( error, data ) {
 		Dispatcher.handleServerAction( {
 			type: 'RECEIVE_MEDIA_ITEM',
