@@ -10,7 +10,6 @@ import { bindActionCreators } from 'redux';
  * Internal dependencies
  */
 import PlansGrid from './plans-grid';
-import observe from 'lib/mixins/data-observe';
 import { recordTracksEvent } from 'state/analytics/actions';
 import { selectPlanInAdvance } from 'state/jetpack-connect/actions';
 import QueryPlans from 'components/data/query-plans';
@@ -18,7 +17,6 @@ import QueryPlans from 'components/data/query-plans';
 const CALYPSO_JETPACK_CONNECT = '/jetpack/connect';
 
 const PlansLanding = React.createClass( {
-	mixins: [ observe( 'plans' ) ],
 
 	propTypes: {
 		sites: React.PropTypes.object,

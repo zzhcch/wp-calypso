@@ -19,7 +19,6 @@ import { userCan } from 'lib/site/utils';
 import { selectPlanInAdvance, goBackToWpAdmin, completeFlow } from 'state/jetpack-connect/actions';
 import QueryPlans from 'components/data/query-plans';
 import QuerySitePlans from 'components/data/query-site-plans';
-import { requestPlans } from 'state/plans/actions';
 import { isRequestingPlans, getPlanBySlug } from 'state/plans/selectors';
 import {
 	getFlowType,
@@ -33,7 +32,7 @@ const CALYPSO_REDIRECTION_PAGE = '/posts/';
 const CALYPSO_PLANS_PAGE = '/plans/my-plan/';
 
 const Plans = React.createClass( {
-	mixins: [ observe( 'sites', 'plans' ) ],
+	mixins: [ observe( 'sites' ) ],
 
 	propTypes: {
 		sites: React.PropTypes.object,
@@ -62,8 +61,6 @@ const Plans = React.createClass( {
 				user: this.props.userId
 			} );
 		}
-
-		this.props.requestPlans( this.props.sitePlans );
 	},
 
 	componentDidUpdate() {
@@ -104,7 +101,6 @@ const Plans = React.createClass( {
 	autoselectPlan() {
 		if ( ! this.props.showFirst ) {
 			if ( this.props.flowType === 'pro' || this.props.selectedPlan === 'jetpack_business' ) {
-				this.props.requestPlans();
 				const plan = this.props.getPlanBySlug( 'jetpack_business' );
 				if ( plan ) {
 					this.selectPlan( plan );
@@ -112,7 +108,6 @@ const Plans = React.createClass( {
 				}
 			}
 			if ( this.props.flowType === 'premium' || this.props.selectedPlan === 'jetpack_premium' ) {
-				this.props.requestPlans();
 				const plan = this.props.getPlanBySlug( 'jetpack_premium' );
 				if ( plan ) {
 					this.selectPlan( plan );
@@ -227,7 +222,7 @@ export default connect(
 	},
 	( dispatch ) => {
 		return Object.assign( {},
-			bindActionCreators( { goBackToWpAdmin, completeFlow, requestPlans, selectPlanInAdvance }, dispatch ),
+			bindActionCreators( { goBackToWpAdmin, completeFlow, selectPlanInAdvance }, dispatch ),
 			{
 				recordTracksEvent( eventName, props ) {
 					dispatch( recordTracksEvent( eventName, props ) );
